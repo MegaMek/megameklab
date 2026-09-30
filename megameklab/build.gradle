@@ -1,14 +1,4 @@
 import java.time.LocalDateTime
-import java.util.zip.ZipInputStream
-import java.util.zip.GZIPInputStream
-import java.util.zip.ZipFile
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
-
-buildscript {
-    dependencies {
-        classpath 'org.apache.commons:commons-compress:1.28.0'
-    }
-}
 
 plugins {
     id 'application'
@@ -20,6 +10,8 @@ plugins {
     id 'checkstyle'
     id 'com.diffplug.spotless' version '8.10.1'
 }
+
+apply from: file("${rootDir}/../megamek/gradle/suite_archive_adapter.gradle")
 
 tasks.withType(AbstractArchiveTask).configureEach {
     preserveFileTimestamps = true
@@ -189,7 +181,8 @@ jar {
 // Derived from rootDir (the megameklab build root) rather than a build-file-relative
 // path, so it survives project-layout changes. mm-data is a sibling of this build root
 // (settings.gradle includes it as ../mm-data).
-def mmDataDir = "${rootDir}/../mm-data"
+def mmDataDir = suiteDataFromPin ? suiteDataRoot.absolutePath : "${rootDir}/../mm-data"
+def mmGeneratedDir = suiteGeneratedRoot.absolutePath
 def mmlDataOut = "${projectDir}/data"
 
 // Never stage macOS/Windows directory-metadata junk, regardless of what a developer's
@@ -203,12 +196,7 @@ tasks.register('stageDataImages', Sync) {
     description = "Syncs image data from mm-data"
     group = 'build'
     from("${mmDataDir}/data/images") {
-        include "fluff/**/*.*"
-        include "misc/**/*.*"
-        include "recordsheets/**/*.*"
-        include "units/**/*.*"
-        include "universe/**/*.*"
-        include "widgets/**/*.*"
+        suiteDataRules.MegaMekLab.images.each { category -> include "${category}/**/*.*" }
     }
     into "${mmlDataOut}/images"
 }
@@ -221,22 +209,30 @@ tasks.register('stageDataFonts', Sync) {
 }
 
 tasks.register('stageDataMekfiles', Sync) {
-    dependsOn gradle.includedBuild('mm-data').task(':unitFilesZip')
+    if (!suiteDataFromPin) {
+        dependsOn gradle.includedBuild('mm-data').task(':unitFilesZip')
+    }
     description = "Syncs unit files (loose text plus the zipped unit archive) from mm-data"
     group = 'build'
     from("${mmDataDir}/data/mekfiles") {
         include "*.txt"
         include "*.xml"
     }
-    from "${mmDataDir}/build/staging/mekfiles"
+    from("${mmGeneratedDir}/mekfiles") {
+        if (suiteDataFromPin) { include "unit_files.zip" }
+    }
     into "${mmlDataOut}/mekfiles"
 }
 
 tasks.register('stageDataRat', Sync) {
-    dependsOn gradle.includedBuild('mm-data').task(':ratZip')
+    if (!suiteDataFromPin) {
+        dependsOn gradle.includedBuild('mm-data').task(':ratZip')
+    }
     description = "Syncs the random assignment table archive from mm-data"
     group = 'build'
-    from "${mmDataDir}/build/staging/rat"
+    from("${mmGeneratedDir}/rat") {
+        if (suiteDataFromPin) { include "rat_default.zip" }
+    }
     into "${mmlDataOut}/rat"
 }
 
@@ -244,13 +240,7 @@ tasks.register('stageData', Sync) {
     description = "Syncs all remaining loose data from mm-data"
     group = 'build'
     from("${mmDataDir}/data") {
-        include "forcegenerator/**/*.*"
-        include "names/**/*.*"
-        include "sourcebooks/*.*"
-        include "universe/eras.xml"
-        include "universe/ranks.xml"
-        include "universe/commands/**/*.*"
-        include "universe/factions/**/*.*"
+        suiteDataRules.MegaMekLab.loose.each { pattern -> include pattern }
     }
     into mmlDataOut
     // The big asset trees are owned by the dedicated tasks above; don't delete them.
@@ -572,271 +562,9 @@ if (suiteVersion != null) {
         doLast {
             def archive = external ? project.file(project.property('suiteArchiveFile'))
                     : tasks.named('distTar').get().archiveFile.get().asFile
-            if (!archive.isFile() || archive.name != "MegaMekLab-${labVersion}.tar.gz") {
-                throw new GradleException("Missing or incorrectly named MegaMekLab suite archive: ${archive}")
-            }
-            // Archive paths must be Strings: GString keys in a Set have different hash codes.
-            String prefix = "MegaMekLab-${project.version}/"
-            def required = [
-                    'suite-build.properties', 'MegaMekLab.jar', 'lib/MegaMekLab.jar',
-                    'lib/MegaMek.jar', 'MegaMekLab.sh', 'bin/MegaMekLab',
-                    'bin/MegaMekLab.bat', 'data/mekfiles/unit_files.zip',
-                    'data/rat/rat_default.zip', 'data/images/misc/megameklab.ico'
-            ].collect { (prefix + it).toString() } as Set
-            def privateConfig = [
-                    'mmconf/clientsettings.xml', 'mmconf/gameoptions.xml',
-                    'mmconf/megameklab.properties', 'mmconf/megameklab.properties.bak',
-                    'mmconf/mhq.preferences', 'mmconf/mm.preferences', 'mmconf/mml.preferences',
-                    'mmconf/recent-advanced-searches.json', 'mmconf/recent_boards.yml'
-            ].collect { (prefix + it).toString() } as Set
-            def found = [] as Set
-            def payloadSources = [
-                    'MegaMekLab.jar'                  : tasks.named('jar').get().archiveFile.get().asFile,
-                    'lib/MegaMek.jar'                 : rootProject.file('../megamek/megamek/build/libs/MegaMek.jar'),
-                    'data/mekfiles/unit_files.zip'   : rootProject.file('../mm-data/build/staging/mekfiles/unit_files.zip'),
-                    'data/rat/rat_default.zip'       : rootProject.file('../mm-data/build/staging/rat/rat_default.zip'),
-                    'data/images/misc/megameklab.ico': rootProject.file('../mm-data/data/images/misc/megameklab.ico')
-            ]
-            def digests = [:]
-            def metadata = null
-            def labManifestVersion = null
-            def gameVersion = null
-            def hashFile = { File file ->
-                def digest = java.security.MessageDigest.getInstance('SHA-256')
-                file.withInputStream { input ->
-                    byte[] buffer = new byte[65536]
-                    int count
-                    while ((count = input.read(buffer)) != -1) {
-                        digest.update(buffer, 0, count)
-                    }
-                }
-                digest.digest().encodeHex().toString()
-            }
-            def loadProperties = { InputStream input ->
-                def properties = new Properties()
-                properties.load(input)
-                properties
-            }
-            def smallZipBytes = { ZipFile zip, java.util.zip.ZipEntry entry ->
-                if (entry.size < 0 || entry.size > 65536) {
-                    throw new GradleException("Oversized JAR metadata: ${entry.name}")
-                }
-                zip.getInputStream(entry).withCloseable { input ->
-                    def bytes = input.readNBytes(65537)
-                    if (bytes.length > 65536) {
-                        throw new GradleException("Oversized JAR metadata: ${entry.name}")
-                    }
-                    bytes
-                }
-            }
-            // Read tar entries without extracting them: tarTree can write unsafe paths before visit sees them.
-            def readArchive = { File tarball, String root, Closure consume ->
-                new TarArchiveInputStream(new GZIPInputStream(new FileInputStream(tarball))).withCloseable { tar ->
-                    def seen = [] as Set
-                    def entry
-                    while ((entry = tar.nextTarEntry) != null) {
-                        String path = entry.name
-                        if (path.length() > 4096 || seen.size() >= 100000) {
-                            throw new GradleException('Suite archive has excessive paths')
-                        }
-                        if (path.endsWith('/')) {
-                            path = path.substring(0, path.length() - 1)
-                        }
-                        if (!(entry.file || entry.directory) || !tar.canReadEntryData(entry) || !seen.add(path) ||
-                                !(path == root || path.startsWith(root + '/')) ||
-                                path.split('/').any { it in ['', '.', '..'] || it.contains('\\') || it.contains('\u0000') } ||
-                                entry.linkName) {
-                            throw new GradleException("Unsafe or duplicate suite archive entry: ${entry.name}")
-                        }
-                        if (entry.file) {
-                            long size = entry.size
-                            // Large payloads are hashed in chunks; only tiny identity files are retained.
-                            if (size < 0 || size > 2L * 1024 * 1024 * 1024) {
-                                throw new GradleException("Oversized suite archive entry: ${path}")
-                            }
-                            boolean metadataEntry = path.endsWith('/suite-build.properties')
-                            boolean jarEntry = path.endsWith('/MegaMekLab.jar') || path.endsWith('/MegaMek.jar')
-                            if (metadataEntry && size > 65536) {
-                                throw new GradleException("Oversized suite identity: ${path}")
-                            }
-                            File jarCopy = jarEntry ? File.createTempFile('suite-archive-', '.jar') : null
-                            try {
-                                def sha256 = java.security.MessageDigest.getInstance('SHA-256')
-                                def sha1 = java.security.MessageDigest.getInstance('SHA-1')
-                                sha1.update("blob ${size}\u0000".getBytes('UTF-8'))
-                                def metadataBytes = metadataEntry ? new ByteArrayOutputStream() : null
-                                def jarOutput = jarCopy == null ? null : new FileOutputStream(jarCopy)
-                                try {
-                                    byte[] buffer = new byte[65536]
-                                    long remaining = size
-                                    while (remaining > 0) {
-                                        int count = tar.read(buffer, 0, (int) Math.min(buffer.length, remaining))
-                                        if (count <= 0) {
-                                            throw new GradleException("Truncated suite archive entry: ${path}")
-                                        }
-                                        sha256.update(buffer, 0, count)
-                                        sha1.update(buffer, 0, count)
-                                        metadataBytes?.write(buffer, 0, count)
-                                        jarOutput?.write(buffer, 0, count)
-                                        remaining -= count
-                                    }
-                                } finally {
-                                    jarOutput?.close()
-                                }
-                                consume(path, [sha256: sha256.digest().encodeHex().toString(),
-                                               sha1: sha1.digest().encodeHex().toString(),
-                                               metadata: metadataBytes?.toByteArray(), jar: jarCopy])
-                            } finally {
-                                if (jarCopy != null) {
-                                    java.nio.file.Files.deleteIfExists(jarCopy.toPath())
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            def archivedData = [:]
-            readArchive(archive, "MegaMekLab-${labVersion}") { String entryName, info ->
-                    if (!entryName.startsWith(prefix) || !found.add(entryName)) {
-                        throw new GradleException("Unexpected root or duplicate archive entry: ${entryName}")
-                    }
-                    def relative = entryName.substring(prefix.length())
-                    if (relative.startsWith('data/')) {
-                        archivedData[relative] = [sha1: info.sha1, sha256: info.sha256]
-                    }
-                    if (payloadSources.containsKey(relative) || relative == 'lib/MegaMekLab.jar') {
-                        digests[relative] = info.sha256
-                        if (relative in ['MegaMekLab.jar', 'lib/MegaMekLab.jar', 'lib/MegaMek.jar']) {
-                            def isLab = relative != 'lib/MegaMek.jar'
-                            new ZipFile(info.jar).withCloseable { zip ->
-                                def zipPaths = [] as Set
-                                zip.entries().each { zipEntry ->
-                                    if (zipEntry.name.length() > 4096 || zipPaths.size() >= 100000 ||
-                                            !zipPaths.add(zipEntry.name) || zipEntry.name.startsWith('/') ||
-                                            zipEntry.name.split('/').any { it == '..' || it == '.' || it.contains('\\') }) {
-                                        throw new GradleException("Unsafe or duplicate JAR entry: ${zipEntry.name}")
-                                    }
-                                    if (isLab && zipEntry.name.equalsIgnoreCase('META-INF/MANIFEST.MF')) {
-                                        def actual = new java.util.jar.Manifest(
-                                                new ByteArrayInputStream(smallZipBytes(zip, zipEntry)))
-                                                .mainAttributes.getValue('Implementation-Version')
-                                        if (actual != labVersion) {
-                                            throw new GradleException("Wrong Lab JAR version: ${relative}")
-                                        }
-                                        labManifestVersion = actual
-                                    }
-                                    if (!isLab && zipEntry.name == 'Version.properties') {
-                                        def properties = loadProperties(
-                                                new ByteArrayInputStream(smallZipBytes(zip, zipEntry)))
-                                        gameVersion = String.format('%d.%02d.%02d',
-                                                Integer.parseInt(properties.getProperty('major')),
-                                                Integer.parseInt(properties.getProperty('minor')),
-                                                Integer.parseInt(properties.getProperty('patch')))
-                                        if (properties.getProperty('revision')?.trim()) {
-                                            throw new GradleException('MegaMek.jar contains a point-release revision')
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (entryName == prefix + 'suite-build.properties') {
-                        metadata = loadProperties(new ByteArrayInputStream(info.metadata))
-                    }
-            }
-            if (!found.containsAll(required)) {
-                throw new GradleException("Suite archive missing entries: ${required - found}")
-            }
-            if (found.any { it in privateConfig || it.startsWith(prefix + 'mmconf/searches/') ||
-                    (it.startsWith(prefix + 'data/') && it.endsWith('.cache')) }) {
-                throw new GradleException('Suite archive contains user configuration or cache files')
-            }
-            if (digests['MegaMekLab.jar'] != digests['lib/MegaMekLab.jar']) {
-                throw new GradleException('Suite archive root and lib MegaMekLab jars disagree')
-            }
-            if (external) {
-                def companionValue = rootProject.findProperty('suiteMegaMekArchiveFile')
-                if (companionValue == null) {
-                    throw new GradleException('External Lab verification requires -PsuiteMegaMekArchiveFile')
-                }
-                def companion = project.file(companionValue)
-                if (!companion.isFile() || companion.name != "MegaMek-${gameVersionExpected}.tar.gz") {
-                    throw new GradleException("Missing or incorrectly named MegaMek companion archive: ${companion}")
-                }
-                def companionIdentity = null
-                def companionJar = null
-                def companionData = [:]
-                def companionLibJar = null
-                readArchive(companion, "MegaMek-${gameVersionExpected}") { String path, info ->
-                    def relative = path.substring("MegaMek-${gameVersionExpected}/".length())
-                    if (relative == 'suite-build.properties') {
-                        companionIdentity = loadProperties(new ByteArrayInputStream(info.metadata))
-                    } else if (relative == 'MegaMek.jar' || relative == 'lib/MegaMek.jar') {
-                        if (relative == 'MegaMek.jar') {
-                            companionJar = info.sha256
-                        } else if (info.sha256 != digests['lib/MegaMek.jar']) {
-                            throw new GradleException('Lab MegaMek jar differs from companion archive')
-                        } else {
-                            companionLibJar = info.sha256
-                        }
-                    } else if (relative.startsWith('data/')) {
-                        companionData[relative] = info.sha256
-                    }
-                }
-                def expectedCompanion = [
-                        schemaVersion: '1', product: 'MegaMek', version: gameVersionExpected,
-                        megamekCommit: suiteIdentity.megamekCommit, mmDataCommit: suiteIdentity.mmDataCommit,
-                        minimumJavaVersion: '21'
-                ]
-                if (companionJar == null || companionJar != companionLibJar ||
-                        companionJar != digests['lib/MegaMek.jar'] ||
-                        companionIdentity == null ||
-                        companionIdentity.stringPropertyNames() !=
-                                (expectedCompanion.keySet() + ['megameklabCommit', 'mekhqCommit'] as Set) ||
-                        !(['megameklabCommit', 'mekhqCommit'].every {
-                            companionIdentity.getProperty(it) ==~ /[0-9a-f]{40}/
-                        }) ||
-                        expectedCompanion.any { key, value -> companionIdentity.getProperty(key) != value }) {
-                    throw new GradleException('MegaMek companion identity or jar differs from declared pins')
-                }
-                def pin = suiteIdentity.mmDataCommit
-                def tree = providers.exec {
-                    commandLine 'git', '-C', rootProject.file('../mm-data').absolutePath,
-                            'ls-tree', '-r', '-z', pin, '--', 'data'
-                }.standardOutput.asText.get()
-                def blobs = [:]
-                tree.split('\u0000').each { line ->
-                    if (line) {
-                        def match = line =~ /^100(?:644|755) blob ([0-9a-f]{40})\t(data\/.+)$/
-                        if (!match.matches()) {
-                            throw new GradleException("Unexpected pinned mm-data entry: ${line}")
-                        }
-                        blobs[match.group(2)] = match.group(1)
-                    }
-                }
-                archivedData.each { relative, hashes ->
-                    def expected = blobs[relative]
-                    if (expected != null) {
-                        if (hashes.sha1 != expected) {
-                            throw new GradleException("Archived mm-data differs from pin: ${relative}")
-                        }
-                    } else if (!(relative in ['data/mekfiles/unit_files.zip', 'data/rat/rat_default.zip']) ||
-                            companionData[relative] == null || companionData[relative] != hashes.sha256) {
-                        throw new GradleException("Unpinned or mismatched archived mm-data: ${relative}")
-                    }
-                }
-            } else {
-                payloadSources.each { relative, source ->
-                    if (!source.isFile() || digests[relative] != hashFile(source)) {
-                        throw new GradleException("Suite archive payload differs from pinned source: ${relative}")
-                    }
-                }
-            }
-            if (metadata == null || metadata.stringPropertyNames() != suiteIdentity.keySet() ||
-                    suiteIdentity.any { key, value -> metadata.getProperty(key) != value } ||
-                    labManifestVersion != labVersion || gameVersion != gameVersionExpected) {
-                throw new GradleException("Suite archive identity or packaged runtime versions do not match declared product versions")
-            }
+            verifySuiteArchiveShared('MegaMekLab', archive, null,
+                    [MegaMekLab: tasks.named('jar').get().archiveFile.get().asFile,
+                     MegaMek: rootProject.file('../megamek/megamek/build/libs/MegaMek.jar')])
         }
     }
 }
