@@ -99,7 +99,8 @@ def gitOutput = { File repo, String... arguments ->
                 File local = new File(repo, path)
                 File canonical = source == null ? null : new File(dataRepo, source)
                 if (source == null || !trackedData.contains(source) || !canonical.isFile()
-                        || !java.util.Arrays.equals(local.bytes, canonical.bytes)) {
+                        || (!java.util.Arrays.equals(local.bytes, canonical.bytes)
+                            && !project(':megameklab').suiteMirrorMatchesPin(local, source))) {
                     throw new GradleException("Unpinned package input in ${repo}: ${path}")
                 }
             }
