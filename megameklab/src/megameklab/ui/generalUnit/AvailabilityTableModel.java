@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -55,6 +56,8 @@ import megameklab.util.AvailabilityCalibration;
 public class AvailabilityTableModel extends AbstractTableModel {
     @Serial
     private static final long serialVersionUID = 1L;
+
+    private static final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
 
     public static final int COL_FACTION = 0;
     public static final int COL_AVAILABILITY = 1;
@@ -106,10 +109,10 @@ public class AvailabilityTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int column) {
         return switch (column) {
-            case COL_FACTION -> "Faction";
-            case COL_AVAILABILITY -> "How common";
-            case COL_FROM -> "From";
-            case COL_TO -> "To";
+            case COL_FACTION -> resourceMap.getString("AvailabilityTableModel.faction");
+            case COL_AVAILABILITY -> resourceMap.getString("AvailabilityTableModel.prevalence");
+            case COL_FROM -> resourceMap.getString("AvailabilityTableModel.from");
+            case COL_TO -> resourceMap.getString("AvailabilityTableModel.to");
             default -> "";
         };
     }
@@ -287,7 +290,7 @@ public class AvailabilityTableModel extends AbstractTableModel {
 
     /**
      * Turns the rows back into the file's shape. Rows that share a year range are grouped into one entry, which is how
-     * a hand-written file would look.
+     * a handwritten file would look.
      *
      * @return the entries to store on the unit
      */
