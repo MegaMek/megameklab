@@ -99,6 +99,12 @@ Both are editable with a quality text editor, but we recommend not hand editing 
 
 ### Local suite package
 
+Suite archive verification and data staging use the shared tooling in the sibling
+MegaMek checkout (`gradle/suite_archive_verifier.py` and
+`gradle/suite_archive_adapter.gradle`). Python 3.10+ is required for suite tasks;
+use `-PsuitePythonExecutable=<absolute interpreter path>` if `python` on Windows
+or `python3` elsewhere is unavailable. Normal non-suite builds do not require Python.
+
 From a checkout alongside `megamek`, `mekhq`, and `mm-data`, pass all five shared inputs to
 `./gradlew :megameklab:verifySuiteArchive` (or `:megameklab:distTar`):
 
@@ -123,6 +129,8 @@ packaged `Version.properties` and fails if the included build did not receive th
 Pins must match the actual sibling and local HEADs. Suite archives refuse tracked changes
 and unknown untracked or ignored package-source inputs in all four checkouts.
 Ignored local data mirrors must match tracked mm-data bytes; build/cache output is excluded.
+Suite staging reads canonical Git blobs into a build-local directory, including
+generated ZIP contents, so Windows checkout line endings do not change packaged data.
 Use clean checkouts for final packaging. The normal
 `megameklab/build/distributions/MegaMekLab-<version>.tar.gz` contains the existing launchers, jars,
 bundled mm-data and user-config exclusions, plus a `suite-build.properties` identity file at its root.
@@ -134,14 +142,18 @@ To check a previously downloaded Lab tarball without rebuilding, pass
 `-PsuiteMegaMekArchiveFile=<path>/MegaMek-<MegaMek version>.tar.gz` to
 `:megameklab:verifySuiteArchive` along with the same five suite inputs and product versions.
 This mode does not run `distTar` or its producers. It requires the matching MegaMek
-companion archive to verify the bundled runtime JAR and derived mm-data ZIPs; tracked
-data in the Lab archive is checked against the declared mm-data Git commit's blob hashes.
+companion archive to verify the bundled runtime JAR. The complete packaged data-file
+set and generated ZIP members are checked against the declared mm-data Git commit,
+rejecting missing, extra, and modified files.
 An older reused MegaMek companion may carry older Lab and MekHQ commits: its own
 MegaMek and mm-data pins, version, Java requirement and root/lib JAR bytes must match.
-Verification streams archive entries and stages only inspected JARs in temporary files;
-oversized entries and metadata are rejected.
-The built-archive mode continues to compare key payload files with local build outputs.
+Verification streams archive entries and temporarily spools only inspected payloads;
+TAR extension and ZIP directory metadata are bounded before parsing or allocation.
+Both modes use the same verifier and pinned-data checks; built mode also compares
+the packaged JARs with their producer outputs.
 Use trusted local checkouts containing the pinned Git objects; neither mode publishes assets.
+The common regressions run from MegaMek with
+`python -B -m unittest discover -s gradle -p 'test_suite_*.py' -v`.
 
 ### Style Guide
 
