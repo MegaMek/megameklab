@@ -369,6 +369,8 @@ tasks.register('createSvgMassPrinterScripts', CreateStartScripts) {
     defaultJvmOpts = ['-Xmx4g']
 }
 
+apply from: rootProject.file('gradle/suite_megamek_companion.gradle')
+
 distributions {
     main {
         distributionBaseName = 'MegaMekLab'
@@ -383,10 +385,6 @@ distributions {
 
             if (rootProject.findProperty('suiteReleaseVersion') != null) {
                 from(layout.buildDirectory.file('suite/suite-build.properties'))
-            }
-
-            from("${mmDir}/megamek/build/libs/MegaMek.jar") {
-                into "lib"
             }
 
             from("${projectDir}/scripts") {
@@ -442,7 +440,7 @@ tasks.register('svgMassPrinterInstall', Sync) {
     from(fileStagingDir) {
         exclude 'history.txt'
     }
-    from("${mmDir}/megamek/build/libs/MegaMek.jar") {
+    from(suiteMegaMekJar()) {
         into "lib"
     }
     from(project.sourceSets.main.runtimeClasspath.files
@@ -515,11 +513,6 @@ def suiteVersion = rootProject.findProperty('suiteReleaseVersion')?.toString()
 def labVersion = rootProject.findProperty('suiteMegaMekLabVersion')?.toString() ?: suiteVersion
 def gameVersionExpected = rootProject.findProperty('suiteMegaMekVersion')?.toString() ?: suiteVersion
 if (suiteVersion != null) {
-    // stageFiles reads a physical sibling JAR, not a Gradle project output. Force
-    // its producer to run so an old build/libs/MegaMek.jar cannot be archived.
-    tasks.named('stageFiles') {
-        dependsOn gradle.includedBuild('megamek').task(':megamek:jar')
-    }
     def suiteIdentity = [
             schemaVersion      : '1',
             product            : 'MegaMekLab',
@@ -562,9 +555,11 @@ if (suiteVersion != null) {
         doLast {
             def archive = external ? project.file(project.property('suiteArchiveFile'))
                     : tasks.named('distTar').get().archiveFile.get().asFile
+            def companions = rootProject.hasProperty('suiteMegaMekArchiveFile')
+                    ? [MegaMek: rootProject.file(rootProject.property('suiteMegaMekArchiveFile'))] : [:]
             verifySuiteArchiveShared('MegaMekLab', archive, null,
                     [MegaMekLab: tasks.named('jar').get().archiveFile.get().asFile,
-                     MegaMek: rootProject.file('../megamek/megamek/build/libs/MegaMek.jar')])
+                     MegaMek: suiteMegaMekJar()], companions)
         }
     }
 }
