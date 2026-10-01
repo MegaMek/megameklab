@@ -57,7 +57,7 @@ public class AvailabilityTableModel extends AbstractTableModel {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private static final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
+    private static final ResourceBundle I18N = ResourceBundle.getBundle("megameklab.resources.Views");
 
     public static final int COL_FACTION = 0;
     public static final int COL_AVAILABILITY = 1;
@@ -67,7 +67,8 @@ public class AvailabilityTableModel extends AbstractTableModel {
 
     private final List<AvailabilityRow> rows = new ArrayList<>();
 
-    /** The unit's introduction year, shown in the From column for rows that start at intro rather than a set year. */
+    /** The unit's introduction year, shown in the Start Year column for rows that start at intro rather than a set year
+     * . */
     private int introYear = ForceGeneratorAvailability.UNSPECIFIED_YEAR;
 
     /**
@@ -109,10 +110,10 @@ public class AvailabilityTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int column) {
         return switch (column) {
-            case COL_FACTION -> resourceMap.getString("AvailabilityTableModel.faction");
-            case COL_AVAILABILITY -> resourceMap.getString("AvailabilityTableModel.prevalence");
-            case COL_FROM -> resourceMap.getString("AvailabilityTableModel.from");
-            case COL_TO -> resourceMap.getString("AvailabilityTableModel.to");
+            case COL_FACTION -> I18N.getString("AvailabilityTableModel.faction");
+            case COL_AVAILABILITY -> I18N.getString("AvailabilityTableModel.prevalence");
+            case COL_FROM -> I18N.getString("AvailabilityTableModel.startYear");
+            case COL_TO -> I18N.getString("AvailabilityTableModel.endYear");
             default -> "";
         };
     }
@@ -134,7 +135,7 @@ public class AvailabilityTableModel extends AbstractTableModel {
     }
 
     /**
-     * Sets the unit's introduction year, used to fill in the From column for rows that start at intro.
+     * Sets the unit's introduction year, used to fill in the Start Year column for rows that start at intro.
      *
      * @param introYear the unit's introduction year
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -121,7 +121,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
         if (CConfig.showAvailabilityTab()) {
-            configPane.addTab("Availability", new TabScrollPane(availabilityTab, availabilityTab.refreshOnShow));
+            configPane.addTab("Availability", availabilityTab);
         }
         configPane.addTab("Preview", previewTab);
         configPane.addTab("Analysis", analysisTab);

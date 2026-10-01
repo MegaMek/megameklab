@@ -129,7 +129,7 @@ public class CVMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
         if (CConfig.showAvailabilityTab()) {
-            configPane.addTab("Availability", new TabScrollPane(availabilityTab, availabilityTab.refreshOnShow));
+            configPane.addTab("Availability", availabilityTab);
         }
         configPane.addTab("Preview", previewTab);
         // The Asset tab is only shown while the asset is enabled; the checkbox in the Structure tab toggles it.

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -113,7 +113,7 @@ public class CIMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
         configPane.addTab("Build", structureTab);
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         if (CConfig.showAvailabilityTab()) {
-            configPane.addTab("Availability", new TabScrollPane(availabilityTab, availabilityTab.refreshOnShow));
+            configPane.addTab("Availability", availabilityTab);
         }
         configPane.addTab("Preview", previewTab);
         // The Asset tab is only shown while the asset is enabled; the checkbox in the Structure tab toggles it.
