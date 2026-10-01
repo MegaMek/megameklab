@@ -137,6 +137,17 @@ bundled mm-data and user-config exclusions, plus a `suite-build.properties` iden
 `verifySuiteArchive` checks that file, both runtime JAR versions, the data payload and launcher layout.
 These are local build tasks; they do not publish anything.
 
+When building Lab with an already completed MegaMek archive, also supply
+`-PsuiteMegaMekArchiveFile=<path>/MegaMek-<MegaMek version>.tar.gz`.
+The canonical verifier checks that archive and copies its exact primary JAR into
+`build/suite/companions/MegaMek.jar`. Both the main distribution and the
+SVGMassPrinter distribution use those bytes, excluding any freshly rebuilt
+MegaMek JAR contributed by the application plugin's runtime classpath.
+Built verification checks the selected JAR and its companion archive, not a
+separate sibling rebuild. An invalid or missing companion fails the build;
+there is no fallback to a rebuilt JAR. Without this input, standalone suite
+builds continue to build and package the sibling MegaMek JAR.
+
 To check a previously downloaded Lab tarball without rebuilding, pass
 `-PsuiteArchiveFile=<path>/MegaMekLab-<Lab version>.tar.gz` and
 `-PsuiteMegaMekArchiveFile=<path>/MegaMek-<MegaMek version>.tar.gz` to
@@ -154,6 +165,11 @@ the packaged JARs with their producer outputs.
 Use trusted local checkouts containing the pinned Git objects; neither mode publishes assets.
 The common regressions run from MegaMek with
 `python -B -m unittest discover -s gradle -p 'test_suite_*.py' -v`.
+Lab's packaging regressions run from the Lab repository with
+`python -B -m unittest discover -s gradle -p 'test_suite_megamek_companion.py' -v`.
+They apply the production companion CopySpec in a small Gradle application,
+build real tarballs with conflicting runtime JAR bytes, and use the canonical
+verifier and pinned mm-data fixture. PR CI runs these checks on both supported JDKs.
 
 ### Style Guide
 
