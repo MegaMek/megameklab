@@ -67,6 +67,7 @@ import megameklab.ui.MegaMekLabTabbedUI;
 import megameklab.ui.MenuBarOwner;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.battleArmor.BAMainUI;
+import megameklab.ui.building.BuildingMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
 import megameklab.ui.handheldWeapon.HHWMainUI;
@@ -117,6 +118,7 @@ public final class CConfig {
     public static final String GUI_DS_MAIN_UI_WINDOW = "DSWindow";
     public static final String GUI_WS_MAIN_UI_WINDOW = "WSWindow";
     public static final String GUI_HHW_MAIN_UI_WINDOW = "HHWWindow";
+    public static final String GUI_BUILDING_MAIN_UI_WINDOW = "BuildingWindow";
     public static final String GUI_TABBED_WINDOW = "TabbedWindow";
 
     public static final int RECENT_FILE_COUNT = 10;
@@ -640,6 +642,7 @@ public final class CConfig {
         setParam(GUI_DS_MAIN_UI_WINDOW, "");
         setParam(GUI_WS_MAIN_UI_WINDOW, "");
         setParam(GUI_HHW_MAIN_UI_WINDOW, "");
+        setParam(GUI_BUILDING_MAIN_UI_WINDOW, "");
         setParam(GUI_TABBED_WINDOW, "");
         saveConfig();
     }
@@ -709,7 +712,9 @@ public final class CConfig {
         } else if (ui instanceof WSMainUI) {
             return GUI_WS_MAIN_UI_WINDOW;
         } else if (ui instanceof HHWMainUI) {
-            return GUI_WS_MAIN_UI_WINDOW;
+            return GUI_HHW_MAIN_UI_WINDOW;
+        } else if (ui instanceof BuildingMainUI) {
+            return GUI_BUILDING_MAIN_UI_WINDOW;
         } else if (ui instanceof MegaMekLabTabbedUI) {
             return GUI_TABBED_WINDOW;
         }
