@@ -230,7 +230,7 @@ public class AvailabilityTab extends ITab {
         gbc.anchor = GridBagConstraints.WEST;
         headerPanel.add(headerLabel, gbc);
         // A text area, not a label, so a long warning wraps to the width instead of being clipped
-        warningArea.setEditable(true);
+        warningArea.setEditable(false);
         warningArea.setLineWrap(true);
         warningArea.setWrapStyleWord(true);
         warningArea.setOpaque(false);
@@ -341,7 +341,8 @@ public class AvailabilityTab extends ITab {
         if (ratings.isEmpty()) {
             JOptionPane.showMessageDialog(this,
                   MessageFormat.format(I18N.getString("AvailabilityTab.emptyRating.message"),
-                        chosenEntity.getShortNameRaw(), getEntity().getYear()),
+                        chosenEntity.getShortNameRaw(),
+                        Integer.toString(getEntity().getYear())),
                   I18N.getString("AvailabilityTab.emptyRating.title"),
                   JOptionPane.INFORMATION_MESSAGE);
             return;
@@ -712,8 +713,8 @@ public class AvailabilityTab extends ITab {
                 warnings.add(MessageFormat.format(I18N.getString(
                       "AvailabilityTab.warning.startYear"),
                       row.factionCode(),
-                      row.fromYear(),
-                      getEntity().getYear()));
+                      Integer.toString(row.fromYear()),
+                      Integer.toString(getEntity().getYear())));
             }
         }
 
@@ -764,7 +765,7 @@ public class AvailabilityTab extends ITab {
 
         return MessageFormat.format(
               I18N.getString("AvailabilityTab.warning.eraAlignment"),
-              String.join("; ", problems));
+              String.join("\n", problems));
     }
 
     /**
@@ -794,11 +795,11 @@ public class AvailabilityTab extends ITab {
                     problems.add(MessageFormat.format(
                           I18N.getString("AvailabilityTab.warning.eraStart"),
                           row.factionCode(),
-                          fromYear,
-                          eraStart,
-                          (nextEra - 1),
-                          eraStart,
-                          nextEra));
+                          Integer.toString(fromYear),
+                          Integer.toString(eraStart),
+                          Integer.toString(nextEra - 1),
+                          Integer.toString(eraStart),
+                          Integer.toString(nextEra)));
                 }
             }
 
@@ -810,10 +811,10 @@ public class AvailabilityTab extends ITab {
                     problems.add(MessageFormat.format(
                           I18N.getString("AvailabilityTab.warning.eraEnd"),
                           row.factionCode(),
-                          toYear,
-                          eraStart,
-                          (nextEra - 1),
-                          (nextEra - 1)));
+                          Integer.toString(toYear),
+                          Integer.toString(eraStart),
+                          Integer.toString(nextEra - 1),
+                          Integer.toString(nextEra - 1)));
                 }
             }
         }

@@ -80,7 +80,7 @@ public final class AvailabilityCalibration {
      *
      * @param availability the availability value, 0 to 10
      *
-     * @return a word for it, for example "typical"
+     * @return a word for it, for example "Typical"
      */
     public static String describe(int availability) {
         int clamped = Math.clamp(availability, 0, COMMONNESS_WORDS.length - 1);

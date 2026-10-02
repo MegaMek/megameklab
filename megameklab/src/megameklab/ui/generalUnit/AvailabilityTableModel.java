@@ -66,8 +66,8 @@ public class AvailabilityTableModel extends AbstractTableModel {
 
     private final List<AvailabilityRow> rows = new ArrayList<>();
 
-    /** The unit's introduction year, shown in the Start Year column for rows that start at intro rather than a set year
-     * . */
+    /** The unit's introduction year, shown in the Start Year column for rows that start at intro rather than a set
+     * year. */
     private int introYear = ForceGeneratorAvailability.UNSPECIFIED_YEAR;
 
     /**
