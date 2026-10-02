@@ -35,6 +35,7 @@ package megameklab.ui.generalUnit;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.io.Serial;
@@ -214,11 +215,13 @@ public class AvailabilityTab extends ITab {
     }
 
     private void buildLayout() {
-        setLayout(new BorderLayout());
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 4, 8));
-        headerPanel.add(headerLabel, BorderLayout.NORTH);
+        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+        headerLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        headerPanel.add(headerLabel);
         // A text area, not a label, so a long warning wraps to the width instead of being clipped
         warningArea.setEditable(false);
         warningArea.setLineWrap(true);
@@ -227,17 +230,21 @@ public class AvailabilityTab extends ITab {
         warningArea.setForeground(Color.RED);
         warningArea.setFont(headerLabel.getFont());
         warningArea.setBorder(null);
-        headerPanel.add(warningArea, BorderLayout.CENTER);
-        add(headerPanel, BorderLayout.NORTH);
+        JScrollPane warningScroll = new JScrollPane(warningArea);
+        warningScroll.setBorder(BorderFactory.createEmptyBorder());
+        warningScroll.setAlignmentX(Component.LEFT_ALIGNMENT);
+        warningScroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
+        headerPanel.add(warningScroll);
+        add(headerPanel);
 
         JPanel centrePanel = new JPanel();
         centrePanel.setLayout(new BoxLayout(centrePanel, BoxLayout.Y_AXIS));
         centrePanel.add(buildFactionPanel());
         centrePanel.add(buildEditorPanel());
         centrePanel.add(buildRolesPanel());
-        JScrollPane scrollWrapper = new JScrollPane(centrePanel);
-        scrollWrapper.setBorder(BorderFactory.createEmptyBorder());
-        add(scrollWrapper, BorderLayout.CENTER);
+        JScrollPane centreScroll = new JScrollPane(centrePanel);
+        centreScroll.setBorder(BorderFactory.createEmptyBorder());
+        add(centreScroll);
     }
 
     private JPanel buildFactionPanel() {

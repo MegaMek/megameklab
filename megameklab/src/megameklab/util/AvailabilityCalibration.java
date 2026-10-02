@@ -85,7 +85,7 @@ public final class AvailabilityCalibration {
     public static String describe(int availability) {
         int clamped = Math.clamp(availability, 0, COMMONNESS_WORDS.length - 1);
 
-        return I18N.getString("AvailabilityCalibration." + COMMONNESS_WORDS[clamped].replace(' ', '_'));
+        return I18N.getString("AvailabilityCalibration.prevalence." + COMMONNESS_WORDS[clamped].replace(' ', '_'));
     }
 
     /**

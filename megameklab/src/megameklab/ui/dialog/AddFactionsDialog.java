@@ -44,6 +44,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
@@ -79,6 +80,8 @@ public class AddFactionsDialog extends JDialog {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    private static final ResourceBundle I18N = ResourceBundle.getBundle("megameklab.resources.Views");
+
     private static final int DIALOG_WIDTH = 420;
     private static final int DIALOG_HEIGHT = 560;
     private static final int GROUP_COLUMNS = 1;
@@ -103,10 +106,12 @@ public class AddFactionsDialog extends JDialog {
     private final List<String> alreadyChosen;
 
     private final JTextField filterField = new JTextField();
-    private final JCheckBox showMinorCheckBox = new JCheckBox("Show minor factions");
-    private final JCheckBox showFutureCheckBox = new JCheckBox("Show factions from later eras");
+    private final JCheckBox showMinorCheckBox = new JCheckBox(
+          I18N.getString("AddFactionsDialog.showMinorFactions.text"));
+    private final JCheckBox showFutureCheckBox = new JCheckBox(
+          I18N.getString("AddFactionsDialog.showLaterEraFactions.text"));
     private final JPanel factionListPanel = new JPanel();
-    private final JButton addButton = new JButton("Add");
+    private final JButton addButton = new JButton(I18N.getString("AddFactionsDialog.add.text"));
 
     private final Map<String, JCheckBox> factionCheckBoxes = new LinkedHashMap<>();
     private final Map<String, JCheckBox> umbrellaCheckBoxes = new LinkedHashMap<>();
@@ -120,7 +125,7 @@ public class AddFactionsDialog extends JDialog {
      *                      faction can be given a second year range
      */
     public AddFactionsDialog(Component parent, int year, List<String> alreadyChosen) {
-        super((Dialog) null, "Add factions", true);
+        super((Dialog) null, I18N.getString("AddFactionsDialog.addFactions.text"), true);
         this.year = year;
         this.alreadyChosen = List.copyOf(alreadyChosen);
 
@@ -145,10 +150,10 @@ public class AddFactionsDialog extends JDialog {
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
-        topPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 4, 8));
 
         JPanel filterPanel = new JPanel(new BorderLayout(8, 0));
-        filterPanel.add(new JLabel("Filter:"), BorderLayout.WEST);
+        filterPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 4, 8));
+        filterPanel.add(new JLabel(I18N.getString("AddFactionsDialog.filter.text")), BorderLayout.WEST);
         filterPanel.add(filterField, BorderLayout.CENTER);
         filterField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -169,7 +174,7 @@ public class AddFactionsDialog extends JDialog {
         topPanel.add(filterPanel);
 
         JPanel umbrellaPanel = new JPanel(new GridLayout(0, GROUP_COLUMNS));
-        umbrellaPanel.setBorder(BorderFactory.createTitledBorder("Groups"));
+        umbrellaPanel.setBorder(BorderFactory.createTitledBorder(I18N.getString("AddFactionsDialog.groups.text")));
         for (Map.Entry<String, String> umbrella : UMBRELLA_KEYS.entrySet()) {
             JCheckBox checkBox = new JCheckBox(umbrella.getValue() + " (" + umbrella.getKey() + ")");
             checkBox.setEnabled(!alreadyChosen.contains(umbrella.getKey()));
@@ -179,24 +184,24 @@ public class AddFactionsDialog extends JDialog {
         }
         topPanel.add(umbrellaPanel);
 
-        JPanel minorPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        minorPanel.add(new JLabel("Factions that exist in " + year));
-        minorPanel.add(showMinorCheckBox);
+        JPanel checkBoxPanel = new JPanel(new GridLayout(0, 1));
+        checkBoxPanel.setBorder(BorderFactory.createEmptyBorder(8, 5, 4, 5));
+        checkBoxPanel.add(showMinorCheckBox);
+        checkBoxPanel.add(showFutureCheckBox);
         showMinorCheckBox.addActionListener(event -> populateFactions());
-        topPanel.add(minorPanel);
-
-        JPanel futurePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        futurePanel.add(showFutureCheckBox);
         showFutureCheckBox.addActionListener(event -> populateFactions());
-        topPanel.add(futurePanel);
+        topPanel.add(checkBoxPanel);
 
         add(topPanel, BorderLayout.NORTH);
 
         factionListPanel.setLayout(new BoxLayout(factionListPanel, BoxLayout.Y_AXIS));
-        add(new JScrollPane(factionListPanel), BorderLayout.CENTER);
+        JScrollPane factionListScroll = new JScrollPane(factionListPanel);
+        factionListScroll.setBorder(BorderFactory.createTitledBorder(
+              I18N.getString("AddFactionsDialog.factionsExistingIn.text") + " " + year));
+        add(factionListScroll, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton cancelButton = new JButton("Cancel");
+        JButton cancelButton = new JButton(I18N.getString("AddFactionsDialog.cancel.text"));
         cancelButton.addActionListener(event -> dispose());
         addButton.addActionListener(event -> confirm());
         buttonPanel.add(cancelButton);
@@ -214,7 +219,7 @@ public class AddFactionsDialog extends JDialog {
 
         RATGenerator ratGenerator = RATGenerator.getInstance();
         if (!ratGenerator.isInitialized()) {
-            factionListPanel.add(new JLabel("Loading factions..."));
+            factionListPanel.add(new JLabel(I18N.getString("AddFactionsDialog.loadingFactions.text")));
             factionListPanel.revalidate();
             factionListPanel.repaint();
             return;
@@ -234,8 +239,8 @@ public class AddFactionsDialog extends JDialog {
             if (factionRecord.isMinor() && !showMinorCheckBox.isSelected()) {
                 continue;
             }
-            // By default only factions that exist at the unit's introduction year. Ticking "later eras" also offers
-            // factions that appear afterwards, so a unit can be given to, say, the Republic of the Sphere.
+            // By default, only factions that exist at the unit's introduction year. Ticking "later eras" also offers
+            // factions that appear afterward, so a unit can be given to, say, the Republic of the Sphere.
             boolean active = showFutureCheckBox.isSelected()
                   ? factionRecord.isActiveInOrAfterYear(year)
                   : factionRecord.isActiveInYear(year);
@@ -252,7 +257,9 @@ public class AddFactionsDialog extends JDialog {
             // Already-chosen factions stay selectable: adding one again makes a second row, which is how a player gives
             // one faction different availability in different year ranges.
             String label = factionRecord.getName(year) + " (" + code + ")"
-                  + (alreadyChosen.contains(code) ? " - already added" : "");
+                  + (alreadyChosen.contains(code) ?
+                  " - " + I18N.getString("AddFactionsDialog.alreadyAdded.text") :
+                  "");
             JCheckBox checkBox = new JCheckBox(label);
             factionCheckBoxes.put(code, checkBox);
             factionListPanel.add(checkBox);
