@@ -121,7 +121,7 @@ public class AddFactionsDialog extends JDialog {
     /**
      * @param parent        the window to sit over
      * @param year          the unit's introduction year, which decides which factions exist
-     * @param alreadyChosen faction codes already in the table, labelled "already added" but still selectable so one
+     * @param alreadyChosen faction codes already in the table, labeled "already added" but still selectable so one
      *                      faction can be given a second year range
      */
     public AddFactionsDialog(Component parent, int year, List<String> alreadyChosen) {
@@ -137,7 +137,7 @@ public class AddFactionsDialog extends JDialog {
     }
 
     /**
-     * The faction codes the player ticked. Empty if they cancelled.
+     * The faction codes the player ticked. Empty if they canceled.
      *
      * @return the chosen codes
      */
