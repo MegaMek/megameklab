@@ -52,13 +52,13 @@ import megamek.common.units.TripodMek;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
-import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.AnalysisTab;
-import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.AvailabilityTab;
-import megameklab.util.CConfig;
+import megameklab.ui.generalUnit.FluffTab;
+import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
+import megameklab.util.CConfig;
 import megameklab.util.MekUtil;
 
 public class BMMainUI extends MegaMekLabMainUI {

@@ -41,7 +41,6 @@ import java.awt.GridLayout;
 import java.io.Serial;
 import java.text.MessageFormat;
 import java.util.*;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -217,9 +216,10 @@ public class AvailabilityTab extends ITab {
     private void buildLayout() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JPanel headerPanel = new JPanel(new BorderLayout());
+        JPanel headerPanel = new JPanel();
         headerPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 4, 8));
         headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+        headerPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         headerLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         headerPanel.add(headerLabel);
         // A text area, not a label, so a long warning wraps to the width instead of being clipped
@@ -230,9 +230,11 @@ public class AvailabilityTab extends ITab {
         warningArea.setForeground(Color.RED);
         warningArea.setFont(headerLabel.getFont());
         warningArea.setBorder(null);
+        warningArea.setAlignmentX(Component.LEFT_ALIGNMENT);
         JScrollPane warningScroll = new JScrollPane(warningArea);
         warningScroll.setBorder(BorderFactory.createEmptyBorder());
         warningScroll.setAlignmentX(Component.LEFT_ALIGNMENT);
+        warningScroll.setMinimumSize(new Dimension(0, 0));
         warningScroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
         headerPanel.add(warningScroll);
         add(headerPanel);

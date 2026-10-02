@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
 import javax.swing.table.AbstractTableModel;
 
 import megamek.common.units.ForceGeneratorAvailability;

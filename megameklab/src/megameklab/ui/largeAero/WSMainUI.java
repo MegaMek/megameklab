@@ -52,15 +52,15 @@ import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
-import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.AnalysisTab;
-import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.AvailabilityTab;
-import megameklab.util.CConfig;
+import megameklab.ui.generalUnit.FluffTab;
+import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.generalUnit.StatusBar;
 import megameklab.ui.generalUnit.TransportTab;
 import megameklab.ui.util.TabScrollPane;
+import megameklab.util.CConfig;
 
 /**
  * MainUI for JumpShips, WarShips, and Space Stations

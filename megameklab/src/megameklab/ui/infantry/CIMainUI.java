@@ -47,7 +47,6 @@ import megamek.common.exceptions.LocationFullException;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.ConvInfantry;
 import megamek.common.units.Entity;
-import megamek.common.units.Infantry;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.PopupMessages;
@@ -55,12 +54,12 @@ import megameklab.ui.battlefieldSupport.BFSAssetSource;
 import megameklab.ui.battlefieldSupport.BFSLinkedAssetSupport;
 import megameklab.ui.battlefieldSupport.BFSLinkedEditor;
 import megameklab.ui.battlefieldSupport.BFSStructureTab;
-import megameklab.ui.generalUnit.AvailabilityTab;
-import megameklab.util.CConfig;
-import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.AnalysisTab;
+import megameklab.ui.generalUnit.AvailabilityTab;
+import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.util.TabScrollPane;
+import megameklab.util.CConfig;
 
 public class CIMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
 
