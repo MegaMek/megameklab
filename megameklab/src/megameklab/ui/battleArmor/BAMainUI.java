@@ -52,13 +52,13 @@ import megameklab.ui.battlefieldSupport.BFSLinkedAssetSupport;
 import megameklab.ui.battlefieldSupport.BFSLinkedEditor;
 import megameklab.ui.battlefieldSupport.BFSStructureTab;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
-import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.AnalysisTab;
-import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.AvailabilityTab;
-import megameklab.util.CConfig;
+import megameklab.ui.generalUnit.FluffTab;
+import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
+import megameklab.util.CConfig;
 
 public class BAMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
 
@@ -123,7 +123,7 @@ public class BAMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
         if (CConfig.showAvailabilityTab()) {
-            configPane.addTab("Availability", new TabScrollPane(availabilityTab, availabilityTab.refreshOnShow));
+            configPane.addTab("Availability", availabilityTab);
         }
         configPane.addTab("Preview", previewTab);
         // The Asset tab is only shown while the asset is enabled; the checkbox in the Structure tab toggles it.

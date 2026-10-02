@@ -35,23 +35,15 @@ package megameklab.ui.generalUnit;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.FontMetrics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.io.Serial;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableSet;
-import java.util.Set;
-import java.util.StringJoiner;
-
+import java.text.MessageFormat;
+import java.util.*;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -88,6 +80,7 @@ import megameklab.ui.generalUnit.AvailabilityTableModel.AvailabilityRow;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.AvailabilityCalibration;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Lets a player say which factions field a custom unit, and how often, so it turns up in generated forces.
@@ -105,6 +98,8 @@ import megameklab.util.AvailabilityCalibration;
 public class AvailabilityTab extends ITab {
     @Serial
     private static final long serialVersionUID = 1L;
+
+    private static final ResourceBundle I18N = ResourceBundle.getBundle("megameklab.resources.Views");
 
     /** What a new faction starts at. 6 is what the canon data uses when the source books give no hint either way. */
     private static final int DEFAULT_AVAILABILITY = 6;
@@ -132,7 +127,7 @@ public class AvailabilityTab extends ITab {
     private final JLabel comparableLabel = new JLabel();
     private final JSpinner fromYearSpinner = new JSpinner(new SpinnerNumberModel(MIN_YEAR, MIN_YEAR, MAX_YEAR, 1));
     private final JSpinner toYearSpinner = new JSpinner(new SpinnerNumberModel(MIN_YEAR, MIN_YEAR, MAX_YEAR, 1));
-    private final JCheckBox neverStopsCheckBox = new JCheckBox("never stops");
+    private final JCheckBox neverStopsCheckBox = new JCheckBox(I18N.getString("AvailabilityTab.noEnd.text"));
     private final JPanel editorPanel = new JPanel();
 
     private final Map<MissionRole, JCheckBox> roleCheckBoxes = new LinkedHashMap<>();
@@ -142,9 +137,9 @@ public class AvailabilityTab extends ITab {
     /** Roles the unit file declares that do not apply to this unit type. Shown, not dropped. */
     private final Set<MissionRole> mismatchedRoles = EnumSet.noneOf(MissionRole.class);
 
-    private final JButton addButton = new JButton("+ Add factions...");
-    private final JButton removeButton = new JButton("- Remove");
-    private final JButton copyFromUnitButton = new JButton("Copy numbers from a unit...");
+    private final JButton addButton = new JButton(I18N.getString("AvailabilityTab.add.text"));
+    private final JButton removeButton = new JButton(I18N.getString("AvailabilityTab.remove.text"));
+    private final JButton copyFromUnitButton = new JButton(I18N.getString("AvailabilityTab.copy.text"));
 
     /** Guards the listeners while the editor is being filled in from the selected row. */
     private boolean updatingEditor = false;
@@ -207,8 +202,11 @@ public class AvailabilityTab extends ITab {
         Entity entity = getEntity();
 
         headerLabel.setText(entity.getShortNameRaw()
-              + "  -  introduced " + entity.getYear()
-              + "  -  " + (isCanonUnit() ? "canon unit" : "custom unit"));
+              + "  -  "
+              + I18N.getString("AvailabilityTab.introduced.text") +  " " + entity.getYear()
+              + "  -  "
+              + (isCanonUnit() ? I18N.getString("AvailabilityTab.canon.text") :
+              I18N.getString("AvailabilityTab.nonCanon.text")));
 
         tableModel.setIntroYear(entity.getYear());
         tableModel.loadFrom(entity.getForceGeneratorAvailability(), this::factionNameOf);
@@ -222,9 +220,15 @@ public class AvailabilityTab extends ITab {
     private void buildLayout() {
         setLayout(new BorderLayout());
 
-        JPanel headerPanel = new JPanel(new BorderLayout());
+        JPanel headerPanel = new JPanel(new GridBagLayout());
         headerPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 4, 8));
-        headerPanel.add(headerLabel, BorderLayout.NORTH);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        headerPanel.add(headerLabel, gbc);
         // A text area, not a label, so a long warning wraps to the width instead of being clipped
         warningArea.setEditable(false);
         warningArea.setLineWrap(true);
@@ -233,7 +237,10 @@ public class AvailabilityTab extends ITab {
         warningArea.setForeground(Color.RED);
         warningArea.setFont(headerLabel.getFont());
         warningArea.setBorder(null);
-        headerPanel.add(warningArea, BorderLayout.CENTER);
+        JScrollPane warningScroll = createWarningScroll();
+        gbc.gridy = 1;
+        gbc.weighty = 0.0;
+        headerPanel.add(warningScroll, gbc);
         add(headerPanel, BorderLayout.NORTH);
 
         JPanel centrePanel = new JPanel();
@@ -241,12 +248,35 @@ public class AvailabilityTab extends ITab {
         centrePanel.add(buildFactionPanel());
         centrePanel.add(buildEditorPanel());
         centrePanel.add(buildRolesPanel());
-        add(new JScrollPane(centrePanel), BorderLayout.CENTER);
+        JScrollPane centreScroll = new JScrollPane(centrePanel);
+        centreScroll.setBorder(BorderFactory.createEmptyBorder());
+        add(centreScroll, BorderLayout.CENTER);
+    }
+
+    private @NonNull JScrollPane createWarningScroll() {
+        JScrollPane warningScroll = new JScrollPane(warningArea) {
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension d = super.getPreferredSize();
+                FontMetrics fm = warningArea.getFontMetrics(warningArea.getFont());
+                int lineHeight = fm.getHeight();
+
+                // Cap at roughly 10 rows of text
+                int maxRowsHeight = lineHeight * 10;
+                if (d.height > maxRowsHeight) {
+                    d.height = maxRowsHeight;
+                }
+                return d;
+            }
+        };
+        warningScroll.setBorder(BorderFactory.createEmptyBorder());
+        return warningScroll;
     }
 
     private JPanel buildFactionPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Who fields this unit?"));
+        panel.setBorder(BorderFactory.createTitledBorder(
+              I18N.getString("AvailabilityTab.factionAvailability.text")));
 
         factionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         factionTable.getSelectionModel().addListSelectionListener(event -> {
@@ -272,7 +302,7 @@ public class AvailabilityTab extends ITab {
         addButton.addActionListener(event -> addFactions());
         removeButton.addActionListener(event -> removeSelectedFaction());
         copyFromUnitButton.addActionListener(event -> copyNumbersFromUnit());
-        copyFromUnitButton.setToolTipText("Start from a design you already know, rather than from a blank table.");
+        copyFromUnitButton.setToolTipText(I18N.getString("AvailabilityTab.copy.tooltip"));
         buttonPanel.add(addButton);
         buttonPanel.add(removeButton);
         buttonPanel.add(copyFromUnitButton);
@@ -310,9 +340,10 @@ public class AvailabilityTab extends ITab {
 
         if (ratings.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                  "The Force Generator has no availability for " + chosenEntity.getShortNameRaw() + " in "
-                        + getEntity().getYear() + ", so there is nothing to copy.",
-                  "Nothing to copy",
+                  MessageFormat.format(I18N.getString("AvailabilityTab.emptyRating.message"),
+                        chosenEntity.getShortNameRaw(),
+                        Integer.toString(getEntity().getYear())),
+                  I18N.getString("AvailabilityTab.emptyRating.title"),
                   JOptionPane.INFORMATION_MESSAGE);
             return;
         }
@@ -348,7 +379,8 @@ public class AvailabilityTab extends ITab {
 
     private JPanel buildEditorPanel() {
         editorPanel.setLayout(new BoxLayout(editorPanel, BoxLayout.Y_AXIS));
-        editorPanel.setBorder(BorderFactory.createTitledBorder("Selected faction"));
+        editorPanel.setBorder(BorderFactory.createTitledBorder(
+              I18N.getString("AvailabilityTab.selectedFaction.text")));
 
         availabilitySlider.setMajorTickSpacing(2);
         availabilitySlider.setPaintTicks(true);
@@ -357,9 +389,10 @@ public class AvailabilityTab extends ITab {
         availabilitySlider.addChangeListener(event -> onAvailabilityChanged());
 
         JPanel sliderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        sliderPanel.add(new JLabel("How common?"));
+        sliderPanel.add(new JLabel(I18N.getString("AvailabilityTab.prevalence.text")));
         sliderPanel.add(availabilitySlider);
         sliderPanel.add(availabilityWordLabel);
+        sliderPanel.setToolTipText(I18N.getString("AvailabilityTab.prevalence.tooltip"));
         editorPanel.add(sliderPanel);
 
         JPanel comparablePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -371,9 +404,9 @@ public class AvailabilityTab extends ITab {
         toYearSpinner.setEditor(new JSpinner.NumberEditor(toYearSpinner, "0"));
 
         JPanel yearPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        yearPanel.add(new JLabel("Years: from"));
+        yearPanel.add(new JLabel(I18N.getString("AvailabilityTab.startYear.text")));
         yearPanel.add(fromYearSpinner);
-        yearPanel.add(new JLabel("to"));
+        yearPanel.add(new JLabel(I18N.getString("AvailabilityTab.endYear.text")));
         yearPanel.add(toYearSpinner);
         yearPanel.add(neverStopsCheckBox);
         fromYearSpinner.addChangeListener(event -> onYearsChanged());
@@ -385,12 +418,13 @@ public class AvailabilityTab extends ITab {
     }
 
     private JPanel buildRolesPanel() {
-        rolesPanel.setBorder(BorderFactory.createTitledBorder("Mission roles (optional)"));
+        rolesPanel.setBorder(BorderFactory.createTitledBorder(
+              I18N.getString("AvailabilityTab.missionRoles.text")));
 
         // Build every checkbox once, but leave the panel empty: loadMissionRoles adds only the ones to show, so the
         // grid packs with no holes where a role does not apply to this unit type.
         for (MissionRole role : MissionRole.values()) {
-            JCheckBox checkBox = new JCheckBox(role.toString().replace('_', ' '));
+            JCheckBox checkBox = new JCheckBox(roleLabel(role));
             checkBox.addActionListener(event -> writeBack());
             roleCheckBoxes.put(role, checkBox);
         }
@@ -474,7 +508,7 @@ public class AvailabilityTab extends ITab {
 
         if (!hasSelection) {
             availabilityWordLabel.setText("");
-            comparableLabel.setText("Select a faction to set how common this unit is.");
+            comparableLabel.setText(I18N.getString("AvailabilityTab.comparableNone.text"));
             return;
         }
 
@@ -582,8 +616,11 @@ public class AvailabilityTab extends ITab {
 
         StringJoiner names = new StringJoiner(", ");
         comparable.forEach(names::add);
-        comparableLabel.setText("At " + row.factionCode() + ":" + row.availability()
-              + " this is about as common as: " + names);
+        comparableLabel.setText(MessageFormat.format(
+              I18N.getString("AvailabilityTab.comparableFaction.text"),
+              row.factionCode(),
+              row.availability(),
+              names));
     }
 
     // --- Mission roles ------------------------------------------------------------------------------------------
@@ -651,6 +688,10 @@ public class AvailabilityTab extends ITab {
         return roles.toString();
     }
 
+    private String roleLabel(MissionRole role) {
+        return I18N.getString("AvailabilityTab.role." + role.toString());
+    }
+
     // --- Warnings -----------------------------------------------------------------------------------------------
 
     /**
@@ -661,32 +702,32 @@ public class AvailabilityTab extends ITab {
         List<String> warnings = new ArrayList<>();
 
         if (isCanonUnit()) {
-            warnings.add("This is a canon unit. What you set here REPLACES its canon availability for the factions you "
-                  + "list, so it changes how canon forces generate for anyone who installs this file. To leave canon "
-                  + "alone, save it under a new model name as a custom variant instead.");
+            warnings.add(I18N.getString("AvailabilityTab.warning.canonUnit"));
         } else if (isCanonChassis()) {
-            warnings.add("This is a custom variant of a canon chassis. Factions that already field the chassis keep "
-                  + "their canon rating, so your number only decides which variant they get. Factions that do not "
-                  + "field it will now get this variant.");
+            warnings.add(I18N.getString("AvailabilityTab.warning.canonChassis"));
         }
 
         for (AvailabilityRow row : tableModel.getRows()) {
             if ((row.fromYear() != ForceGeneratorAvailability.UNSPECIFIED_YEAR)
                   && (row.fromYear() < getEntity().getYear())) {
-                warnings.add(row.factionCode() + " starts in " + row.fromYear()
-                      + ", but the unit does not exist until " + getEntity().getYear() + ".");
+                warnings.add(MessageFormat.format(I18N.getString(
+                      "AvailabilityTab.warning.startYear"),
+                      row.factionCode(),
+                      Integer.toString(row.fromYear()),
+                      Integer.toString(getEntity().getYear())));
             }
         }
 
         if (!mismatchedRoles.isEmpty()) {
             StringJoiner roleNames = new StringJoiner(", ");
-            mismatchedRoles.forEach(role -> roleNames.add(role.toString().replace('_', ' ')));
-            warnings.add("These mission roles do not apply to this unit type and will be ignored: " + roleNames + ".");
+            mismatchedRoles.forEach(role -> roleNames.add(roleLabel(role)));
+            warnings.add(MessageFormat.format(
+                  I18N.getString("AvailabilityTab.warning.mismatchedRoles"),
+                  roleNames));
         }
 
         if (tableModel.hasStaleRows()) {
-            warnings.add("Some factions never exist during the years their row covers, so those entries will never be "
-                  + "used. Give them a year range that reaches the years they exist, or remove them.");
+            warnings.add(I18N.getString("AvailabilityTab.warning.factionYears"));
         }
 
         String eraAlignmentWarning = eraAlignmentWarning();
@@ -722,8 +763,9 @@ public class AvailabilityTab extends ITab {
             return null;
         }
 
-        return "The Force Generator works in eras, so a year inside an era is approximated to its edge rather than "
-              + "taking effect exactly: " + String.join("; ", problems) + ".";
+        return MessageFormat.format(
+              I18N.getString("AvailabilityTab.warning.eraAlignment"),
+              String.join("\n", problems));
     }
 
     /**
@@ -750,8 +792,14 @@ public class AvailabilityTab extends ITab {
                 Integer eraStart = eras.floor(fromYear);
                 Integer nextEra = eras.higher(fromYear);
                 if ((eraStart != null) && (nextEra != null)) {
-                    problems.add(row.factionCode() + " starts at " + fromYear + ", inside the " + eraStart + "-"
-                          + (nextEra - 1) + " era (use " + eraStart + " or " + nextEra + ")");
+                    problems.add(MessageFormat.format(
+                          I18N.getString("AvailabilityTab.warning.eraStart"),
+                          row.factionCode(),
+                          Integer.toString(fromYear),
+                          Integer.toString(eraStart),
+                          Integer.toString(nextEra - 1),
+                          Integer.toString(eraStart),
+                          Integer.toString(nextEra)));
                 }
             }
 
@@ -760,8 +808,13 @@ public class AvailabilityTab extends ITab {
                 Integer nextEra = eras.higher(toYear);
                 Integer eraStart = eras.floor(toYear);
                 if ((nextEra != null) && (eraStart != null) && ((toYear + 1) != nextEra)) {
-                    problems.add(row.factionCode() + " ends at " + toYear + ", inside the " + eraStart + "-"
-                          + (nextEra - 1) + " era (use " + (nextEra - 1) + ")");
+                    problems.add(MessageFormat.format(
+                          I18N.getString("AvailabilityTab.warning.eraEnd"),
+                          row.factionCode(),
+                          Integer.toString(toYear),
+                          Integer.toString(eraStart),
+                          Integer.toString(nextEra - 1),
+                          Integer.toString(nextEra - 1)));
                 }
             }
         }
@@ -895,11 +948,4 @@ public class AvailabilityTab extends ITab {
             return component;
         }
     }
-
-    public ComponentListener refreshOnShow = new ComponentAdapter() {
-        @Override
-        public void componentShown(ComponentEvent event) {
-            refresh();
-        }
-    };
 }
