@@ -37,6 +37,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.FontMetrics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.io.Serial;
 import java.text.MessageFormat;
@@ -77,6 +80,7 @@ import megameklab.ui.generalUnit.AvailabilityTableModel.AvailabilityRow;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.AvailabilityCalibration;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Lets a player say which factions field a custom unit, and how often, so it turns up in generated forces.
@@ -214,30 +218,30 @@ public class AvailabilityTab extends ITab {
     }
 
     private void buildLayout() {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BorderLayout());
 
-        JPanel headerPanel = new JPanel();
+        JPanel headerPanel = new JPanel(new GridBagLayout());
         headerPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 4, 8));
-        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
-        headerPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        headerLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        headerPanel.add(headerLabel);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        headerPanel.add(headerLabel, gbc);
         // A text area, not a label, so a long warning wraps to the width instead of being clipped
-        warningArea.setEditable(false);
+        warningArea.setEditable(true);
         warningArea.setLineWrap(true);
         warningArea.setWrapStyleWord(true);
         warningArea.setOpaque(false);
         warningArea.setForeground(Color.RED);
         warningArea.setFont(headerLabel.getFont());
         warningArea.setBorder(null);
-        warningArea.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JScrollPane warningScroll = new JScrollPane(warningArea);
-        warningScroll.setBorder(BorderFactory.createEmptyBorder());
-        warningScroll.setAlignmentX(Component.LEFT_ALIGNMENT);
-        warningScroll.setMinimumSize(new Dimension(0, 0));
-        warningScroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
-        headerPanel.add(warningScroll);
-        add(headerPanel);
+        JScrollPane warningScroll = createWarningScroll();
+        gbc.gridy = 1;
+        gbc.weighty = 0.0;
+        headerPanel.add(warningScroll, gbc);
+        add(headerPanel, BorderLayout.NORTH);
 
         JPanel centrePanel = new JPanel();
         centrePanel.setLayout(new BoxLayout(centrePanel, BoxLayout.Y_AXIS));
@@ -246,7 +250,27 @@ public class AvailabilityTab extends ITab {
         centrePanel.add(buildRolesPanel());
         JScrollPane centreScroll = new JScrollPane(centrePanel);
         centreScroll.setBorder(BorderFactory.createEmptyBorder());
-        add(centreScroll);
+        add(centreScroll, BorderLayout.CENTER);
+    }
+
+    private @NonNull JScrollPane createWarningScroll() {
+        JScrollPane warningScroll = new JScrollPane(warningArea) {
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension d = super.getPreferredSize();
+                FontMetrics fm = warningArea.getFontMetrics(warningArea.getFont());
+                int lineHeight = fm.getHeight();
+
+                // Cap at roughly 10 rows of text
+                int maxRowsHeight = lineHeight * 10;
+                if (d.height > maxRowsHeight) {
+                    d.height = maxRowsHeight;
+                }
+                return d;
+            }
+        };
+        warningScroll.setBorder(BorderFactory.createEmptyBorder());
+        return warningScroll;
     }
 
     private JPanel buildFactionPanel() {
