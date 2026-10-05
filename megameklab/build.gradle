@@ -323,6 +323,7 @@ tasks.register('stageFiles', Copy) {
 
     mustRunAfter(stageDataFiles)
     dependsOn gradle.includedBuild('megamek').task(':megamek:compileJava')
+    dependsOn officialUnitList
     dependsOn generateDynamicFiles
     dependsOn copyLicenseFiles
     if (rootProject.hasProperty('suiteReleaseVersion')) {
