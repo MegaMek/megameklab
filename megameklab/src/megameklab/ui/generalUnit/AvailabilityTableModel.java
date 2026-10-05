@@ -37,9 +37,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
 import javax.swing.table.AbstractTableModel;
 
 import megamek.common.units.ForceGeneratorAvailability;
@@ -56,6 +56,8 @@ public class AvailabilityTableModel extends AbstractTableModel {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    private static final ResourceBundle I18N = ResourceBundle.getBundle("megameklab.resources.Views");
+
     public static final int COL_FACTION = 0;
     public static final int COL_AVAILABILITY = 1;
     public static final int COL_FROM = 2;
@@ -64,7 +66,8 @@ public class AvailabilityTableModel extends AbstractTableModel {
 
     private final List<AvailabilityRow> rows = new ArrayList<>();
 
-    /** The unit's introduction year, shown in the From column for rows that start at intro rather than a set year. */
+    /** The unit's introduction year, shown in the Start Year column for rows that start at intro rather than a set
+     * year. */
     private int introYear = ForceGeneratorAvailability.UNSPECIFIED_YEAR;
 
     /**
@@ -106,10 +109,10 @@ public class AvailabilityTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int column) {
         return switch (column) {
-            case COL_FACTION -> "Faction";
-            case COL_AVAILABILITY -> "How common";
-            case COL_FROM -> "From";
-            case COL_TO -> "To";
+            case COL_FACTION -> I18N.getString("AvailabilityTableModel.faction");
+            case COL_AVAILABILITY -> I18N.getString("AvailabilityTableModel.prevalence");
+            case COL_FROM -> I18N.getString("AvailabilityTableModel.startYear");
+            case COL_TO -> I18N.getString("AvailabilityTableModel.endYear");
             default -> "";
         };
     }
@@ -131,7 +134,7 @@ public class AvailabilityTableModel extends AbstractTableModel {
     }
 
     /**
-     * Sets the unit's introduction year, used to fill in the From column for rows that start at intro.
+     * Sets the unit's introduction year, used to fill in the Start Year column for rows that start at intro.
      *
      * @param introYear the unit's introduction year
      */
@@ -287,7 +290,7 @@ public class AvailabilityTableModel extends AbstractTableModel {
 
     /**
      * Turns the rows back into the file's shape. Rows that share a year range are grouped into one entry, which is how
-     * a hand-written file would look.
+     * a handwritten file would look.
      *
      * @return the entries to store on the unit
      */

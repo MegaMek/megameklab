@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -49,13 +49,13 @@ import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
-import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.AnalysisTab;
-import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.AvailabilityTab;
-import megameklab.util.CConfig;
+import megameklab.ui.generalUnit.FluffTab;
+import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
+import megameklab.util.CConfig;
 
 public class ASMainUI extends MegaMekLabMainUI {
     private static final MMLogger logger = MMLogger.create(ASMainUI.class);
@@ -115,7 +115,7 @@ public class ASMainUI extends MegaMekLabMainUI {
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
         if (CConfig.showAvailabilityTab()) {
-            configPane.addTab("Availability", new TabScrollPane(availabilityTab, availabilityTab.refreshOnShow));
+            configPane.addTab("Availability", availabilityTab);
         }
         configPane.addTab("Preview", previewTab);
         configPane.addTab("Analysis", analysisTab);
