@@ -118,21 +118,21 @@ public final class MekUtil {
         int base = UnitUtil.getCriticalFreeHeatSinks(unit, unit.hasCompactHeatSinks());
         boolean splitCompact = false;
         if (unit.hasCompactHeatSinks()) {
-            // first check to see if there is a single compact heat sink outside the
-            // engine and
-            // remove this first if so
+            // First check to see if there is a single compact heat sink outside the
+            // engine and remove this first if so
             Mounted<?> mount = getSingleCompactHeatSink(unit);
             if ((null != mount) && (number > 0)) {
                 UnitUtil.removeMounted(unit, mount);
                 number--;
             }
-            // if number is now uneven, then note that we will need to split a compact
+            // If number is now uneven, then note that we will need to split a compact
             if ((number % 2) == 1) {
                 splitCompact = true;
                 number--;
             }
         }
         Vector<Mounted<?>> unassigned = new Vector<>();
+        Vector<Mounted<?>> omniAssigned = new Vector<>();
         Vector<Mounted<?>> assigned = new Vector<>();
         Vector<Mounted<?>> free = new Vector<>();
         for (Mounted<?> m : unit.getMisc()) {
@@ -145,20 +145,23 @@ public final class MekUtil {
                         unassigned.add(m);
                     }
                 } else {
-                    assigned.add(m);
+                    if (m.isOmniPodMounted()) {
+                        omniAssigned.add(m);
+                    } else {
+                        assigned.add(m);
+                    }
                 }
             }
         }
         toRemove.addAll(unassigned);
+        toRemove.addAll(omniAssigned);
         toRemove.addAll(assigned);
         toRemove.addAll(free);
         if (unit.hasCompactHeatSinks()) {
-            // need to do some number magic here. The unassigned and assigned slots should
-            // each
-            // contain two heat sinks, but if we dip into the free then we are looking at
-            // one heat
-            // sink.
-            int numberDouble = Math.min(number / 2, unassigned.size() + assigned.size());
+            // Need to do some number magic here. The unassigned, omniAssigned, and assigned slots
+            // should each contain two heat sinks, but if we dip into the free then we are looking
+            // at one heat sink.
+            int numberDouble = Math.min(number / 2, unassigned.size() + omniAssigned.size() + assigned.size());
             int numberSingle = Math.max(0, number - (2 * numberDouble));
             number = numberDouble + numberSingle;
         }
@@ -171,7 +174,7 @@ public final class MekUtil {
         if (splitCompact) {
             Mounted<?> eq = toRemove.get(number);
             int loc = eq.getLocation();
-            // remove singleCompact mount and replace with a double
+            // Remove singleCompact mount and replace with a double
             UnitUtil.removeMounted(unit, eq);
             if (!eq.getType().hasFlag(MiscType.F_HEAT_SINK)) {
                 try {
@@ -921,12 +924,14 @@ public final class MekUtil {
      * any.
      */
     public static void fillInAllEquipment(Mek mek) {
-        int externalEngineHS = UnitUtil.getCriticalFreeHeatSinks(mek, mek.hasCompactHeatSinks());
+        int engineFreeHS = UnitUtil.getCriticalFreeHeatSinks(mek, mek.hasCompactHeatSinks());
         // Create a copy of the equipment list to iterate over
         List<Mounted<?>> equipmentList = new ArrayList<>(mek.getEquipment());
         for (Mounted<?> mount : equipmentList) {
             if ((mount.getLocation() != Entity.LOC_NONE)
-                  || (UnitUtil.isHeatSink(mount) && (externalEngineHS-- > 0))) {
+                  || (UnitUtil.isHeatSink(mount)
+                  && !mount.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)
+                  && (engineFreeHS-- > 0))) {
                 continue;
             }
             for (int location = Mek.LOC_HEAD; location < mek.locations(); location++) {
@@ -1277,7 +1282,7 @@ public final class MekUtil {
         }
 
         if ((eq instanceof MiscType)) {
-            if (eq.isAnyOf(EquipmentTypeLookup.LAM_FUEL_TANK, EquipmentTypeLookup.LAM_BOMB_BAY)
+            if (eq.hasAnyFlag(MiscType.F_LAM_FUEL_TANK, MiscType.F_BOMB_BAY)
                   && !(unit instanceof LandAirMek)) {
                 return false;
             }
@@ -1336,7 +1341,8 @@ public final class MekUtil {
             if (eq.hasFlag(MiscType.F_MEK_EQUIPMENT)
                   && !eq.hasFlag(MiscType.F_CLUB)
                   && !eq.hasFlag(MiscType.F_HAND_WEAPON)
-                  && !eq.hasFlag(MiscType.F_TALON)) {
+                  && !eq.hasFlag(MiscType.F_TALON)
+                  && !eq.hasFlag(MiscType.F_SHIELD)) {
                 return true;
             }
 

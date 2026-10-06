@@ -189,7 +189,12 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
 
         @Override
         protected String getSVGFileName(int pageNumber) {
-            return "tables_vtol.svg";
+            // Check if Vehicle Effectiveness Rules are enabled
+            if (this.options.TacOpsVehicleEffectiveness()) {
+                return "tables_vtol_tacops_vehicle_effectiveness_rules.svg";
+            } else {
+                return "tables_vtol.svg";
+            }
         }
 
         @Override

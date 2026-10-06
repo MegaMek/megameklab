@@ -55,7 +55,9 @@ import megamek.common.battleArmor.BattleArmor;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Aero;
 import megamek.common.units.EntityWeightClass;
+import megamek.common.units.SmallCraft;
 import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestSmallCraft;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.AeroVesselBuildListener;
 
@@ -90,9 +92,11 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
     private final JSpinner spnQuartersFirstClass = new JSpinner(new SpinnerNumberModel(0, 0, 9999, 1));
     private final JSpinner spnQuartersSecondClass = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnQuartersSteerage = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-    private final JSpinner spnLifeBoats = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+    private final JSpinner spnLifeboats = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnEscapePods = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JButton btnAssignQuarters = new JButton();
+    private final JButton btnAssignLifeboats = new JButton();
+    private final JButton btnAssignEscapePods = new JButton();
 
     private final JLabel lblBAMarines = createLabel("lblBAMarines", "");
     private final ITechManager techManager;
@@ -154,6 +158,13 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         leftPanel.add(spnBAMarines, gbc);
         spnBAMarines.addChangeListener(this);
 
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        btnAssignLifeboats.setText(I18N.getString("AerospaceCrewView.btnAssignLifeboats.text"));
+        btnAssignLifeboats.setToolTipText(I18N.getString("AerospaceCrewView.btnAssignLifeboats.tooltip"));
+        leftPanel.add(btnAssignLifeboats, gbc);
+        btnAssignLifeboats.addActionListener(this);
+
         JPanel rightPanel = new JPanel(new GridBagLayout());
         gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -204,14 +215,21 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
 
         gbc.gridy++;
         gbc.gridwidth = 1;
-        rightPanel.add(createLabel(I18N, "lblLifeBoats", "AerospaceCrewView.spnLifeBoats.text"), gbc);
-        rightPanel.add(spnLifeBoats, gbc);
-        spnLifeBoats.addChangeListener(this);
+        rightPanel.add(createLabel(I18N, "lblLifeBoats", "AerospaceCrewView.spnLifeboats.text"), gbc);
+        rightPanel.add(spnLifeboats, gbc);
+        spnLifeboats.addChangeListener(this);
 
         gbc.gridy++;
         rightPanel.add(createLabel(I18N, "lblEscapePods", "AerospaceCrewView.spnEscapePods.text"), gbc);
         rightPanel.add(spnEscapePods, gbc);
         spnEscapePods.addChangeListener(this);
+
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        btnAssignEscapePods.setText(I18N.getString("AerospaceCrewView.btnAssignEscapePods.text"));
+        btnAssignEscapePods.setToolTipText(I18N.getString("AerospaceCrewView.btnAssignEscapePods.tooltip"));
+        rightPanel.add(btnAssignEscapePods, gbc);
+        btnAssignEscapePods.addActionListener(this);
 
         setLayout(new GridLayout(1, 2, 10, 0));
         add(leftPanel);
@@ -219,16 +237,20 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
     }
 
     public void setFromEntity(Aero aero) {
-        int minGunners = TestAero.requiredGunners(aero);
-        int minBase = TestAero.minimumBaseCrew(aero);
+        boolean requiresMinimumCrew = !(aero instanceof SmallCraft)
+              || TestSmallCraft.requiresMinimumCrewAndQuarters((SmallCraft) aero);
+        int minGunners = requiresMinimumCrew ? TestAero.requiredGunners(aero) : 0;
+        int minBase = requiresMinimumCrew ? TestAero.minimumBaseCrew(aero) : 1;
+        int minOfficers = requiresMinimumCrew ? TestAero.requiredOfficers(aero) : 0;
         int nonBay = aero.getNCrew() - aero.getBayPersonnel();
         ((SpinnerNumberModel) spnBaseCrew.getModel()).setMinimum(minBase);
         ((SpinnerNumberModel) spnGunners.getModel()).setMinimum(minGunners);
+        ((SpinnerNumberModel) spnOfficers.getModel()).setMinimum(minOfficers);
 
         ignoreChangeEvents = true;
-        spnOfficers.setValue(aero.getNOfficers());
         spnBaseCrew.setValue(nonBay - aero.getNGunners());
         spnGunners.setValue(aero.getNGunners());
+        spnOfficers.setValue(aero.getNOfficers());
         lblTotalCrew.setText(String.valueOf(nonBay));
         lblBayPersonnel.setText(String.valueOf(aero.getBayPersonnel()));
         spnPassengers.setValue(aero.getNPassenger());
@@ -250,18 +272,21 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         spnQuartersSecondClass.setValue(sizes.getOrDefault(TestAero.Quarters.SECOND_CLASS, 0));
         spnQuartersSteerage.setValue(sizes.getOrDefault(TestAero.Quarters.STEERAGE, 0));
 
-        spnLifeBoats.setValue(aero.getLifeBoats());
+        spnLifeboats.setValue(aero.getLifeBoats());
         spnEscapePods.setValue(aero.getEscapePods());
         ignoreChangeEvents = false;
 
         // If we do not meet the minimum, set the values and trigger an event that will update the vessel.
-        if (aero.getNGunners() < minGunners) {
+        if (requiresMinimumCrew && (aero.getNGunners() < minGunners)) {
             spnGunners.setValue(minGunners);
         }
-        if (nonBay - aero.getNGunners() < minBase) {
+        if (requiresMinimumCrew && (nonBay - aero.getNGunners() < minBase)) {
             spnBaseCrew.setValue(minBase);
         }
 
+        if (requiresMinimumCrew && (aero.getNOfficers() < minOfficers)) {
+            spnOfficers.setValue(minOfficers);
+        }
     }
 
     @Override
@@ -279,9 +304,9 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
                 listeners.forEach(l -> l.marinesChanged((Integer) spnMarines.getValue()));
             } else if (e.getSource() == spnBAMarines) {
                 listeners.forEach(l -> l.baMarinesChanged((Integer) spnBAMarines.getValue()));
-            } else if ((e.getSource() == spnLifeBoats)
+            } else if ((e.getSource() == spnLifeboats)
                   || (e.getSource() == spnEscapePods)) {
-                listeners.forEach(l -> l.escapeChanged((Integer) spnLifeBoats.getValue(),
+                listeners.forEach(l -> l.escapeChanged((Integer) spnLifeboats.getValue(),
                       (Integer) spnEscapePods.getValue()));
             } else {
                 listeners.forEach(l -> l.quartersChanged(
@@ -297,6 +322,10 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnAssignQuarters) {
             listeners.forEach(AeroVesselBuildListener::autoAssignQuarters);
+        } else if (e.getSource() == btnAssignLifeboats) {
+            listeners.forEach(AeroVesselBuildListener::autoAssignLifeboats);
+        } else if (e.getSource() == btnAssignEscapePods) {
+            listeners.forEach(AeroVesselBuildListener::autoAssignEscapePods);
         }
     }
 }

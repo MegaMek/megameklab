@@ -2,6 +2,132 @@ plugins {
     id 'java'
 }
 
+// The command-line -P properties are shared with the included MegaMek and mm-data builds.
+def suiteVersion = findProperty('suiteReleaseVersion')?.toString()
+def labVersion = findProperty('suiteMegaMekLabVersion')?.toString() ?: suiteVersion
+def suitePins = [
+        suiteMegaMekCommit   : '../megamek',
+        suiteMegaMekLabCommit: '.',
+        suiteMekHQCommit     : '../mekhq',
+        suiteMmDataCommit    : '../mm-data'
+]
+if (suiteVersion != null) {
+    // MegaMek's included build still honors extraVersion; reject it rather than
+    // silently producing two different runtime/module versions.
+    if (hasProperty('extraVersion')) {
+        throw new GradleException('extraVersion cannot be combined with suiteReleaseVersion')
+    }
+    [suiteReleaseVersion: suiteVersion,
+     suiteMegaMekVersion: findProperty('suiteMegaMekVersion')?.toString() ?: suiteVersion,
+     suiteMegaMekLabVersion: labVersion,
+     suiteMekHQVersion: findProperty('suiteMekHQVersion')?.toString() ?: suiteVersion].each { name, value ->
+        if (!(value ==~ /(?:0|[1-9][0-9]*)\.(?:[0-9]{2}|[1-9][0-9]{2,})\.(?:[0-9]{2}|[1-9][0-9]{2,})/)) {
+            throw new GradleException("${name} must be canonical padded major.minor.patch: ${value}")
+        }
+        value.split(/\./).each { component ->
+        try {
+            Integer.parseInt(component)
+        } catch (NumberFormatException e) {
+            throw new GradleException("${name} component exceeds Java int range: ${component}", e)
+        }
+        }
+    }
+} else if (['suiteMegaMekVersion', 'suiteMegaMekLabVersion', 'suiteMekHQVersion'].any { hasProperty(it) }) {
+    throw new GradleException('Product suite versions require suiteReleaseVersion')
+}
+
+def gitOutput = { File repo, String... arguments ->
+    try {
+        def execution = providers.exec {
+            commandLine(['git', '-C', repo.canonicalPath] + arguments.toList())
+            ignoreExitValue = true
+        }
+        if (execution.result.get().exitValue != 0) {
+            throw new GradleException("Git inspection failed in ${repo}: ${execution.standardError.asText.get()}")
+        }
+        return execution.standardOutput.asText.get().trim()
+    } catch (IOException e) {
+        throw new GradleException("Cannot inspect Git checkout ${repo}", e)
+    }
+}
+        def checkSuiteSources = { File repo ->
+            // Only source directories consumed by the package: skip Gradle/build caches.
+            def scopes = repo.canonicalFile == file('../mm-data').canonicalFile ? ['data', 'src']
+                    : repo.canonicalFile == rootDir.canonicalFile
+                            ? ['megameklab/src', 'megameklab/resources', 'megameklab/data',
+                               'megameklab/docs', 'megameklab/mmconf', 'megameklab/scripts',
+                               ':(top,glob)megameklab/*.ini', 'megameklab/SubmitBug.html',
+                               'megameklab/sentry.properties']
+                            : repo.name == 'megamek'
+                                    ? ['megamek/src', 'megamek/resources', 'megamek/data',
+                                       'megamek/docs', 'megamek/mmconf', 'megamek/scripts', 'megamek/userdata',
+                                       ':(top,glob)megamek/*.ini', 'megamek/SubmitBug.html',
+                                       'megamek/sentry.properties']
+                                    : ['MekHQ/src', 'MekHQ/resources', 'MekHQ/data', 'MekHQ/docs',
+                                       'MekHQ/mmconf', 'MekHQ/scripts', 'MekHQ/campaigns', 'MekHQ/userdata',
+                                       ':(top,glob)MekHQ/*.ini', 'MekHQ/SubmitBug.html',
+                                       'MekHQ/sentry.properties']
+            def dataRepo = file('../mm-data')
+            def trackedData = gitOutput(dataRepo, 'ls-files', '-z', '--cached', '--', 'data')
+                    .split('\u0000').toList().toSet()
+            def untracked = gitOutput(repo, (['ls-files', '-z', '--others', '--exclude-standard', '--'] + scopes)
+                    as String[]).split('\u0000')
+            def ignored = gitOutput(repo, (['ls-files', '-z', '--others', '--ignored',
+                    '--exclude-standard', '--'] + scopes) as String[]).split('\u0000')
+            def unknown = (untracked.toList() + ignored.toList()).unique()
+            unknown.each { path ->
+                if (!path) {
+                    return
+                }
+                def relative = path.replaceFirst(/^(?:megamek|megameklab|MekHQ)\//, '')
+                if (relative.startsWith('userdata/')
+                        || relative ==~ /mmconf\/(?:clientsettings\.xml|gameoptions\.xml|(?:mm|mml|mhq)\.preferences|megameklab\.properties(?:\.bak)?|recent-advanced-searches\.json|recent_boards\.yml|searches\/[^\/]+\.json)/
+                        || relative in ['docs/OfficialUnitList.txt', 'docs/mm-revision.txt',
+                                        'docs/mml-revision.txt', 'docs/mhq-revision.txt',
+                                        'MegaMek.l4j.ini', 'MegaMekLab.l4j.ini', 'MekHQ.l4j.ini',
+                                        'data/mekfiles/unit_files.zip', 'data/rat/rat_default.zip',
+                                        'data/mekfiles/units.cache',
+                                        'data/universe/planetary_systems/canon_systems.zip',
+                                        'data/universe/planetary_systems/connector_systems.zip']) {
+                    return // excluded private settings or known derived outputs
+                }
+                def mirror = path =~ /^(?:megamek\/|megameklab\/|MekHQ\/)data\/(.+)$/
+                def source = mirror.matches() ? "data/${mirror.group(1)}".toString() : null
+                if (source?.startsWith('data/images/force/Units/') && !trackedData.contains(source)) {
+                    source = source.replace('data/images/force/Units/', 'data/images/universe/factions/')
+                }
+                File local = new File(repo, path)
+                File canonical = source == null ? null : new File(dataRepo, source)
+                if (source == null || !trackedData.contains(source) || !canonical.isFile()
+                        || (!java.util.Arrays.equals(local.bytes, canonical.bytes)
+                            && !project(':megameklab').suiteMirrorMatchesPin(local, source))) {
+                    throw new GradleException("Unpinned package input in ${repo}: ${path}")
+                }
+            }
+        }
+// Check before any producer or staging task can change tracked sources.
+gradle.taskGraph.whenReady { graph ->
+    if (suiteVersion != null && graph.hasTask(project(':megameklab').tasks.named('distTar').get())) {
+        suitePins.each { name, location ->
+            def declared = findProperty(name)?.toString()
+            if (!(declared ==~ /[0-9a-f]{40}/)) {
+                throw new GradleException("${name} must be a lowercase 40-hex commit")
+            }
+            File repo = file(location).canonicalFile
+            if (!repo.isDirectory() || new File(gitOutput(repo, 'rev-parse', '--show-toplevel')).canonicalFile != repo) {
+                throw new GradleException("${name} must refer to its own sibling Git checkout: ${repo}")
+            }
+            if (gitOutput(repo, 'rev-parse', 'HEAD') != declared) {
+                throw new GradleException("${name} checkout HEAD does not match declared pin ${declared}")
+            }
+            if (gitOutput(repo, 'status', '--porcelain=v1', '--untracked-files=no')) {
+                throw new GradleException("Tracked source is dirty in ${repo}; refusing suite archive")
+            }
+            checkSuiteSources(repo)
+        }
+    }
+}
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
@@ -19,7 +145,20 @@ subprojects {
     versionProperties.load(rootProject.file("../megamek/megamek/resources/Version.properties").newDataInputStream())
     def processedVersion = String.format("%d.%02d.%02d", Integer.parseInt(versionProperties.getProperty("major")), Integer.parseInt(versionProperties.getProperty("minor")), Integer.parseInt(versionProperties.getProperty("patch")))
 
-    if (project.hasProperty("extraVersion")) {
+    if (suiteVersion != null) {
+        processedVersion = labVersion
+    }
+    // Optional fourth component, present only for a special point release such as 0.51.0.1. See the comment in
+    // MegaMek's megamek/resources/Version.properties, which is the file read above.
+    def revisionProperty = versionProperties.getProperty("revision")
+    if (suiteVersion == null && revisionProperty != null && !revisionProperty.trim().isEmpty()) {
+        def parsedRevision = Integer.parseInt(revisionProperty.trim())
+        if (parsedRevision > 0) {
+            processedVersion = String.format("%s.%d", processedVersion, parsedRevision)
+        }
+    }
+
+    if (suiteVersion == null && project.hasProperty("extraVersion")) {
         processedVersion = String.format("%s-%s", processedVersion, project.getProperty('extraVersion'))
     }
 

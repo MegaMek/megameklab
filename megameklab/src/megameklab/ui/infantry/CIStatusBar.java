@@ -53,9 +53,9 @@ public class CIStatusBar extends StatusBar {
 
     public CIStatusBar(MegaMekLabMainUI parent) {
         super(parent);
-        add(move);
-        add(damage);
-        add(platoonSize);
+        addStatusComponent(move);
+        addStatusComponent(damage);
+        addStatusComponent(platoonSize);
     }
 
     @Override

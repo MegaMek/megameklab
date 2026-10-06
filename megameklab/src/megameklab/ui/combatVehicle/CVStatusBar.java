@@ -51,8 +51,8 @@ public class CVStatusBar extends StatusBar {
 
     public CVStatusBar(CVMainUI parent) {
         super(parent);
-        add(move);
-        add(slots);
+        addStatusComponent(move);
+        addStatusComponent(slots);
     }
 
     @Override

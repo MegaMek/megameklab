@@ -824,7 +824,12 @@ public class RecordSheetPreviewPanel extends JPanel {
                 int pageCount = sheet.getPageCount();
                 for (int pageIndexInSheet = 0; pageIndexInSheet < pageCount; pageIndexInSheet++) {
                     try {
-                        sheet.createDocument(pageIndexInSheet, pf, false);
+                        // createDocument takes an absolute (book-wide) page index and derives the sheet-relative page
+                        // as (pageIndex - firstPage) for getSVGFileName/processImage. Every sheet after the first in
+                        // the job has firstPage > 0, so we must offset by getFirstPage(); passing a sheet-relative
+                        // index breaks any sheet whose content depends on the page number (BFS card sheets slice the
+                        // wrong cards; capital ships pick the wrong front/reverse template).
+                        sheet.createDocument(sheet.getFirstPage() + pageIndexInSheet, pf, false);
                         GraphicsNode node = sheet.build(); // Can be slow
 
                         if (node != null) {
@@ -967,7 +972,9 @@ public class RecordSheetPreviewPanel extends JPanel {
                         int pageCount = sheet.getPageCount();
                         for (int pageIndexInSheet = 0; pageIndexInSheet < pageCount; pageIndexInSheet++) {
                             try {
-                                sheet.createDocument(pageIndexInSheet, pf, false);
+                                // Absolute (book-wide) page index = firstPage + local page; see note in the initial
+                                // generation loop for why the offset is required.
+                                sheet.createDocument(sheet.getFirstPage() + pageIndexInSheet, pf, false);
                                 GraphicsNode node = sheet.build();
                                 if (node != null) {
                                     double baseWidth = pz.pxWidth;

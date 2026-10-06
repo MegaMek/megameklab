@@ -32,12 +32,12 @@
  */
 package megameklab.ui.largeAero;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import megameklab.ui.EntitySource;
@@ -46,7 +46,7 @@ import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
 /**
- * Build tab for Small Craft and Dropships
+ * Build tab for Small Craft and DropShips
  *
  * @author Neoancient
  */
@@ -66,9 +66,11 @@ public class LABuildTab extends ITab implements ActionListener {
 
     public LABuildTab(EntitySource eSource) {
         super(eSource);
-        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+        setLayout(new BorderLayout());
+        JPanel critPanel = new JPanel();
+        critPanel.setLayout(new BoxLayout(critPanel, BoxLayout.Y_AXIS));
+        JPanel buildPanel = new JPanel();
+        buildPanel.setLayout(new BoxLayout(buildPanel, BoxLayout.Y_AXIS));
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
@@ -76,20 +78,19 @@ public class LABuildTab extends ITab implements ActionListener {
         critView = new LACriticalView(eSource, refresh);
         critView.addAllocationListeners(buildView);
 
+        critPanel.add(Box.createVerticalGlue());
+        critPanel.add(critView);
+        critPanel.add(Box.createVerticalGlue());
+
         resetButton.setMnemonic('R');
         resetButton.setActionCommand(RESET_COMMAND);
         buttonPanel.add(resetButton);
 
-        buildView.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        buttonPanel.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        mainPanel.add(buildView);
-        mainPanel.add(buttonPanel);
+        buildPanel.add(buildView);
+        buildPanel.add(buttonPanel);
 
-        add(Box.createHorizontalGlue());
-        add(critView);
-        add(Box.createHorizontalGlue());
-        add(mainPanel);
-        add(Box.createHorizontalGlue());
+        this.add(critPanel, BorderLayout.CENTER);
+        this.add(buildPanel, BorderLayout.EAST);
         refresh();
     }
 

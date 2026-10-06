@@ -32,6 +32,9 @@
  */
 package megameklab.printing;
 
+import java.awt.Color;
+
+import megamek.common.annotations.Nullable;
 import megamek.common.enums.WeaponSortOrder;
 import megameklab.util.CConfig;
 
@@ -378,6 +381,21 @@ public class RecordSheetOptions {
 
     public String getDamageColor() {
         return damageColor;
+    }
+
+    /**
+     * @return the configured damage color parsed to an AWT {@link Color} (for the Java2D-drawn BFS asset cards), or
+     *       {@code null} if it is unset or cannot be parsed (the caller then uses its own default).
+     */
+    public @Nullable Color getDamageColorAwt() {
+        if ((damageColor == null) || damageColor.isBlank()) {
+            return null;
+        }
+        try {
+            return Color.decode(damageColor.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     public WeaponSortOrder getWeaponsOrder() {

@@ -44,7 +44,7 @@ public class ASStatusBar extends StatusBar {
 
     public ASStatusBar(ASMainUI parent) {
         super(parent);
-        add(heat);
+        addStatusComponent(heat);
     }
 
     @Override

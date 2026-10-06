@@ -527,8 +527,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     private EquipmentType getCurrentStructureEquipment() {
         String structureName = EquipmentType.getStructureTypeName(getMek().getStructureType(),
-              TechConstants.isClan(getMek().getStructureTechLevel()));
-        return EquipmentType.get(structureName);
+            TechConstants.isClan(getMek().getStructureTechLevel()));
+        return EquipmentType.getStructureFromName(structureName);
     }
 
     private void removeInternalStructureMounts() {
@@ -1347,7 +1347,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void heatSinksChanged(EquipmentType hsType, int count) {
-        // if we have the same type of heat sink, then we should not remove the existing
+        // If we have the same type of heat sink, then we should not remove the existing
         // heat sinks
         int currentSinks = MekUtil.countActualHeatSinks(getMek());
         if (getMek().hasWorkingMisc(hsType.getInternalName())) {
@@ -1355,6 +1355,11 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 MekUtil.removeHeatSinks(getMek(), currentSinks - count);
             } else if (count > currentSinks) {
                 MekUtil.addHeatSinkMounts(getMek(), count - currentSinks, hsType);
+            }
+            // Replace prototype doubles if new heat sink type is not prototype doubles
+            if (!hsType.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)
+                  && getMek().hasWorkingMisc(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) {
+                redistributePrototypeHS(0);
             }
         } else {
             MekUtil.removeHeatSinks(getMek(), count);
@@ -1436,8 +1441,13 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void armorTypeChanged(int at, int aTechLevel) {
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
+            double initialArmorTonnage = getMek().getArmorWeight();
             UnitUtil.removeISorArmorMounts(getMek(), false);
             createArmorMountsAndSetArmorType(at, aTechLevel);
+            double maxArmorTonnage = UnitUtil.getMaximumArmorTonnage(getMek());
+            if (initialArmorTonnage > maxArmorTonnage) {
+                getMek().setArmorTonnage(maxArmorTonnage);
+            }
             panArmorAllocation.showPatchwork(false);
             panPatchwork.setVisible(false);
         } else {

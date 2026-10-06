@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -122,7 +122,7 @@ public abstract class AbstractEquipmentTab extends ITab {
         databasePanel.add(equipDatabase);
 
         Box loadOutPanel = Box.createVerticalBox();
-        loadOutPanel.setBorder(BorderFactory.createTitledBorder("Current Load out"));
+        loadOutPanel.setBorder(BorderFactory.createTitledBorder("Current Loadout"));
 
         var buttonPanel = new UIUtil.FixedYPanel(new FlowLayout(FlowLayout.LEFT));
         buttonPanel.add(removeButton);
@@ -234,6 +234,7 @@ public abstract class AbstractEquipmentTab extends ITab {
             refresh.refreshStatus();
             refresh.refreshBuild();
             refresh.refreshPreview();
+            refresh.refreshStructure();
             refresh.refreshSummary();
         }
     }

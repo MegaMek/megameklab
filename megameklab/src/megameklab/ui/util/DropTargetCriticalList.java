@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -170,11 +170,11 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
                     if (getUnit().isOmni() && !mount.getType().isOmniFixedOnly()) {
                         if (mount.isOmniPodMounted()) {
-                            info = new JMenuItem("Change to fixed mount");
+                            info = new JMenuItem("Change to Fixed Mount");
                             info.addActionListener(evt2 -> changeOmniMounting(false));
                             popup.add(info);
                         } else if (UnitUtil.canPodMount(getUnit(), mount)) {
-                            info = new JMenuItem("Change to pod mount");
+                            info = new JMenuItem("Change to Pod Mount");
                             info.addActionListener(evt2 -> changeOmniMounting(true));
                             popup.add(info);
                         }
@@ -305,7 +305,10 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     private boolean isRemovable(@Nullable Mounted<?> mounted) {
         return (mounted != null) && !UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())
               && !mounted.is(EquipmentTypeLookup.PINTLE_TURRET)
-              && !((mounted instanceof MiscMounted) && mounted.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION));
+              && !((mounted instanceof MiscMounted)
+              && (mounted.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION)
+              || mounted.getType().hasFlag(MiscType.F_BASIC_FIRE_CONTROL)
+              || mounted.getType().hasFlag(MiscType.F_ADVANCED_FIRE_CONTROL)));
     }
 
     private boolean isDeletable(@Nullable Mounted<?> mounted) {

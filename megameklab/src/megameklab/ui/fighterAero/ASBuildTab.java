@@ -34,10 +34,10 @@
 package megameklab.ui.fighterAero;
 
 import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -56,26 +56,30 @@ public class ASBuildTab extends ITab implements ActionListener {
 
     public ASBuildTab(EntitySource eSource) {
         super(eSource);
+        setLayout(new BorderLayout());
+        JPanel critPanel = new JPanel();
+        critPanel.setLayout(new BoxLayout(critPanel, BoxLayout.Y_AXIS));
+        JPanel buildPanel = new JPanel();
+        buildPanel.setLayout(new BoxLayout(buildPanel, BoxLayout.Y_AXIS));
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         critView = new ASCriticalView(eSource, refresh);
         buildView = new ASBuildView(eSource, refresh, critView);
+
+        critPanel.add(Box.createVerticalGlue());
+        critPanel.add(critView);
+        critPanel.add(Box.createVerticalGlue());
+
+        resetButton.setMnemonic('R');
         resetButton.setActionCommand(RESET_COMMAND);
+        buttonPanel.add(resetButton);
 
-        JPanel unallocatedEquipmentBlock = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        unallocatedEquipmentBlock.add(buildView, gbc);
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weighty = 0;
-        unallocatedEquipmentBlock.add(resetButton, gbc);
+        buildPanel.add(buildView);
+        buildPanel.add(buttonPanel);
 
-        setLayout(new BorderLayout(5, 5));
-        add(critView, BorderLayout.CENTER);
-        add(unallocatedEquipmentBlock, BorderLayout.EAST);
-
+        this.add(critPanel, BorderLayout.CENTER);
+        this.add(buildPanel, BorderLayout.EAST);
         refresh();
     }
 

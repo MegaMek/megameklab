@@ -33,6 +33,7 @@
 
 package megameklab.ui.battleArmor;
 
+import java.awt.BorderLayout;
 import java.util.ArrayList;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -69,7 +70,12 @@ public class BABuildTab extends ITab {
 
     public BABuildTab(EntitySource eSource) {
         super(eSource);
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setLayout(new BorderLayout());
+        JPanel buildPanel = new JPanel();
+        buildPanel.setLayout(new BoxLayout(buildPanel, BoxLayout.Y_AXIS));
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+
         createCriticalViews();
         buildView = new BABuildView(eSource);
 
@@ -79,16 +85,14 @@ public class BABuildTab extends ITab {
         JButton resetButton = new JButton("Reset");
         resetButton.setMnemonic('R');
         resetButton.addActionListener(ev -> resetCrits());
-
-        JPanel buttonPanel = new JPanel();
         buttonPanel.add(autoFillButton);
         buttonPanel.add(resetButton);
 
-        Box mainPanel = Box.createVerticalBox();
-        mainPanel.add(buildView);
-        mainPanel.add(buttonPanel);
-        add(critPanel);
-        add(mainPanel);
+        buildPanel.add(buildView);
+        buildPanel.add(buttonPanel);
+
+        this.add(critPanel, BorderLayout.CENTER);
+        this.add(buildPanel, BorderLayout.EAST);
         refresh();
     }
 

@@ -37,7 +37,6 @@ import java.awt.print.Pageable;
 import java.awt.print.Printable;
 import java.awt.print.PrinterJob;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -213,7 +212,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
 
         @Override
         public Void doInBackground() throws Exception {
-            Map<Integer, List<String>> bookmarkNames = new HashMap<>();
+            Map<Integer, List<String>> bookmarkNames = new TreeMap<>();
             PDDocument mergedDocument = new PDDocument();
 
             try {
@@ -222,12 +221,12 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
 
                 while (iter.hasNext()) {
                     final PrintRecordSheet rs = iter.next();
-                    bookmarkNames.put(currentPageOffset, rs.getBookmarkNames());
 
                     for (int i = 0; i < rs.getPageCount(); i++) {
                         final InputStream is = rs.exportPDF(i, pageFormat);
                         if (is != null) {
                             try {
+                                bookmarkNames.put(currentPageOffset, rs.getBookmarkNames(i));
                                 // Load PDF document from InputStream and append to merged document
                                 PDDocument pageDocument = Loader.loadPDF(new RandomAccessReadBuffer(is));
 

@@ -150,9 +150,11 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * @return The page number of the first page of this record sheet within the book.
+     * @return The page number of the first page of this record sheet within the book. Callers pass an absolute
+     *       (book-wide) page index to {@link #createDocument(int, PageFormat, boolean)}; add this offset to a
+     *       zero-based page index within the sheet to obtain that absolute index.
      */
-    protected final int getFirstPage() {
+    public final int getFirstPage() {
         return firstPage;
     }
 
@@ -755,6 +757,14 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return Names of outline entries
      */
     public abstract List<String> getBookmarkNames();
+
+    /**
+     * Returns outline entries for one page. Single-page sheets retain the legacy behavior; multi-page sheets can
+     * override this to associate each unit with its actual page.
+     */
+    public List<String> getBookmarkNames(int pageIndex) {
+        return getBookmarkNames();
+    }
 
     protected void setTextField(String id, int i) {
         setTextField(id, String.valueOf(i));

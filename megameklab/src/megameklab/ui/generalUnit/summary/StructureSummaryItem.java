@@ -62,9 +62,14 @@ public class StructureSummaryItem extends AbstractSummaryItem {
         if ((type >= 0) && (type < EquipmentType.structureNames.length)) {
             String structName = EquipmentType.getStructureTypeName(type,
                   TechConstants.isClan(entity.getStructureTechLevel()));
-            EquipmentType structureType = EquipmentType.get(structName);
-            availabilityLabel.setText(structureType.getFullRatingName(entity.isClan()));
-            critLabel.setText(formatCrits(structureType.getNumCriticalSlots(entity)));
+            EquipmentType structureType = EquipmentType.getStructureFromName(structName);
+            if (structureType != null) {
+                availabilityLabel.setText(structureType.getFullRatingName(entity.isClan()));
+                critLabel.setText(formatCrits(structureType.getNumCriticalSlots(entity)));
+            } else {
+                availabilityLabel.setText("");
+                critLabel.setText("");
+            }
         } else {
             availabilityLabel.setText("");
             critLabel.setText("");

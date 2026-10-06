@@ -32,9 +32,11 @@
  */
 package megameklab.ui.supportVehicle;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -48,6 +50,7 @@ import megamek.common.equipment.Mounted;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.units.Entity;
+import megamek.common.units.FixedWingSupport;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.UnallocatedView;
@@ -78,16 +81,20 @@ public class SVBuildTab extends ITab implements ActionListener {
 
     public SVBuildTab(EntitySource eSource) {
         super(eSource);
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        setLayout(new BorderLayout());
+        JPanel critPanel = new JPanel();
+        critPanel.setLayout(new BoxLayout(critPanel, BoxLayout.Y_AXIS));
+        JPanel buildPanel = new JPanel();
+        buildPanel.setLayout(new BoxLayout(buildPanel, BoxLayout.Y_AXIS));
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         critView = new SVCriticalView(eSource, refresh);
         unallocatedView = new UnallocatedView(eSource, () -> refresh);
 
-        mainPanel.add(unallocatedView);
+        critPanel.add(Box.createVerticalGlue());
+        critPanel.add(critView);
+        critPanel.add(Box.createVerticalGlue());
 
         autoFillButton.setMnemonic('A');
         autoFillButton.setActionCommand(AUTO_FILL_COMMAND);
@@ -96,10 +103,11 @@ public class SVBuildTab extends ITab implements ActionListener {
         buttonPanel.add(autoFillButton);
         buttonPanel.add(resetButton);
 
-        mainPanel.add(buttonPanel);
+        buildPanel.add(unallocatedView);
+        buildPanel.add(buttonPanel);
 
-        this.add(critView);
-        this.add(mainPanel);
+        this.add(critPanel, BorderLayout.CENTER);
+        this.add(buildPanel, BorderLayout.EAST);
         refresh();
     }
 
@@ -129,11 +137,13 @@ public class SVBuildTab extends ITab implements ActionListener {
 
     private void autoFillCrits() {
         for (Mounted<?> mount : unallocatedView.getTableModel().getCrits()) {
-            for (int location = 0; location < getTank().locations(); location++) {
+            for (int location = 0; location < getEntity().locations(); location++) {
                 try {
-                    if (UnitUtil.isValidLocation(getTank(), mount.getType(), location)) {
-                        getTank().addEquipment(mount, location, false);
-                        UnitUtil.changeMountStatus(getTank(), mount, location, Entity.LOC_NONE, false);
+                    if ((!getEntity().isFixedWingSupport() || location != FixedWingSupport.LOC_WINGS) && UnitUtil.isValidLocation(getEntity(),
+                          mount.getType(),
+                          location)) {
+                        getEntity().addEquipment(mount, location, false);
+                        UnitUtil.changeMountStatus(getEntity(), mount, location, Entity.LOC_NONE, false);
                         break;
                     }
                 } catch (Exception ex) {
@@ -145,15 +155,20 @@ public class SVBuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted<?> mount : getTank().getEquipment()) {
+        for (Mounted<?> mount : getEntity().getEquipment()) {
             // Fixed shouldn't be removed
             if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
-                  || mount.is(EquipmentTypeLookup.PINTLE_TURRET) || mount.is(EquipmentTypeLookup.MAST_MOUNT)
-                  || ((mount instanceof MiscMounted) && mount.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))) {
+                  || mount.is(EquipmentTypeLookup.PINTLE_TURRET)
+                  || mount.is(EquipmentTypeLookup.MAST_MOUNT)
+                  || ((mount instanceof MiscMounted)
+                  && (mount.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION)
+                  || mount.getType().hasFlag(MiscType.F_BASIC_FIRE_CONTROL)
+                  || mount.getType().hasFlag(MiscType.F_ADVANCED_FIRE_CONTROL)))
+            ) {
                 continue;
             }
-            UnitUtil.removeCriticalSlots(getTank(), mount);
-            UnitUtil.changeMountStatus(getTank(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            UnitUtil.removeCriticalSlots(getEntity(), mount);
+            UnitUtil.changeMountStatus(getEntity(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
         // Check linking after you remove everything.
         try {

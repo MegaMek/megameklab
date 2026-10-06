@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -58,4 +58,8 @@ public interface AeroVesselBuildListener extends BuildListener {
     void autoAssignQuarters();
 
     void escapeChanged(int lifeBoats, int escapePods);
+
+    void autoAssignLifeboats();
+
+    void autoAssignEscapePods();
 }

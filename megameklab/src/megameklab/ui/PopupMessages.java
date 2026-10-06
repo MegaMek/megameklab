@@ -55,6 +55,12 @@ public final class PopupMessages {
 
     private static final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.PopupMessages");
 
+    public enum UnitFileUUIDChoice {
+        TARGET,
+        CURRENT,
+        CANCEL
+    }
+
     public static void showMostRecentUnitMissingError(Component parent) {
         showInfoMessage(parent, resources.getString("mostRecentNotFound"));
     }
@@ -114,6 +120,26 @@ public final class PopupMessages {
     public static void showUnitSavedMessage(Component parent, Entity entity, File file) {
         showInfoMessage(parent, String.format(resources.getString("unitSaved"),
               entity.getChassis(), entity.getModel(), file));
+    }
+
+    public static UnitFileUUIDChoice showUnitFileUUIDConflict(Component parent, Entity currentEntity,
+        Entity targetEntity) {
+        String message = String.format(resources.getString("unitFileUUIDConflict"),
+            targetEntity.getOriginalChassis(), targetEntity.getOriginalModel(), targetEntity.getOriginalUnitFileUUID(),
+            currentEntity.getChassis(), currentEntity.getModel(), currentEntity.getUnitFileUUID());
+        Object[] options = {
+            resources.getString("keepTargetUnitUUID"),
+            resources.getString("keepCurrentUnitUUID"),
+            resources.getString("cancel")
+        };
+        int choice = JOptionPane.showOptionDialog(parent, possiblyWrapInScrollBar(message),
+            resources.getString("unitFileUUIDConflictTitle"), JOptionPane.DEFAULT_OPTION,
+            JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+        return switch (choice) {
+        case 0 -> UnitFileUUIDChoice.TARGET;
+        case 1 -> UnitFileUUIDChoice.CURRENT;
+        default -> UnitFileUUIDChoice.CANCEL;
+        };
     }
 
     public static void showLookAndFeelError(Component parent, String errorMessage) {

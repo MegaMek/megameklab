@@ -79,7 +79,7 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
     private final JComboBox<String> cbChassisType = new JComboBox<>();
     private final CustomComboBox<Integer> cbWeightClass = new CustomComboBox<>(EntityWeightClass::getClassName);
     private final JCheckBox chkExoskeleton = new JCheckBox();
-    private final JCheckBox chkHarjel = new JCheckBox();
+    private final JCheckBox chkHarJel = new JCheckBox();
     private final JSpinner spnSquadSize = new JSpinner(new SpinnerNumberModel(4, 1, 6, 1));
     private final JComboBox<String> cbTurretType = new JComboBox<>();
     private final JSpinner spnTurretSize = new JSpinner(spnTurretSizeModel);
@@ -154,10 +154,10 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
         chkExoskeleton.addActionListener(this);
         chkExoskeleton.setToolTipText(resourceMap.getString("BAChassisView.chkExoskeleton.tooltip"));
         chassisOptions.add(chkExoskeleton);
-        chkHarjel.setText(resourceMap.getString("BAChassisView.chkHarjel.text"));
-        chkHarjel.addActionListener(this);
-        chkHarjel.setToolTipText(resourceMap.getString("BAChassisView.chkHarjel.tooltip"));
-        chassisOptions.add(chkHarjel);
+        chkHarJel.setText(resourceMap.getString("BAChassisView.chkHarJel.text"));
+        chkHarJel.addActionListener(this);
+        chkHarJel.setToolTipText(resourceMap.getString("BAChassisView.chkHarJel.tooltip"));
+        chassisOptions.add(chkHarJel);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -180,6 +180,12 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
         chkExoskeleton.setSelected(ba.isExoskeleton());
         chkExoskeleton.addActionListener(this);
         chkExoskeleton.setEnabled(ba.getWeightClass() == EntityWeightClass.WEIGHT_ULTRA_LIGHT);
+
+        if (chkHarJel.isEnabled()) {
+            chkHarJel.removeActionListener(this);
+            chkHarJel.setSelected(!ba.isClanExoWithoutHarJel());
+            chkHarJel.addActionListener(this);
+        }
 
         spnSquadSize.removeChangeListener(this);
         spnSquadSize.setValue(ba.getSquadSize());
@@ -235,7 +241,13 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
             spnTurretSize.setEnabled(false);
         }
 
-        chkHarjel.setEnabled(techManager.useClanTechBase() && isExoskeleton());
+        chkHarJel.setEnabled(techManager.useClanTechBase() && isExoskeleton());
+
+        if (!chkHarJel.isEnabled()) {
+            chkHarJel.removeActionListener(this);
+            chkHarJel.setSelected(false);
+            chkHarJel.addActionListener(this);
+        }
     }
 
     public int getBodyType() {
@@ -250,8 +262,9 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
         return chkExoskeleton.isSelected();
     }
 
-    public boolean hasHarjel() {
-        return chkHarjel.isEnabled() && chkHarjel.isSelected();
+    @Deprecated(since = "0.51.0", forRemoval = true)
+    public boolean hasHarJel() {
+        return chkHarJel.isEnabled() && chkHarJel.isSelected();
     }
 
     @Override
@@ -275,8 +288,8 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
                   spnTurretSizeModel.getNumber().intValue()));
         } else if (e.getSource() == chkExoskeleton) {
             listeners.forEach(l -> l.exoskeletonChanged(chkExoskeleton.isSelected()));
-        } else if (e.getSource() == chkHarjel) {
-            listeners.forEach(l -> l.harjelChanged(chkHarjel.isSelected()));
+        } else if (e.getSource() == chkHarJel) {
+            listeners.forEach(l -> l.harJelChanged(chkHarJel.isSelected()));
         }
     }
 }

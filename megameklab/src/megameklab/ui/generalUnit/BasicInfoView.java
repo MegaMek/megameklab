@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -25,7 +25,7 @@
  * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
  * InMediaRes Productions, LLC.
  *
- * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
  * Microsoft's "Game Content Usage Rules"
  * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
  * affiliated with Microsoft.
@@ -52,6 +52,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -138,6 +139,11 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private final JLabel lblMulId = createLabel("lblMulId", "");
     private final IntRangeTextField txtMulId = new IntRangeTextField(8);
     private final JButton browseMul = new JButton(new MulLinkIcon());
+
+    // Optional Battlefield Support Asset toggle, hidden unless enabled for an eligible unit editor. Governs whether the
+    // editor's Asset tab is shown; not an entity property, so it is set by the owning structure tab, not setFromEntity.
+    private final JCheckBox chkBattlefieldSupportAsset = new JCheckBox(
+          resourceMap.getString("BasicInfoView.battlefieldSupportAsset.text"));
 
     private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
     private final SourceBooks sourceBooks = new SourceBooks();
@@ -348,6 +354,34 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         txtMulId.setMinimum(-1);
         lblFaction.setVisible(CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION));
         cbFaction.setVisible(CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION));
+
+        gbc.gridx = 1;
+        gbc.gridy++;
+        chkBattlefieldSupportAsset.setToolTipText(
+              resourceMap.getString("BasicInfoView.battlefieldSupportAsset.tooltip"));
+        add(chkBattlefieldSupportAsset, gbc);
+        chkBattlefieldSupportAsset.addActionListener(this);
+        // Hidden by default; only eligible unit editors show it via showBattlefieldSupportAssetControl(true).
+        chkBattlefieldSupportAsset.setVisible(false);
+    }
+
+    /** Shows or hides the Battlefield Support Asset toggle row (shown only for eligible unit editors). */
+    public void showBattlefieldSupportAssetControl(boolean visible) {
+        chkBattlefieldSupportAsset.setVisible(visible);
+    }
+
+    /** Sets the checked state of the Battlefield Support Asset toggle without firing its listener. */
+    public void setBattlefieldSupportAssetSelected(boolean selected) {
+        chkBattlefieldSupportAsset.setSelected(selected);
+    }
+
+    public boolean isBattlefieldSupportAssetSelected() {
+        return chkBattlefieldSupportAsset.isSelected();
+    }
+
+    /** Enables/disables the Battlefield Support Asset toggle (disabled when the unit's motive is an illegal asset). */
+    public void setBattlefieldSupportAssetControlEnabled(boolean enabled) {
+        chkBattlefieldSupportAsset.setEnabled(enabled);
     }
 
     public void setFromEntity(Entity en) {
@@ -430,10 +464,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     public int getTechIntroYear() {
         final int buildYear = getBuildYear();
         final int introYear = txtYear.getIntVal();
-        if (buildYear > introYear) {
-            return buildYear;
-        }
-        return introYear;
+        return Math.max(buildYear, introYear);
     }
 
     public void setYear(int year) {
@@ -444,7 +475,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
     /**
      * Returns the intro year value
-     * @return
+     * @return The intro year
      */
     private int getIntroYear() {
         return txtYear.getIntVal();
@@ -816,6 +847,8 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         } else if (e.getSource() == cbRole) {
             UnitRole newRole = (cbRole.getSelectedItem() == null) ? UnitRole.UNDETERMINED : cbRole.getSelectedItem();
             listeners.forEach(l -> l.roleChanged(newRole));
+        } else if (e.getSource() == chkBattlefieldSupportAsset) {
+            listeners.forEach(l -> l.battlefieldSupportAssetToggled(chkBattlefieldSupportAsset.isSelected()));
         }
         listeners.forEach(BuildListener::refreshSummary);
     }
@@ -893,7 +926,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         }
 
         SourceBook sourceBook = (sourcebooksWithMul.size() == 1)
-              ? sourcebooksWithMul.get(0)
+              ? sourcebooksWithMul.getFirst()
               : chooseSourcebookMUL(sourcebooksWithMul).orElse(null);
         if (sourceBook != null) {
             openSourcebookMUL(sourceBook);

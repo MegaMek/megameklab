@@ -49,14 +49,17 @@ import megamek.client.ui.dialogs.unitSelectorDialogs.AvailabilityPanel;
 import megamek.client.ui.dialogs.unitSelectorDialogs.ConfigurableMekViewPanel;
 import megamek.client.ui.dialogs.unitSelectorDialogs.EntityReadoutPanel;
 import megamek.client.ui.panels.alphaStrike.ConfigurableASCardPanel;
+import megamek.client.ui.panels.battlefieldSupport.ConfigurableBFSCardPanel;
 import megamek.client.ui.util.ViewFormatting;
 import megamek.common.alphaStrike.conversion.ASConverter;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.templates.TROView;
 import megamek.common.ui.EnhancedTabbedPane;
 import megamek.common.ui.EnhancedTabbedPane.TabStateListener;
 import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
+import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
 import megameklab.util.CConfig;
 
@@ -67,8 +70,10 @@ public class PreviewTab extends ITab {
     private final ConfigurableMekViewPanel panelMekView = new ConfigurableMekViewPanel();
     private final EntityReadoutPanel panelTROView = new EntityReadoutPanel();
     private final ConfigurableASCardPanel cardPanel = new ConfigurableASCardPanel(null);
+    private final ConfigurableBFSCardPanel bfsCardPanel = new ConfigurableBFSCardPanel(null);
     private final RecordSheetPreviewPanel rsPanel = new RecordSheetPreviewPanel();
     private final AvailabilityPanel factionPanel = new AvailabilityPanel();
+    private static final String BFS_CARD_TAB_TITLE = "BFS Card";
     private final String tabIndexSettingName = "PreviewTab.panPreview.selectedIndex";
     private final EnhancedTabbedPane panPreview;
     private final Timer refreshTimer = new Timer(REFRESH_DEBOUNCE_DELAY_MS, e -> performUpdate());
@@ -148,6 +153,7 @@ public class PreviewTab extends ITab {
         panelMekView.setPreferredSize(new Dimension(panelWidth, panelMekView.getPreferredSize().height));
         panelTROView.setPreferredSize(new Dimension(panelWidth, panelTROView.getPreferredSize().height));
         cardPanel.setPreferredSize(new Dimension(panelWidth, cardPanel.getPreferredSize().height));
+        bfsCardPanel.setPreferredSize(new Dimension(panelWidth, bfsCardPanel.getPreferredSize().height));
         rsPanel.setPreferredSize(new Dimension(panelWidth, rsPanel.getPreferredSize().height));
 
         // Force a refresh to ensure content uses the new width
@@ -183,6 +189,25 @@ public class PreviewTab extends ITab {
             cardPanel.setASElement(null);
             rsPanel.setEntity(null);
             factionPanel.reset();
+        }
+        updateBfsCard();
+    }
+
+    /**
+     * Feeds the editor's linked Battlefield Support Asset (if any) into the BFS Card panel and shows or hides the "BFS
+     * Card" sub-tab accordingly. The tab is present only while the base unit has a linked asset, so unit types that
+     * cannot carry an asset never show it.
+     */
+    private void updateBfsCard() {
+        BattlefieldSupportAsset asset = (eSource instanceof MegaMekLabMainUI mainUI)
+              ? mainUI.getBattlefieldSupportAsset() : null;
+        bfsCardPanel.setAsset(asset);
+        boolean present = panPreview.containsTab(bfsCardPanel);
+        if ((asset != null) && !present) {
+            panPreview.addTab(BFS_CARD_TAB_TITLE, bfsCardPanel);
+        } else if ((asset == null) && present) {
+            // removeTab also closes the floating window when the tab has been detached.
+            panPreview.removeTab(bfsCardPanel);
         }
     }
 

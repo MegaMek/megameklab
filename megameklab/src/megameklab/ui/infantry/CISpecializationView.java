@@ -32,12 +32,12 @@
  */
 package megameklab.ui.infantry;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
@@ -56,7 +56,6 @@ import megamek.common.verifier.TestInfantry;
 import megameklab.ui.EntitySource;
 import megameklab.ui.listeners.InfantryBuildListener;
 import megameklab.ui.util.IView;
-import megameklab.util.InfantryUtil;
 
 /**
  * View for selecting infantry specializations, including Xeno-Planetary conditions training (XCT).
@@ -103,9 +102,9 @@ public class CISpecializationView extends IView implements TableModelListener {
 
         model.addTableModelListener(this);
 
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        add(scroll);
-        add(Box.createHorizontalGlue());
+        setLayout(new BorderLayout());
+        add(Box.createVerticalStrut(5), BorderLayout.PAGE_START);
+        add(scroll, BorderLayout.CENTER);
     }
 
     public void refresh() {
@@ -253,16 +252,10 @@ public class CISpecializationView extends IView implements TableModelListener {
             if ((ConvInfantry.TAG_TROOPS != spec)
                   && getInfantry().hasSpecialization(ConvInfantry.TAG_TROOPS)
                   && TestInfantry.maxSecondaryWeapons(getInfantry()) < 2) {
-                InfantryUtil.replaceMainWeapon(getInfantry(), null, true);
-                getInfantry().setSecondaryWeaponsPerSquad(0);
                 getInfantry().setSpecializations(getInfantry().getSpecializations() & ~ConvInfantry.TAG_TROOPS);
-            } else if (TestInfantry.maxSecondaryWeapons(getInfantry()) > getInfantry().getSecondaryWeaponsPerSquad()) {
-                getInfantry().setSecondaryWeaponsPerSquad(TestInfantry.maxSecondaryWeapons(getInfantry()));
-                if (getInfantry().getSecondaryWeaponsPerSquad() == 0) {
-                    InfantryUtil.replaceMainWeapon(getInfantry(), null, true);
-                }
             }
             fireTableCellUpdated(row, col);
+            refresh();
         }
 
         public int getColumnWidth(int c) {

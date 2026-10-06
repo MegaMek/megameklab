@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2009-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -39,18 +39,22 @@ import java.awt.event.MouseListener;
 import java.util.List;
 import java.util.Vector;
 import java.util.function.Supplier;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.TableColumn;
 
+import megamek.client.ui.util.UIUtil;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.units.Entity;
+import megamek.common.units.FixedWingSupport;
 import megamek.common.weapons.Weapon;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
@@ -83,31 +87,32 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
         super(eSource);
         this.refresh = refresh;
 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         equipmentList = new CriticalTableModel(getEntity(), CriticalTableModel.BUILD_TABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
         cth = new CriticalTransferHandler(eSource, refresh.get());
         equipmentTable.setTransferHandler(cth);
-
-        equipmentList.initColumnSizes(equipmentTable);
-
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
-            equipmentTable.getColumnModel().getColumn(i).setCellRenderer(equipmentList.getRenderer());
+            TableColumn column = equipmentTable.getColumnModel().getColumn(i);
+            if (i == 0) {
+                column.setPreferredWidth(UIUtil.scaleForGUI(250));
+            }
+            column.setCellRenderer(equipmentList.getRenderer());
         }
-
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         equipmentTable.setDoubleBuffered(true);
-        JScrollPane equipmentScroll = new JScrollPane();
-        equipmentScroll.setViewportView(equipmentTable);
+        equipmentTable.addMouseListener(this);
+        JScrollPane equipmentScroll = new JScrollPane(equipmentTable);
+        equipmentScroll.setMinimumSize(UIUtil.scaleForGUI(300, 200));
+        equipmentScroll.setPreferredSize(UIUtil.scaleForGUI(300, 200));
         equipmentScroll.setTransferHandler(cth);
 
-        mainPanel.add(equipmentScroll);
-        equipmentTable.addMouseListener(this);
-
-        this.add(mainPanel);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.add(equipmentScroll);
+        setBorder(BorderFactory.createTitledBorder(
+              BorderFactory.createEmptyBorder(), "Unallocated Equipment",
+              TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -265,7 +270,9 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
             String[] locations = getEntity().getLocationNames();
 
             for (int location = 0; location < getEntity().locations(); location++) {
-                if (UnitUtil.isValidLocation(getEntity(), mount.getType(), location)) {
+                // Exclude Wings from Fixed Wing Support
+                if ((!getEntity().isFixedWingSupport() || location != FixedWingSupport.LOC_WINGS) && UnitUtil.isValidLocation(getEntity(),
+                      mount.getType(), location)) {
                     item = new JMenuItem("Add to " + locations[location]);
                     final int loc = location;
                     item.addActionListener(evt2 -> jMenuLoadComponent_actionPerformed(loc, selectedRow));

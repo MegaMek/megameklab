@@ -97,12 +97,95 @@ Both are editable with a quality text editor, but we recommend not hand editing 
 
 2) Follow the [instructions on the wiki](https://github.com/MegaMek/megamek/wiki/Working-With-Gradle) for using Gradle.
 
+### Local suite package
+
+Suite archive verification and data staging use the shared tooling in the sibling
+MegaMek checkout (`gradle/suite_archive_verifier.py` and
+`gradle/suite_archive_adapter.gradle`). Python 3.10+ is required for suite tasks;
+use `-PsuitePythonExecutable=<absolute interpreter path>` if `python` on Windows
+or `python3` elsewhere is unavailable. Normal non-suite builds do not require Python.
+
+From a checkout alongside `megamek`, `mekhq`, and `mm-data`, pass all five shared inputs to
+`./gradlew :megameklab:verifySuiteArchive` (or `:megameklab:distTar`):
+
+```
+-PsuiteReleaseVersion=0.51.01
+-PsuiteMegaMekCommit=<40 lowercase hex HEAD>
+-PsuiteMegaMekLabCommit=<40 lowercase hex HEAD>
+-PsuiteMekHQCommit=<40 lowercase hex HEAD>
+-PsuiteMmDataCommit=<40 lowercase hex HEAD>
+```
+
+The version must be canonical padded `major.minor.patch`, with each component within Java's integer range.
+Optionally supply `-PsuiteMegaMekVersion` and `-PsuiteMegaMekLabVersion`
+alongside the suite version; each defaults to it and must have the same canonical
+format. Lab's archive and manifest use the Lab version, while the embedded
+MegaMek runtime uses the MegaMek version. A Lab-only update can keep the
+previous MegaMek release unchanged; MekHQ must then advance to bundle the new Lab.
+The product version overrides the historic revision without changing tracked version files;
+`extraVersion` is rejected in suite mode to avoid a differently versioned included MegaMek build.
+The included MegaMek build must receive the same Gradle `-P` inputs: the archive check reads its
+packaged `Version.properties` and fails if the included build did not receive the override.
+Pins must match the actual sibling and local HEADs. Suite archives refuse tracked changes
+and unknown untracked or ignored package-source inputs in all four checkouts.
+Ignored local data mirrors must match tracked mm-data bytes; build/cache output is excluded.
+Suite staging reads canonical Git blobs into a build-local directory, including
+generated ZIP contents, so Windows checkout line endings do not change packaged data.
+Use clean checkouts for final packaging. The normal
+`megameklab/build/distributions/MegaMekLab-<version>.tar.gz` contains the existing launchers, jars,
+bundled mm-data and user-config exclusions, plus a `suite-build.properties` identity file at its root.
+`verifySuiteArchive` checks that file, both runtime JAR versions, the data payload and launcher layout.
+These are local build tasks; they do not publish anything.
+
+When building Lab with an already completed MegaMek archive, also supply
+`-PsuiteMegaMekArchiveFile=<path>/MegaMek-<MegaMek version>.tar.gz`.
+The canonical verifier checks that archive and copies its exact primary JAR into
+`build/suite/companions/MegaMek.jar`. Both the main distribution and the
+SVGMassPrinter distribution use those bytes, excluding any freshly rebuilt
+MegaMek JAR contributed by the application plugin's runtime classpath.
+Built verification checks the selected JAR and its companion archive, not a
+separate sibling rebuild. An invalid or missing companion fails the build;
+there is no fallback to a rebuilt JAR. Without this input, standalone suite
+builds continue to build and package the sibling MegaMek JAR.
+
+To check a previously downloaded Lab tarball without rebuilding, pass
+`-PsuiteArchiveFile=<path>/MegaMekLab-<Lab version>.tar.gz` and
+`-PsuiteMegaMekArchiveFile=<path>/MegaMek-<MegaMek version>.tar.gz` to
+`:megameklab:verifySuiteArchive` along with the same five suite inputs and product versions.
+This mode does not run `distTar` or its producers. It requires the matching MegaMek
+companion archive to verify the bundled runtime JAR. The complete packaged data-file
+set and generated ZIP members are checked against the declared mm-data Git commit,
+rejecting missing, extra, and modified files.
+An older reused MegaMek companion may carry older Lab and MekHQ commits: its own
+MegaMek and mm-data pins, version, Java requirement and root/lib JAR bytes must match.
+Verification streams archive entries and temporarily spools only inspected payloads;
+TAR extension and ZIP directory metadata are bounded before parsing or allocation.
+Both modes use the same verifier and pinned-data checks; built mode also compares
+the packaged JARs with their producer outputs.
+Use trusted local checkouts containing the pinned Git objects; neither mode publishes assets.
+The common regressions run from MegaMek with
+`python -B -m unittest discover -s gradle -p 'test_suite_*.py' -v`.
+Lab's packaging regressions run from the Lab repository with
+`python -B -m unittest discover -s gradle -p 'test_suite_megamek_companion.py' -v`.
+They apply the production companion CopySpec in a small Gradle application,
+build real tarballs with conflicting runtime JAR bytes, and use the canonical
+verifier and pinned mm-data fixture. PR CI runs these checks on both supported JDKs.
+
 ### Style Guide
 
 When contributing to this project, please enable the EditorConfig option within your IDE to ensure some basic compliance
 with our [style guide](https://github.com/MegaMek/megamek/wiki/MegaMek-Coding-Style-Guide) which includes some defaults
 for line length, tabs vs. spaces, etc. When all else fails, we follow
 the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html).
+
+The build enforces formatting, so it does not matter which editor (or tool) wrote the code. Before you push:
+
+```
+./gradlew spotlessApply
+```
+
+That formats every Java file you changed. `./gradlew spotlessCheck` reports the same violations without changing
+anything. The check runs first on every pull request and lists every violation in one go.
 
 ## Support
 

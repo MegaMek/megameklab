@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2009-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -32,7 +32,8 @@
  */
 package megameklab.util;
 
-import static megamek.common.options.OptionsConstants.RPG_MANEI_DOMINI;
+import static megamek.common.options.OptionsConstants.ADVANCED_NEURAL_INTERFACE_MODE;
+import static megamek.common.options.OptionsConstants.NEURAL_INTERFACE_MODE_PILOT_ONLY;
 import static megamek.common.options.OptionsConstants.RPG_PILOT_ADVANTAGES;
 
 import java.awt.Frame;
@@ -52,7 +53,9 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.ui.dialogs.UnitLoadingDialog;
+import megamek.client.ui.util.MULVersionValidator;
 import megamek.common.battleArmor.BattleArmor;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.equipment.HandheldWeapon;
 import megamek.common.loaders.MULParser;
 import megamek.common.loaders.MekFileParser;
@@ -110,9 +113,14 @@ public class UnitPrintManager {
         try {
             var options = new GameOptions();
             options.initialize();
-            options.getOption(RPG_MANEI_DOMINI).setValue(true);
+            // Pilot implants are a three-way option; any setting but Off lets a MUL's implants load
+            options.getOption(ADVANCED_NEURAL_INTERFACE_MODE).setValue(NEURAL_INTERFACE_MODE_PILOT_ONLY);
             options.getOption(RPG_PILOT_ADVANTAGES).setValue(true);
-            loadedUnits = new MULParser(file, options).getEntities();
+            MULParser parser = new MULParser(file, options);
+            if (!MULVersionValidator.isCorrectVersion(parent, parser)) {
+                return;
+            }
+            loadedUnits = parser.getEntities();
             loadedUnits.trimToSize();
         } catch (Exception ex) {
             LOGGER.error("", ex);
@@ -167,6 +175,7 @@ public class UnitPrintManager {
         List<BattleArmor> baList = new ArrayList<>();
         List<ProtoMek> protoList = new ArrayList<>();
         List<HandheldWeapon> hhwList = new ArrayList<>();
+        List<BattlefieldSupportAsset> bfsList = new ArrayList<>();
         List<BTObject> unprintable = new ArrayList<>();
         Tank tank1 = null;
 
@@ -175,7 +184,9 @@ public class UnitPrintManager {
             if (object instanceof Entity entity) {
                 Entity unit;
                 // assign base unit and override only if damage should be hidden and entity is damaged
-                if (!options.showDamage() && UnitUtil.isDamaged(entity, options.showPilotData())) {
+                if (entity instanceof BattlefieldSupportAsset asset) {
+                    unit = prepareBattlefieldSupportAssetForPrint(asset, options.showDamage());
+                } else if (!options.showDamage() && UnitUtil.isDamaged(entity, options.showPilotData())) {
                     unit = UnitUtil.cloneUnit(entity);
                     if (unit != null) {
                         UnitUtil.resetUnit(unit);
@@ -254,6 +265,16 @@ public class UnitPrintManager {
                         sheets.add(prs);
                         hhwList = new ArrayList<>();
                     }
+                } else if (unit instanceof BattlefieldSupportAsset) {
+                    // Assets tile onto card sheets (one multi-page sheet per run of assets); flush at page breaks and
+                    // end, or immediately when printing one unit per sheet.
+                    bfsList.add((BattlefieldSupportAsset) unit);
+                    if (singlePrint) {
+                        PrintRecordSheet prs = new PrintBattlefieldSupportCardSheet(bfsList, pageCount, options);
+                        pageCount += prs.getPageCount();
+                        sheets.add(prs);
+                        bfsList = new ArrayList<>();
+                    }
                 } else {
                     unprintable.add(unit);
                 }
@@ -282,6 +303,12 @@ public class UnitPrintManager {
                         pageCount += prs.getPageCount();
                         sheets.add(prs);
                         hhwList = new ArrayList<>();
+                    }
+                    if (!bfsList.isEmpty()) {
+                        PrintRecordSheet prs = new PrintBattlefieldSupportCardSheet(bfsList, pageCount, options);
+                        pageCount += prs.getPageCount();
+                        sheets.add(prs);
+                        bfsList = new ArrayList<>();
                     }
                     if (null != tank1) {
                         sheets.add(new PrintCompositeTankSheet(tank1, null, pageCount++, options));
@@ -319,7 +346,24 @@ public class UnitPrintManager {
         if (!hhwList.isEmpty()) {
             sheets.add(new PrintSmallUnitSheet(hhwList, pageCount++, options));
         }
+        if (!bfsList.isEmpty()) {
+            PrintRecordSheet prs = new PrintBattlefieldSupportCardSheet(bfsList, pageCount, options);
+            pageCount += prs.getPageCount();
+            sheets.add(prs);
+        }
         return sheets;
+    }
+
+    public static BattlefieldSupportAsset prepareBattlefieldSupportAssetForPrint(BattlefieldSupportAsset asset,
+          boolean showDamage) {
+        if (showDamage || (asset.getDestroyCheck() == asset.getODestroyCheck())) {
+            return asset;
+        }
+        // The data snapshot is an independent definition clone and initializes current Destroy Check from original.
+        BattlefieldSupportAsset printAsset = new BattlefieldSupportAsset(asset.toAssetData());
+        // Regular/Veteran is runtime crew state and is intentionally absent from the definition DTO.
+        printAsset.setVeteranCrew(asset.isVeteranCrew());
+        return printAsset;
     }
 
     public static void exportUnits(List<? extends BTObject> units, File exportFile, boolean singlePrint) {
@@ -426,7 +470,7 @@ public class UnitPrintManager {
         jFileChooser.setDialogTitle("Print Unit File");
         jFileChooser.setMultiSelectionEnabled(true);
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "bfs");
 
         // Add a filter for mul files
         jFileChooser.setFileFilter(filter);

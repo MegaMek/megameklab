@@ -46,7 +46,7 @@ public class HHWStatusBar extends StatusBar {
 
     public HHWStatusBar(HHWMainUI parent) {
         super(parent);
-        add(slotsLabel);
+        addStatusComponent(slotsLabel);
     }
 
     @Override

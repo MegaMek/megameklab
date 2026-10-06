@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -54,6 +54,7 @@ import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
 import megamek.common.units.BipedMek;
 import megamek.common.units.Entity;
 import megamek.common.units.LAMPilot;
@@ -237,7 +238,7 @@ public class PrintMek extends PrintEntity {
 
     private void printShields() {
         for (MiscMounted m : mek.getMisc()) {
-            if (m.getType().isShield()) {
+            if (m.getType().hasFlag(MiscType.F_SHIELD)) {
                 String loc = mek.getLocationAbbr(m.getLocation());
                 Element element = getSVGDocument().getElementById(ARMOR_DIAGRAM + loc);
                 if (null != element) {
@@ -763,6 +764,10 @@ public class PrintMek extends PrintEntity {
             }
             String weight = SVGConstants.SVG_BOLD_VALUE;
             String fill = FILL_BLACK;
+            final boolean extraHit = hasExtraHitPoint(crit);
+            if (extraHit) {
+                g.setAttributeNS(null, "extraHit", "1");
+            }
             if (crit != null && crit.isDamaged()) {
                 addLineThrough(g, viewX - EXTEND_DAMAGE_LINE_THROUGH_LENGTH, currY - (fontSize * 0.3),
                       (critX - viewX) + EXTEND_DAMAGE_LINE_THROUGH_LENGTH);
@@ -778,16 +783,25 @@ public class PrintMek extends PrintEntity {
                       SVGConstants.SVG_START_VALUE, weight, fill);
             } else if (crit.isArmored()) {
                 g.setAttributeNS(null, "armored", "1");
-                Element pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7, PipType.CIRCLE,
+                Element pip = createPip(critX, (currY - fontSize * 0.8) + 0.2, fontSize * 0.4, 0.7, PipType.CIRCLE,
                       FILL_WHITE, "armoredLocPip", null, false);
                 g.appendChild(pip);
-                addTextElement(g, critX + fontSize, currY, formatCritName(crit), fontSize,
+                final double textX = critX + fontSize;
+                final double textLength = addTextElement(g, textX, currY, formatCritName(crit), fontSize,
                       SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
+                if (extraHit) {
+                    addExtraHitPip(g, textX + textLength, currY + 0.2, fontSize);
+                }
             } else if ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
                   && (crit.getMount().getType() instanceof MiscType)
                   && (crit.getMount().getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
                 final String critName = formatCritName(crit);
                 final double textLength = getTextLength(critName, fontSize, weight);
+                // Make pip start position the same for both front and rear facing Modular Armor
+                double pipX = textLength;
+                if (!critName.contains("(R)")) {
+                    pipX = getTextLength(critName + " (R)", fontSize, weight);
+                }
                 if (crit.isDamaged()) {
                     addLineThrough(locGroup,
                           critX,
@@ -797,8 +811,8 @@ public class PrintMek extends PrintEntity {
                 addTextElement(g, critX, currY, critName, fontSize, SVGConstants.SVG_START_VALUE, weight,
                       SVGConstants.SVG_NORMAL_VALUE, fill);
                 g.setAttributeNS(null, "modularArmor", "1");
-                x = critX + textLength;
-                double remainingW = viewX + viewWidth - x;
+                x = critX + pipX;
+                double remainingW = viewX + viewWidth + 5 - x;
                 double spacing = remainingW / 6.0;
                 double radius = spacing * 0.25;
                 double y = currY - lineHeight + spacing;
@@ -831,6 +845,9 @@ public class PrintMek extends PrintEntity {
                 }
                 addTextElement(g, critX, currY, critName, fontSize,
                       SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
+                if (extraHit) {
+                    addExtraHitPip(g, critX + getTextLength(critName, fontSize, weight), currY + 0.2, fontSize);
+                }
             }
             Mounted<?> m = null;
             if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
@@ -854,6 +871,37 @@ public class PrintMek extends PrintEntity {
         if ((null != startingMount) && (mek.getNumberOfCriticalSlots(loc) - startingSlotIndex > 1)) {
             connectSlots(canvas, critX - 1, startingMountY, connWidth, endingMountY - startingMountY);
         }
+    }
+
+    /**
+     * Under Core rules, an autocannon that occupies a single critical slot requires two hits to destroy.
+     *
+     * @param crit The critical slot to check
+     *
+     * @return Whether the slot receives an extra hit point
+     */
+    static boolean hasExtraHitPoint(@Nullable CriticalSlot crit) {
+        return (crit != null)
+              && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
+              && (crit.getMount() != null)
+              && !CConfig.usesTotalWarfareRules()
+              && (crit.getMount().getType() instanceof WeaponType weaponType)
+              && weaponType.hasFlag(WeaponType.F_AC)
+              && (crit.getMount().getNumCriticalSlots() == 1);
+    }
+
+    private void addExtraHitPip(Element parent, double textEndX, double currY, float fontSize) {
+        final double pipSize = fontSize * 0.8;
+        Element pip = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_RECT_TAG);
+        pip.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, "pip extraHitPip");
+        pip.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, Double.toString(textEndX + fontSize * 0.2));
+        pip.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, Double.toString(currY - pipSize));
+        pip.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, Double.toString(pipSize));
+        pip.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, Double.toString(pipSize));
+        pip.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_WHITE);
+        pip.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
+        pip.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, "0.7");
+        parent.appendChild(pip);
     }
 
     private void connectSlots(Element canvas, double x, double y, double w,

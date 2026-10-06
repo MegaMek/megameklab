@@ -166,7 +166,6 @@ public final class BattleArmorUtil {
             return;
         }
         removeMountFromDwp(dwp);
-        weapon.setLinkedBy(dwp);
         dwp.setLinked(weapon);
         weapon.setDWPMounted(true);
         weapon.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
@@ -185,7 +184,6 @@ public final class BattleArmorUtil {
         }
         if (dwp.getLinked() != null) {
             Mounted<?> weapon = dwp.getLinked();
-            weapon.setLinkedBy(null);
             weapon.setDWPMounted(false);
             dwp.setLinked(null);
         }

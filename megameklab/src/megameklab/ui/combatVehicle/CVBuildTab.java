@@ -32,9 +32,11 @@
  */
 package megameklab.ui.combatVehicle;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -72,16 +74,20 @@ public class CVBuildTab extends ITab implements ActionListener {
 
     public CVBuildTab(EntitySource eSource) {
         super(eSource);
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        setLayout(new BorderLayout());
+        JPanel critPanel = new JPanel();
+        critPanel.setLayout(new BoxLayout(critPanel, BoxLayout.Y_AXIS));
+        JPanel buildPanel = new JPanel();
+        buildPanel.setLayout(new BoxLayout(buildPanel, BoxLayout.Y_AXIS));
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         critView = new CVCriticalView(eSource, refresh);
         unallocatedView = new UnallocatedView(eSource, () -> refresh);
 
-        mainPanel.add(unallocatedView);
+        critPanel.add(Box.createVerticalGlue());
+        critPanel.add(critView);
+        critPanel.add(Box.createVerticalGlue());
 
         autoFillButton.setMnemonic('A');
         autoFillButton.setActionCommand(AUTO_FILL_COMMAND);
@@ -90,10 +96,11 @@ public class CVBuildTab extends ITab implements ActionListener {
         buttonPanel.add(autoFillButton);
         buttonPanel.add(resetButton);
 
-        mainPanel.add(buttonPanel);
+        buildPanel.add(unallocatedView);
+        buildPanel.add(buttonPanel);
 
-        this.add(critView);
-        this.add(mainPanel);
+        this.add(critPanel, BorderLayout.CENTER);
+        this.add(buildPanel, BorderLayout.EAST);
         refresh();
     }
 

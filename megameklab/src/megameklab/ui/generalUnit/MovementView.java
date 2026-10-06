@@ -106,7 +106,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     private final JSpinner spnWalk = new JSpinner(spnWalkModel);
     private final JSpinner spnJump = new JSpinner(spnJumpModel);
     private final TechComboBox<EquipmentType> cbJumpType =
-          new TechComboBox<>(eq -> eq.getName().replaceAll("\\s+\\[.*?]", ""));
+          new TechComboBox<>(eq -> eq.getShortName().replaceAll("\\s+\\[.*?]", ""));
 
     private final JLabel lblWalk = createLabel("lblWalk", "");
     private final JLabel lblRun = createLabel("lblRun", "");
@@ -150,6 +150,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         add(new JLabel(I18N.getString("MovementView.lblBase.text")), gbc);
         add(new JLabel(I18N.getString("MovementView.lblFinal.text")), gbc);
 
+        gbc.anchor = GridBagConstraints.EAST;
         gbc.gridy++;
         add(lblWalk, gbc);
         gbc.fill = GridBagConstraints.NONE;
@@ -262,9 +263,11 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             cbJumpType.addActionListener(this);
         } else if (en instanceof ProtoMek protoMek) {
             if (protoMek.isGlider()) {
-                minWalk = TestProtoMek.GLIDER_MIN_MP;
+                // Since Glider min run MP is 4, round up for 3 walk MP
+                minWalk = (int) Math.ceil(TestProtoMek.GLIDER_MIN_FLANK_MP / 1.5);
+                maxJump = 0;
             } else if (protoMek.isQuad()) {
-                minWalk = TestProtoMek.QUAD_MIN_MP;
+                minWalk = (int) Math.floor(TestProtoMek.QUAD_MIN_RUN_MP / 1.5);
             } else {
                 minWalk = 1;
             }
@@ -293,23 +296,28 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         txtRunFinal.setText(en.getRunMPasString(false));
 
         int labelIndex = LABEL_INDEX_MEK;
+        int jumpLabelIndex = LABEL_INDEX_MEK;
         boolean showJump = true;
         boolean showJumpType = true;
         boolean showRun = true;
         if (en.hasETypeFlag(Entity.ETYPE_AERO)) {
-            labelIndex = LABEL_INDEX_AERO;
+            labelIndex = jumpLabelIndex = LABEL_INDEX_AERO;
             showJump = showJumpType = false;
         } else if (en.hasETypeFlag(Entity.ETYPE_VTOL)) {
-            labelIndex = LABEL_INDEX_TANK;
+            labelIndex = jumpLabelIndex = LABEL_INDEX_TANK;
             showJump = showJumpType = false;
         } else if (en.hasETypeFlag(Entity.ETYPE_TANK)) {
-            labelIndex = LABEL_INDEX_TANK;
+            labelIndex = jumpLabelIndex = LABEL_INDEX_TANK;
             showJump = showJumpType = (en.getMovementMode() == EntityMovementMode.TRACKED)
                   || (en.getMovementMode() == EntityMovementMode.WHEELED)
                   || (en.getMovementMode() == EntityMovementMode.HOVER)
                   || (en.getMovementMode() == EntityMovementMode.WIGE);
+        } else if (en instanceof ProtoMek protoMek) {
+            if (protoMek.isGlider()) {
+                labelIndex = LABEL_INDEX_TANK;
+            }
         } else if (en.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
-            labelIndex = LABEL_INDEX_BA;
+            labelIndex = jumpLabelIndex = LABEL_INDEX_BA;
             showRun = false;
         }
         if (!showJump) {
@@ -337,7 +345,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         lblRun.setVisible(showRun);
         txtRunBase.setVisible(showRun);
         txtRunFinal.setVisible(showRun);
-        lblJump.setText(jumpNames[labelIndex]);
+        lblJump.setText(jumpNames[jumpLabelIndex]);
         lblJump.setVisible(showJump);
         spnJump.setVisible(showJump);
         txtJumpFinal.setVisible(showJump);

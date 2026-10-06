@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2018-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -48,13 +48,16 @@ import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
+import megameklab.ui.generalUnit.AnalysisTab;
+import megameklab.ui.generalUnit.AvailabilityTab;
 import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
+import megameklab.util.CConfig;
 
 /**
- * Main UI for building protomeks
+ * Main UI for building ProtoMeks
  *
  * @author Neoancient
  */
@@ -63,9 +66,11 @@ public class PMMainUI extends MegaMekLabMainUI {
     private PMStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;
+    private AnalysisTab analysisTab;
     private PMBuildTab buildTab;
     private PMStatusBar statusbar;
     private QuirksTab quirksTab;
+    private AvailabilityTab availabilityTab;
     private FluffTab fluffTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
@@ -92,23 +97,30 @@ public class PMMainUI extends MegaMekLabMainUI {
 
         structureTab = new PMStructureTab(this);
         previewTab = new PreviewTab(this);
+        analysisTab = new AnalysisTab(this);
         statusbar = new PMStatusBar(this);
         equipmentTab = new PMEquipmentTab(this);
         buildTab = new PMBuildTab(this, this);
         quirksTab = new QuirksTab(this);
+        availabilityTab = new AvailabilityTab(this);
         fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
         quirksTab.addRefreshedListener(this);
+        availabilityTab.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
+        if (CConfig.showAvailabilityTab()) {
+            configPane.addTab("Availability", availabilityTab);
+        }
         configPane.addTab("Preview", previewTab);
+        configPane.addTab("Analysis", analysisTab);
 
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
@@ -141,7 +153,7 @@ public class PMMainUI extends MegaMekLabMainUI {
         }
         if (null == oldEntity) {
             newUnit.setChassis("New");
-            newUnit.setModel("Protomek");
+            newUnit.setModel("ProtoMek");
             newUnit.setYear(3145);
         } else {
             copyUnitBasics(newUnit, oldEntity);
@@ -158,8 +170,10 @@ public class PMMainUI extends MegaMekLabMainUI {
         equipmentTab.refresh();
         buildTab.refresh();
         quirksTab.refresh();
+        availabilityTab.refresh();
         fluffTab.refresh();
         previewTab.refresh();
+        analysisTab.refresh();
         floatingEquipmentDatabase.refresh();
         refreshHeader();
     }
@@ -190,6 +204,7 @@ public class PMMainUI extends MegaMekLabMainUI {
     public void refreshPreview() {
         super.refreshPreview();
         previewTab.refresh();
+        analysisTab.refresh();
     }
 
     @Override

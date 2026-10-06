@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -37,18 +37,20 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
 
+import megamek.common.annotations.Nullable;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;
 import megamek.common.loaders.BLKFile;
@@ -76,6 +78,13 @@ public class TabUtil {
     private final static String TAB_STATE_DIRECTORY = ".mml_tmp";
     private final static String TAB_STATE_CLEAN = "clean";
     private final static String FILENAME_ASSOCIATIONS = "filenames.db";
+    /**
+        * Marker written as the first token of {@link #FILENAME_ASSOCIATIONS} for the current (paired) format: six
+     * {@code \0}-separated fields per editor (base tmp path, base file name, linked-asset tmp path, linked-asset file
+        * path, linked-asset enabled flag, pending paired-save destination). A db without this marker is read in the legacy
+        * two-field format (base tmp path, base file name).
+     */
+    private final static String TAB_STATE_VERSION = "v4";
 
     public static void saveTabState(List<MegaMekLabMainUI> editors) throws IOException {
         File dir = getTabStateDirectory(true);
@@ -93,7 +102,7 @@ public class TabUtil {
 
         FileUtils.cleanDirectory(dir);
 
-        Map<File, String> filenameAssociations = new LinkedHashMap<>();
+        List<TabStateRecord> records = new ArrayList<>();
 
         for (var editor : editors) {
             File unitFile;
@@ -104,6 +113,15 @@ public class TabUtil {
                       var ps = new PrintStream(fos)
                 ) {
                     ps.println(((Mek) editor.getEntity()).getMtf());
+                } catch (Exception e) {
+                    LOGGER.fatal("Failed to write unit while saving tab state.", e);
+                    return;
+                }
+            } else if (editor.getEntity() instanceof BattlefieldSupportAsset) {
+                unitFile = File.createTempFile("mml_unit_", ".bfs.tmp", dir);
+                try {
+                    Files.writeString(unitFile.toPath(), UnitUtil.saveUnitToString(editor.getEntity(), true)
+                          + System.lineSeparator(), StandardCharsets.UTF_8);
                 } catch (Exception e) {
                     LOGGER.fatal("Failed to write unit while saving tab state.", e);
                     return;
@@ -146,18 +164,34 @@ public class TabUtil {
                 fileName = " ";
             }
 
-            filenameAssociations.put(unitFile, fileName);
+            // A linked (enabled) Battlefield Support Asset is written to a paired sidecar tmp so its in-progress
+            // (possibly unsaved) edits and enabled state are restored alongside the base unit, rather than re-derived
+            // from disk. Standalone-asset editors have no linked asset (their entity is the asset, saved above).
+            String assetTmpPath = "";
+            String assetFilePath = "";
+            BattlefieldSupportAsset asset = editor.getBattlefieldSupportAssetCarrier();
+            boolean assetEnabled = editor.isBattlefieldSupportAssetEnabled();
+            if (asset != null) {
+                File assetFile = File.createTempFile("mml_asset_", ".bfs.tmp", dir);
+                try {
+                    Files.writeString(assetFile.toPath(), UnitUtil.saveUnitToString(asset, true)
+                          + System.lineSeparator(), StandardCharsets.UTF_8);
+                } catch (Exception e) {
+                    LOGGER.fatal("Failed to write linked asset while saving tab state.", e);
+                    return;
+                }
+                assetTmpPath = assetFile.getPath();
+                String path = editor.getBattlefieldSupportAssetFilePath();
+                assetFilePath = (path == null) ? "" : path;
+            }
+
+            String pendingPairedSavePath = Objects.requireNonNullElse(editor.getPendingPairedSaveFileName(), "");
+            records.add(new TabStateRecord(unitFile.getPath(), fileName, assetTmpPath, assetFilePath, assetEnabled,
+                pendingPairedSavePath));
         }
 
         File filenameAssociationsFile = new File(dir, FILENAME_ASSOCIATIONS);
-        try (
-              var fos = new FileOutputStream(filenameAssociationsFile);
-              var ps = new PrintStream(fos)
-        ) {
-            for (var entry : filenameAssociations.entrySet()) {
-                ps.print(entry.getKey().getPath() + '\0' + entry.getValue() + '\0');
-            }
-        }
+        Files.writeString(filenameAssociationsFile.toPath(), serializeTabStateDb(records), StandardCharsets.UTF_8);
 
         if (!clean.createNewFile()) {
             throw new IOException("Could not create " + clean);
@@ -183,17 +217,14 @@ public class TabUtil {
             return editors;
         }
 
-        var parts = Files.readString(Paths.get(db.getAbsolutePath())).split(Pattern.quote("\0"));
-        for (int i = 0; i < parts.length; i += 2) {
-            var entityFile = new File(parts[i]);
+        var content = Files.readString(Paths.get(db.getAbsolutePath()));
+        for (TabStateRecord record : parseTabStateDb(content)) {
+            var entityFile = new File(record.baseTmpPath());
 
             var newFile = new File(entityFile.getAbsolutePath().replaceFirst("\\.tmp$", ""));
             FileUtils.copyFile(entityFile, newFile);
 
-            var fileName = parts[i + 1];
-            if (fileName.isBlank()) {
-                fileName = "";
-            }
+            var fileName = record.fileName();
 
             try {
                 Entity loadedUnit = new MekFileParser(newFile).getEntity();
@@ -217,7 +248,15 @@ public class TabUtil {
                     }
                 }
 
-                var editor = UiLoader.getUI(loadedUnit, fileName);
+                // Restore the saved tab state authoritatively (no disk auto-load): inject the paired linked asset when
+                // one was saved, otherwise the unit has no asset even if a .bfs exists on disk.
+                BattlefieldSupportAsset restoredAsset = restoreLinkedAsset(record.assetTmpPath());
+                var editor = UiLoader.getUIWithoutLinkedAsset(loadedUnit, fileName);
+                if (restoredAsset != null) {
+                    editor.adoptLinkedBattlefieldSupportAsset(restoredAsset,
+                          record.assetFilePath().isBlank() ? null : record.assetFilePath(), record.assetEnabled());
+                }
+                editor.restorePendingPairedSaveFileName(record.pendingPairedSavePath());
                 editors.add(editor);
             } catch (EntityLoadingException e) {
                 LOGGER.warn(e, "Could not restore tab for entity file {}:{}", entityFile, fileName);
@@ -233,6 +272,91 @@ public class TabUtil {
         }
 
         return editors;
+    }
+
+    /**
+     * A single editor's tab-state record: the tmp file its base unit was written to, the base unit's real file name,
+     * and (for a linked editor) the tmp file its Battlefield Support Asset was written to and the asset's real file
+     * path. The asset fields are blank for an editor with no linked asset.
+     */
+    record TabStateRecord(String baseTmpPath, String fileName, String assetTmpPath, String assetFilePath,
+                          boolean assetEnabled, String pendingPairedSavePath) { }
+
+    /** Serializes the tab-state records to the {@link #FILENAME_ASSOCIATIONS} string (six {@code \0}-separated fields
+     * per record, prefixed by the {@link #TAB_STATE_VERSION} marker). */
+    static String serializeTabStateDb(List<TabStateRecord> records) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(TAB_STATE_VERSION).append('\0');
+        for (TabStateRecord record : records) {
+            sb.append(record.baseTmpPath()).append('\0')
+                  .append(record.fileName()).append('\0')
+                  .append(record.assetTmpPath()).append('\0')
+                  .append(record.assetFilePath()).append('\0')
+                .append(record.assetEnabled()).append('\0')
+                .append(record.pendingPairedSavePath()).append('\0');
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Parses the {@link #FILENAME_ASSOCIATIONS} string into tab-state records. A db beginning with the
+    * {@link #TAB_STATE_VERSION} marker is read as six-field (paired) records; {@code v3} is read as five-field paired
+    * records, {@code v2} is read as four-field paired records, and any other db is read in the legacy two-field format
+    * (base tmp path, base file name), with blank asset and pending-save fields. A blank base file name is normalized to
+    * the empty string.
+     *
+     * @param content the db content
+     *
+     * @return the parsed records
+     */
+    static List<TabStateRecord> parseTabStateDb(String content) {
+        var parts = content.split(Pattern.quote("\0"), -1);
+        boolean v4 = (parts.length > 0) && TAB_STATE_VERSION.equals(parts[0]);
+        boolean v3 = (parts.length > 0) && "v3".equals(parts[0]);
+        boolean v2 = (parts.length > 0) && "v2".equals(parts[0]);
+        boolean versioned = v4 || v3 || v2;
+        int start = versioned ? 1 : 0;
+        int step = v4 ? 6 : (v3 ? 5 : (v2 ? 4 : 2));
+        List<TabStateRecord> records = new ArrayList<>();
+        for (int i = start; i + step <= parts.length; i += step) {
+            String fileName = parts[i + 1].isBlank() ? "" : parts[i + 1];
+            records.add(new TabStateRecord(parts[i], fileName,
+                  versioned ? parts[i + 2] : "", versioned ? parts[i + 3] : "",
+                  (v4 || v3) ? Boolean.parseBoolean(parts[i + 4]) : versioned && !parts[i + 2].isBlank(),
+                  v4 ? parts[i + 5] : ""));
+        }
+        return records;
+    }
+
+    /**
+     * Restores a linked Battlefield Support Asset saved to a tab-state tmp file.
+     *
+     * @param assetTmpPath the path to the {@code .bfs.tmp} file, or blank if the editor had no linked asset
+     *
+     * @return the restored asset, or {@code null} if there was none or it could not be read
+     */
+    private static @Nullable BattlefieldSupportAsset restoreLinkedAsset(String assetTmpPath) {
+        if ((assetTmpPath == null) || assetTmpPath.isBlank()) {
+            return null;
+        }
+        File assetTmp = new File(assetTmpPath);
+        File assetFile = new File(assetTmp.getAbsolutePath().replaceFirst("\\.tmp$", ""));
+        try {
+            FileUtils.copyFile(assetTmp, assetFile);
+            Entity entity = new MekFileParser(assetFile).getEntity();
+            if (entity instanceof BattlefieldSupportAsset asset) {
+                UnitUtil.updateLoadedUnit(asset);
+                return asset;
+            }
+            return null;
+        } catch (Exception e) {
+            LOGGER.warn(e, "Could not restore linked asset tab state from %s".formatted(assetTmpPath));
+            return null;
+        } finally {
+            if (assetFile.exists() && !assetFile.delete()) {
+                LOGGER.warn("Could not delete temporary file {}", assetFile);
+            }
+        }
     }
 
     private static File getTabStateDirectory(boolean create) throws IOException {
@@ -255,11 +379,35 @@ public class TabUtil {
             if (!tabStateDir.mkdir()) {
                 throw new IOException("Could not create tab state directory: " + tabStateDir);
             } else {
-                Files.setAttribute(Paths.get(tabStateDir.getAbsolutePath()), "dos:hidden", true);
+                hideIfSupported(tabStateDir.toPath());
             }
         }
 
         return tabStateDir;
+    }
+
+    /**
+     * Marks the tab state directory hidden on filesystems that record hiding as a file attribute.
+     *
+     * <p>That is a DOS attribute, so it exists on Windows and nowhere else - asking for the {@code dos} view on any
+     * other filesystem throws {@link UnsupportedOperationException}. Elsewhere the leading dot in
+     * {@value #TAB_STATE_DIRECTORY} already hides the directory by convention, so there is nothing to do.</p>
+     *
+     * <p>Hiding is cosmetic either way, so a failure is logged rather than propagated: losing the whole session's tab
+     * state because its directory could not be made invisible would be a poor trade.</p>
+     *
+     * @param directory the newly created tab state directory
+     */
+    private static void hideIfSupported(Path directory) {
+        if (!directory.getFileSystem().supportedFileAttributeViews().contains("dos")) {
+            return;
+        }
+
+        try {
+            Files.setAttribute(directory, "dos:hidden", true);
+        } catch (IOException | UnsupportedOperationException ex) {
+            LOGGER.warn(ex, "Could not hide the tab state directory {}", directory);
+        }
     }
 
     public static void loadMany(List<File> files, MenuBarOwner owner) {

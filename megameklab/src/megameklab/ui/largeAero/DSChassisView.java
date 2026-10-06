@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -261,7 +261,7 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     public boolean isDropship() {
-        return cbBaseType.getSelectedIndex() == TYPE_SMALL_CRAFT;
+        return cbBaseType.getSelectedIndex() == TYPE_DROPSHIP;
     }
 
     public boolean isSpheroid() {

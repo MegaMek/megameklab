@@ -658,6 +658,22 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     }
 
     @Override
+    public void autoAssignLifeboats() {
+        getSmallCraft().setLifeBoats(AeroUtil.getNAutoAssignEscapeEntities(getSmallCraft()));
+        refreshSummary();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void autoAssignEscapePods() {
+        getSmallCraft().setEscapePods(AeroUtil.getNAutoAssignEscapeEntities(getSmallCraft()));
+        refreshSummary();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
         refresh.refreshSummary();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2025-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -105,13 +105,25 @@ public class CIAdvancedView extends IView {
     }
 
     public void setFromEntity() {
-        EquipmentType armor = getInfantry().getArmorKit();
-        if (null != armor) {
-            txtArmor.setText(armor.getName());
+        String armorName;
+        if (getInfantry().hasArmor()) {
+            EquipmentType armor = getInfantry().getArmorKit();
+            if (null != armor) {
+                armorName = armor.getName();
+            } else {
+                armorName = getInfantry().getCustomArmorName() != null ? getInfantry().getCustomArmorName()
+                      : "Custom";
+                if (!getInfantry().getArmorSpecials().isBlank()) {
+                    armorName += " " + getInfantry().getArmorSpecials();
+                }
+            }
         } else {
-            String desc = getInfantry().getArmorDesc();
-            txtArmor.setText(desc.equals("1.0") ? "None" : desc);
+            armorName = "None";
+            if (!getInfantry().getArmorSpecials().isBlank()) {
+                armorName += " " + getInfantry().getArmorSpecials();
+            }
         }
+        txtArmor.setText(armorName);
         updateSpecializations();
         updateAugments();
     }
@@ -219,7 +231,7 @@ public class CIAdvancedView extends IView {
 
     /**
      * A very specialized text pane to display a list of specializations/augmentations. It is non-editable and
-     * width-controlled, set to html and given a border.
+     * width-controlled, set to HTML and given a border.
      */
     static class OptionsListTextPane extends JTextPane {
 

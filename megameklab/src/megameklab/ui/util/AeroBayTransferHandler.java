@@ -203,7 +203,6 @@ public class AeroBayTransferHandler extends TransferHandler {
                             UnitUtil.changeMountStatus(eSource.getEntity(), m.getLinkedBy(),
                                   Entity.LOC_NONE, Entity.LOC_NONE, false);
                             m.getLinkedBy().setLinked(null);
-                            m.setLinkedBy(null);
                         }
                     }
                     UnitUtil.compactCriticalSlots(eSource.getEntity());

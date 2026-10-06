@@ -48,8 +48,8 @@ public class BMStatusBar extends StatusBar {
 
     public BMStatusBar(BMMainUI parent) {
         super(parent);
-        add(slots);
-        add(heat);
+        addStatusComponent(slots);
+        addStatusComponent(heat);
     }
 
     @Override

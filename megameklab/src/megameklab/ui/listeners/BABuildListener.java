@@ -49,7 +49,7 @@ public interface BABuildListener extends BuildListener {
 
     void exoskeletonChanged(boolean exoskeleton);
 
-    void harjelChanged(boolean harjel);
+    void harJelChanged(boolean harJel);
 
     void squadSizeChanged(int squadSize);
 

@@ -85,23 +85,26 @@ public abstract class TransportView extends BuildView implements ChangeListener 
 
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap, "lblFixed", "CVTransportView.lblFixed.text"), gbc);
 
         gbc.gridx = 2;
         gbc.gridy = 0;
         add(createLabel(resourceMap, "lblPod", "CVTransportView.lblPod.text"), gbc);
 
+        gbc.anchor = GridBagConstraints.EAST;
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(createLabel(resourceMap, "lblTroopSpace", "CVTransportView.lblTroopSpace.text"), gbc);
+        final JLabel lblTroopSpace = createLabel(resourceMap, "lblTroopSpace", "CVTransportView.lblTroopSpace.text",
+              "CVTransportView.troopSpace.tooltip");
+        add(lblTroopSpace, gbc);
 
         gbc.gridx = 1;
+        spnFixedTroop.setToolTipText(resourceMap.getString("CVTransportView.troopSpace.tooltip"));
         add(spnFixedTroop, gbc);
         spnFixedTroop.addChangeListener(this);
 
         gbc.gridx = 2;
+        spnPodTroop.setToolTipText(resourceMap.getString("CVTransportView.troopSpace.tooltip"));
         add(spnPodTroop, gbc);
         spnPodTroop.addChangeListener(this);
 
@@ -113,7 +116,7 @@ public abstract class TransportView extends BuildView implements ChangeListener 
                   1 / bayType.getWeight());
             gbc.gridx = 0;
             gbc.gridy++;
-            final JLabel lblBayType = createLabel("lbl" + bayType.name(), bayType.getDisplayName());
+            final JLabel lblBayType = createLabel("lbl" + bayType.name(), bayType.getDisplayName() + ":");
             lblBayType.setToolTipText(tooltip);
             add(lblBayType, gbc);
 

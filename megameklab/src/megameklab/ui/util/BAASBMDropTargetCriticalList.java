@@ -222,7 +222,7 @@ public class BAASBMDropTargetCriticalList extends JList<String> implements Mouse
                       && mount.getLocation() == BattleArmor.LOC_SQUAD
                       && (getUnit() instanceof BattleArmor)
                       && ((BattleArmor) getUnit()).getChassisType() != BattleArmor.CHASSIS_TYPE_QUAD) {
-                    menuItem = new JMenuItem("Mount as squad support weapon");
+                    menuItem = new JMenuItem("Mount as Squad Support Weapon");
                     menuItem.addActionListener(evt -> {
                         mount.setSquadSupportWeapon(true);
                         if (refresh != null) {
@@ -246,7 +246,7 @@ public class BAASBMDropTargetCriticalList extends JList<String> implements Mouse
                             enabled = true;
                         }
                     }
-                    menuItem = new JMenuItem("Mount as squad support weapon");
+                    menuItem = new JMenuItem("Mount as Squad Support Weapon");
                     menuItem.setEnabled(enabled);
                     menuItem.setToolTipText("Ammo can only be squad mounted along with a weapon that uses it");
                     menuItem.addActionListener(evt -> {
@@ -260,7 +260,7 @@ public class BAASBMDropTargetCriticalList extends JList<String> implements Mouse
 
                 // Allow removing squad support weapon
                 if (mount.isSquadSupportWeapon()) {
-                    menuItem = new JMenuItem("Remove squad support weapon mount");
+                    menuItem = new JMenuItem("Remove Squad Support Weapon Mount");
                     menuItem.addActionListener(evt -> {
                         mount.setSquadSupportWeapon(false);
                         // Can't have squad support weapon ammo with no
@@ -277,7 +277,7 @@ public class BAASBMDropTargetCriticalList extends JList<String> implements Mouse
 
                 // Unattach from a DWP
                 if (mount.is(EquipmentTypeLookup.BA_DWP) && (mount.getLinked() != null)) {
-                    menuItem = new JMenuItem("Remove attached weapon");
+                    menuItem = new JMenuItem("Remove Attached Weapon");
                     menuItem.addActionListener(evt -> {
                         BattleArmorUtil.emptyDwpApm(mount);
                         doRefresh();
@@ -287,7 +287,7 @@ public class BAASBMDropTargetCriticalList extends JList<String> implements Mouse
 
                 // Right-clicked on an AP Mount (can also be an armored glove) that has an attached weapon
                 if (mount.getType().hasFlag(MiscType.F_AP_MOUNT) && (mount.getLinked() != null)) {
-                    menuItem = new JMenuItem("Remove attached weapon");
+                    menuItem = new JMenuItem("Remove Attached Weapon");
                     menuItem.addActionListener(evt -> {
                         BattleArmorUtil.emptyDwpApm(mount);
                         doRefresh();
@@ -361,11 +361,11 @@ public class BAASBMDropTargetCriticalList extends JList<String> implements Mouse
 
                 if (getUnit().isOmni() && !mount.getType().isOmniFixedOnly()) {
                     if (mount.isOmniPodMounted()) {
-                        menuItem = new JMenuItem("Change to fixed mount");
+                        menuItem = new JMenuItem("Change to Fixed Mount");
                         menuItem.addActionListener(ev -> changeOmniMounting(false));
                         popup.add(menuItem);
                     } else if (UnitUtil.canPodMount(getUnit(), mount)) {
-                        menuItem = new JMenuItem("Change to pod mount");
+                        menuItem = new JMenuItem("Change to Pod Mount");
                         menuItem.addActionListener(ev -> changeOmniMounting(true));
                         popup.add(menuItem);
                     }

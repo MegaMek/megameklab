@@ -367,8 +367,6 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     public void armorTypeChanged(int at, int aTechLevel) {
         getJumpship().setArmorTechLevel(aTechLevel);
         getJumpship().setArmorType(at);
-        // recalculate tonnage
-        getJumpship().setArmorTonnage(getJumpship().getArmorWeight());
         panArmorAllocation.setFromEntity(getJumpship());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -709,6 +707,22 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     public void escapeChanged(int lifeBoats, int escapePods) {
         getJumpship().setLifeBoats(lifeBoats);
         getJumpship().setEscapePods(escapePods);
+        refreshSummary();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void autoAssignLifeboats() {
+        getJumpship().setLifeBoats(AeroUtil.getNAutoAssignEscapeEntities(getJumpship()));
+        refreshSummary();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void autoAssignEscapePods() {
+        getJumpship().setEscapePods(AeroUtil.getNAutoAssignEscapeEntities(getJumpship()));
         refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();

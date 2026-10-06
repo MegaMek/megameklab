@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -89,7 +89,7 @@ import megameklab.util.UnitUtil;
 
 /**
  * Variant of DropTargetCriticalList for aerospace units that groups weapons into bays. Also includes support for
- * treating spheroid small craft and dropships firing arcs separately from their locations.
+ * treating spheroid small craft and DropShips firing arcs separately from their locations.
  *
  * @author Neoancient
  */
@@ -101,7 +101,7 @@ public class BayWeaponCriticalTree extends JTree {
     public static final int BOTH = 1; // Can be mounted forward or rear (aerodyne wing arcs)
     public static final int AFT = 2; // Always rear mounted, displayed as forward (spheroid aft side arcs)
 
-    // In the case of spheroid dropships side locations this represents either
+    // In the case of spheroid DropShips side locations this represents either
     // forward or aft weapons.
     private final int location;
     private int facing;
@@ -402,7 +402,7 @@ public class BayWeaponCriticalTree extends JTree {
         }
         if (updateMount) {
             Mounted<?> moveTo = null;
-            if (mounted.getType() instanceof AmmoType) {
+            if (mounted.getType() instanceof AmmoType && !eSource.getEntity().isSmallCraft()) {
                 moveTo = UnitUtil.findUnallocatedAmmo(eSource.getEntity(), mounted.getType());
                 if (null != moveTo) {
                     moveTo.setShotsLeft(moveTo.getBaseShotsLeft() + mounted.getBaseShotsLeft());
@@ -466,9 +466,15 @@ public class BayWeaponCriticalTree extends JTree {
      *
      * @param ammo  The allocated ammo to remove.
      * @param shots The number of shots to remove.
+     * @param node The parent node of ammo
      */
-    private void deleteAmmo(final AmmoMounted ammo, int shots) {
-        ammo.setShotsLeft(ammo.getBaseShotsLeft());
+    private void deleteAmmo(final AmmoMounted ammo, int shots, EquipmentNode node) {
+        int shotsLeft = ammo.getBaseShotsLeft() - shots;
+        if (shotsLeft > 0) {
+            ammo.setShotsLeft(ammo.getBaseShotsLeft() - shots);
+        } else {
+            deleteEquipment(node);
+        }
         safeRefreshAll();
     }
 
@@ -812,10 +818,10 @@ public class BayWeaponCriticalTree extends JTree {
 
                     JPopupMenu popup = new JPopupMenu();
                     popup.setAutoscrolls(true);
-                    JMenuItem info;
 
                     if (node.isLeaf()) {
-                        if (node.getMounted().getType() instanceof AmmoType at) {
+                        if (node.getMounted().getType() instanceof AmmoType at
+                              && !eSource.getEntity().isSmallCraft()) {
                             if (node.getMounted().getBaseShotsLeft() > at.getShots()) {
                                 JMenuItem remove = new JMenuItem("Remove...");
                                 popup.add(remove);
@@ -841,40 +847,39 @@ public class BayWeaponCriticalTree extends JTree {
                                     if (shots <= 0) {
                                         return;
                                     }
-                                    deleteAmmo((AmmoMounted) node.getMounted(), shots);
+                                    deleteAmmo((AmmoMounted) node.getMounted(), shots, node);
                                 });
                                 popup.addSeparator();
                             }
-                            info = new JMenuItem("Remove all");
-                            info.addActionListener(ev -> removeEquipment(node));
-                            popup.add(info);
-                            info = new JMenuItem("Delete all");
-                            info.addActionListener(ev -> deleteEquipment(node));
+                            JMenuItem removeAll = new JMenuItem("Remove All");
+                            removeAll.addActionListener(ev -> removeEquipment(node));
+                            popup.add(removeAll);
+                            JMenuItem deleteAll = new JMenuItem("Delete All");
+                            deleteAll.addActionListener(ev -> deleteEquipment(node));
+                            popup.add(deleteAll);
                         } else {
-                            info = new JMenuItem("Remove " + mounted.getName());
+                            JMenuItem remove = new JMenuItem("Remove " + mounted.getName());
                             if ((node.getParent() instanceof BayNode)
                                   && (node.getParent().getChildCount() == 1)) {
-                                info.addActionListener(ev -> removeBay((BayNode) node.getParent()));
+                                remove.addActionListener(ev -> removeBay((BayNode) node.getParent()));
                             } else {
-                                info.addActionListener(ev -> removeEquipment(node));
+                                remove.addActionListener(ev -> removeEquipment(node));
                             }
-                            popup.add(info);
-
-                            info = new JMenuItem("Delete " + mounted.getName());
-                            info.addActionListener(ev -> deleteEquipment(node));
+                            popup.add(remove);
+                            JMenuItem delete = new JMenuItem("Delete " + mounted.getName());
+                            delete.addActionListener(ev -> deleteEquipment(node));
+                            popup.add(delete);
                         }
                     } else {
-                        info = new JMenuItem("Remove entire bay");
-                        info.addActionListener(ev -> removeBay((BayNode) node));
-                        popup.add(info);
+                        JMenuItem removeEntireBay = new JMenuItem("Remove Entire Bay");
+                        removeEntireBay.addActionListener(ev -> removeBay((BayNode) node));
+                        popup.add(removeEntireBay);
                     }
                     if (facing == BOTH) {
-                        info = new JMenuItem("Change facing");
-                        info.addActionListener(ev -> setBayFacing(node, !node.getMounted().isRearMounted()));
-                        popup.add(info);
+                        JMenuItem changeFacing = new JMenuItem("Change Facing");
+                        changeFacing.addActionListener(ev -> setBayFacing(node, !node.getMounted().isRearMounted()));
+                        popup.add(changeFacing);
                     }
-
-                    popup.add(info);
 
                     if (popup.getComponentCount() > 0) {
                         popup.show(BayWeaponCriticalTree.this, e.getX(), e.getY());
@@ -1067,13 +1072,21 @@ public class BayWeaponCriticalTree extends JTree {
                 model.insertNodeInto(eqNode, bayNode, bayNode.getChildCount());
                 eqNode.setParent(bayNode);
 
-                if (eq.getType() instanceof WeaponType) {
+                if (eq instanceof WeaponMounted) {
                     bay.addWeaponToBay(eSource.getEntity().getEquipmentNum(eq));
                     if (eq.getLinkedBy() != null) {
                         moveToArc(eq.getLinkedBy());
                     }
-                } else if (eq.getType() instanceof AmmoType) {
+                } else if (eq instanceof AmmoMounted) {
                     bay.addAmmoToBay(eSource.getEntity().getEquipmentNum(eq));
+                    updateAmmoCapacity((AmmoMounted) eq);
+                    final AmmoTypeEnum ammoTypeEnum = ((AmmoMounted) eq).getType().getAmmoType();
+                    for (WeaponMounted weapon : bay.getBayWeapons()) {
+                        if (weapon.getLinked() == null && weapon.getType().getAmmoType() == ammoTypeEnum) {
+                            weapon.setLinked(eq);
+                            break;
+                        }
+                    }
                 }
             } else {
                 logger.debug("{}[{}] not found in {}",

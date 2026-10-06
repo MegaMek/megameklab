@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2018-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -116,6 +116,8 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -129,20 +131,17 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblMotiveType", "ProtomekChassisView.cbMotiveType.text"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbc.gridwidth = 3;
         cbMotiveType.addItem(MOTIVE_TYPE_BIPED);
         cbMotiveType.addItem(MOTIVE_TYPE_QUAD);
         cbMotiveType.addItem(MOTIVE_TYPE_GLIDER);
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
 
-        gbc.gridx = 0;
+        gbc.gridx = 1;
         gbc.gridy++;
-        gbc.gridwidth = 2;
         chkMainGun.setText(resourceMap.getString("ProtomekChassisView.chkMainGun.text"));
         chkMainGun.setToolTipText(resourceMap.getString("ProtomekChassisView.chkMainGun.tooltip"));
         add(chkMainGun, gbc);
@@ -150,32 +149,26 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy++;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap, "lblEnhancements", "ProtomekChassisView.lblEnhancements.text"), gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy++;
+        gbc.gridx = 1;
         chkMyomerBooster.setText(resourceMap.getString("ProtomekChassisView.chkMyomerBooster.text"));
         chkMyomerBooster.setToolTipText(resourceMap.getString("ProtomekChassisView.chkMyomerBooster.tooltip"));
         add(chkMyomerBooster, gbc);
         chkMyomerBooster.addActionListener(this);
 
-        gbc.gridx = 0;
         gbc.gridy++;
         chkPartialWing.setText(resourceMap.getString("ProtomekChassisView.chkPartialWing.text"));
         chkPartialWing.setToolTipText(resourceMap.getString("ProtomekChassisView.chkPartialWing.tooltip"));
         add(chkPartialWing, gbc);
         chkPartialWing.addActionListener(this);
 
-        gbc.gridx = 0;
         gbc.gridy++;
         chkMagneticClamps.setText(resourceMap.getString("ProtomekChassisView.chkMagneticClamps.text"));
         chkMagneticClamps.setToolTipText(resourceMap.getString("ProtomekChassisView.chkMagneticClamps.tooltip"));
         add(chkMagneticClamps, gbc);
         chkMagneticClamps.addActionListener(this);
 
-        gbc.gridx = 0;
         gbc.gridy++;
         chkISInterface.setText(resourceMap.getString("ProtomekChassisView.chkISInterface.text"));
         chkISInterface.setToolTipText(resourceMap.getString("ProtomekChassisView.chkISInterface.tooltip"));
@@ -215,21 +208,13 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
 
     public void refresh() {
         refreshTonnage();
-        chkMyomerBooster.setVisible((null != myomerBooster) && techManager.isLegal(myomerBooster));
-        chkPartialWing.setVisible((null != partialWing) && techManager.isLegal(partialWing));
-        chkMagneticClamps.setVisible((null != magneticClamps)
-              && (getMotiveType() == MOTIVE_TYPE_BIPED)
-              && techManager.isLegal(magneticClamps));
-        chkISInterface.setVisible(techManager.isLegal(ProtoMek.TA_INTERFACE_COCKPIT));
+        refreshEnhancements();
     }
 
     private void refreshTonnage() {
-        int min = (int) TestProtoMek.MIN_TONNAGE;
-        int max = (int) TestProtoMek.MAX_STD_TONNAGE;
+        int min = getMinimumTonnage();
+        int max = getMaximumTonnage();
         spnTonnage.removeChangeListener(this);
-        if (techManager.isLegal(ProtoMek.TA_ULTRA)) {
-            max = (int) TestProtoMek.MAX_TONNAGE;
-        }
         tonnageModel.setMinimum(min);
         tonnageModel.setMaximum(max);
         spnTonnage.addChangeListener(this);
@@ -240,12 +225,35 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         }
     }
 
+    private void refreshEnhancements() {
+        chkMyomerBooster.setEnabled(myomerBooster != null
+              && getMotiveType() != MOTIVE_TYPE_GLIDER
+              && techManager.isLegal(myomerBooster));
+        chkPartialWing.setEnabled(partialWing != null
+              && getMotiveType() != MOTIVE_TYPE_GLIDER
+              && techManager.isLegal(partialWing));
+        chkMagneticClamps.setEnabled(magneticClamps != null
+              && getMotiveType() == MOTIVE_TYPE_BIPED
+              && techManager.isLegal(magneticClamps));
+        chkISInterface.setEnabled(techManager.isLegal(ProtoMek.TA_INTERFACE_COCKPIT));
+    }
+
     public double getTonnage() {
         return tonnageModel.getNumber().doubleValue();
     }
 
     public void setTonnage(double tonnage) {
         spnTonnage.setValue((int) Math.ceil(tonnage));
+    }
+
+    private int getMinimumTonnage() {
+        return (techManager.isLegal(ProtoMek.TA_ULTRA) && techManager.isLegal(ProtoMek.TA_GLIDER) && getMotiveType() == MOTIVE_TYPE_GLIDER) ?
+              (int) TestProtoMek.MAX_STD_TONNAGE + 1 : (int) TestProtoMek.MIN_TONNAGE ;
+    }
+
+    private int getMaximumTonnage() {
+        return techManager.isLegal(ProtoMek.TA_ULTRA) ? (int) TestProtoMek.MAX_TONNAGE :
+              (int) TestProtoMek.MAX_STD_TONNAGE;
     }
 
     public int getMotiveType() {

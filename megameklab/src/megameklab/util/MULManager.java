@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2025-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -36,6 +36,7 @@ import java.io.File;
 import java.util.Vector;
 import javax.swing.JFrame;
 
+import megamek.client.ui.util.MULVersionValidator;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.MULParser;
 import megamek.common.units.Entity;
@@ -78,7 +79,11 @@ public class MULManager {
     public static void loadForceFromMUL(File file) {
         try {
             ForceBuildUI forceBuildUI = ForceBuildUI.getInstance();
-            Vector<Entity> loadedUnits = new MULParser(file, forceBuildUI.getGame().getOptions()).getEntities();
+            MULParser parser = new MULParser(file, forceBuildUI.getGame().getOptions());
+            if (!MULVersionValidator.isCorrectVersion(forceBuildUI, parser)) {
+                return;
+            }
+            Vector<Entity> loadedUnits = parser.getEntities();
             loadedUnits.trimToSize();
             forceBuildUI.clear();
             for (Entity entity : loadedUnits) {

@@ -51,8 +51,8 @@ public class BAStatusBar extends StatusBar {
 
     public BAStatusBar(final BAMainUI parent) {
         super(parent);
-        add(move);
-        add(suitWeight);
+        addStatusComponent(move);
+        addStatusComponent(suitWeight);
     }
 
     @Override

@@ -37,21 +37,30 @@ import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JDialog;
 
+import megamek.common.TechConstants;
+import megamek.common.annotations.Nullable;
 import megamek.common.battleArmor.BattleArmor;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.Mounted;
+import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityWeightClass;
-import megamek.common.equipment.EquipmentType;
-import megamek.common.interfaces.ITechManager;
-import megamek.common.equipment.Mounted;
-import megamek.common.TechConstants;
 import megameklab.ui.MegaMekLabMainUI;
+import megameklab.ui.battlefieldSupport.BFSAssetSource;
+import megameklab.ui.battlefieldSupport.BFSLinkedAssetSupport;
+import megameklab.ui.battlefieldSupport.BFSLinkedEditor;
+import megameklab.ui.battlefieldSupport.BFSStructureTab;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
+import megameklab.ui.generalUnit.AnalysisTab;
+import megameklab.ui.generalUnit.AvailabilityTab;
 import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
+import megameklab.util.CConfig;
 
-public class BAMainUI extends MegaMekLabMainUI {
+public class BAMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
 
     private BAStructureTab structureTab;
     private BABuildTab buildTab;
@@ -59,12 +68,17 @@ public class BAMainUI extends MegaMekLabMainUI {
     private FluffTab fluffTab;
     private BAStatusBar statusbar;
     private PreviewTab previewTab;
+    private BFSStructureTab bfsTab;
+    private java.awt.Component bfsTabScroll;
+    private final BFSLinkedAssetSupport assetSupport = new BFSLinkedAssetSupport(this::getEntity);
+    private AnalysisTab analysisTab;
 
     @Override
     protected FluffTab getFluffTab() {
         return fluffTab;
     }
     private QuirksTab quirksTab;
+    private AvailabilityTab availabilityTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public BAMainUI(Entity entity, String filename) {
@@ -87,22 +101,35 @@ public class BAMainUI extends MegaMekLabMainUI {
         equipTab = new BAEquipmentTab(this);
         fluffTab = new FluffTab(this);
         quirksTab = new QuirksTab(this);
+        availabilityTab = new AvailabilityTab(this);
         statusbar = new BAStatusBar(this);
         buildTab = new BABuildTab(this);
         previewTab = new PreviewTab(this);
+        analysisTab = new AnalysisTab(this);
         structureTab.addRefreshedListener(this);
+        bfsTab = new BFSStructureTab(this, assetSupport);
+        bfsTab.addRefreshedListener(this);
+        bfsTabScroll = new TabScrollPane(bfsTab);
         equipTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
         quirksTab.addRefreshedListener(this);
+        availabilityTab.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", equipTab);
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
+        if (CConfig.showAvailabilityTab()) {
+            configPane.addTab("Availability", availabilityTab);
+        }
         configPane.addTab("Preview", previewTab);
+        // The Asset tab is only shown while the asset is enabled; the checkbox in the Structure tab toggles it.
+        BFSLinkedEditor.setAssetTabVisible(configPane, bfsTabScroll, "Asset", previewTab,
+              assetSupport.isBattlefieldSupportAssetEnabled());
+        configPane.addTab("Analysis", analysisTab);
 
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
@@ -144,10 +171,50 @@ public class BAMainUI extends MegaMekLabMainUI {
         refreshStructure();
         refreshEquipmentTable();
         quirksTab.refresh();
+        availabilityTab.refresh();
         fluffTab.refresh();
         refreshBuild();
         refreshPreview();
+        if (bfsTab != null) {
+            bfsTab.refresh();
+        }
         refreshHeader();
+    }
+
+    @Override
+    protected BFSAssetSource getBattlefieldSupportAssetSource() {
+        return assetSupport;
+    }
+
+    @Override
+    protected void applyRestoredAsset(@Nullable BattlefieldSupportAsset asset) {
+        assetSupport.adoptAsset(asset);
+        BFSLinkedEditor.setAssetTabVisible(configPane, bfsTabScroll, "Asset", previewTab,
+              assetSupport.isBattlefieldSupportAssetEnabled());
+        if (bfsTab != null) {
+            bfsTab.refresh();
+        }
+    }
+
+    @Override
+    public void setBattlefieldSupportAssetLinked(boolean enabled) {
+        assetSupport.setBattlefieldSupportAssetEnabled(enabled);
+        BFSLinkedEditor.setAssetTabVisible(configPane, bfsTabScroll, "Asset", previewTab, enabled);
+        if (enabled && (bfsTab != null)) {
+            bfsTab.refresh();
+        }
+        requestDirtyCheck();
+        refreshHeader();
+    }
+
+    @Override
+    public boolean isBattlefieldSupportAssetLinked() {
+        return assetSupport.isBattlefieldSupportAssetEnabled();
+    }
+
+    @Override
+    public boolean isBattlefieldSupportAssetMotiveEligible() {
+        return BFSLinkedAssetSupport.isMotiveEligible(getEntity());
     }
 
     @Override
@@ -193,11 +260,18 @@ public class BAMainUI extends MegaMekLabMainUI {
     public void refreshPreview() {
         super.refreshPreview();
         previewTab.refresh();
+        if (bfsTab != null) {
+            bfsTab.refresh();
+        }
+        analysisTab.refresh();
     }
 
     @Override
     public void refreshSummary() {
         super.refreshSummary();
+        if (bfsTab != null) {
+            bfsTab.refresh();
+        }
     }
 
     @Override

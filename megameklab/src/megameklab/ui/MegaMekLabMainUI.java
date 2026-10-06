@@ -35,6 +35,7 @@ package megameklab.ui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Window;
+import java.io.IOException;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,12 +47,17 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import megamek.client.ui.clientGUI.GUIPreferences;
+import megamek.common.annotations.Nullable;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.equipment.Mounted;
 import megamek.common.ui.DetachedTabInfo;
 import megamek.common.ui.EnhancedTabbedPane;
 import megamek.common.ui.EnhancedTabbedPane.TabStateListener;
 import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
+import megameklab.ui.battlefieldSupport.BFSAssetSource;
+import megameklab.ui.battlefieldSupport.BFSLinkedEditor;
+import megameklab.ui.battlefieldSupport.BFSLinkedFiles;
 import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.RefreshListener;
@@ -75,6 +81,8 @@ public abstract class MegaMekLabMainUI extends JPanel
     private boolean dirty = false;
     private boolean dirtyCheckPending = false;
     private boolean forceDirtyUntilNextSave = false;
+    /** A base destination whose linked sidecar has not yet saved successfully. Survives Reload/Undo/session restore. */
+    private String pendingPairedSaveFileName = null;
     private UnitMemento savedUnitSnapshot = null;
     private UnitMemento currentSnapshot = null;
     private final Deque<UnitMemento> undoStack = new LinkedList<>();
@@ -308,18 +316,135 @@ public abstract class MegaMekLabMainUI extends JPanel
     }
 
     /**
-     * Apply a saved unit memento snapshot to the current entity.
+     * Apply a saved unit memento snapshot to the current entity (and its linked Battlefield Support Asset, if any).
      */
     private void restoreUnitState(UnitMemento state) {
         try {
             final Entity restoredEntity = state.createUnit();
             if (restoredEntity != null) {
                 entity = restoredEntity;
+                applyRestoredAsset(state.createAsset());
+                BFSAssetSource source = getBattlefieldSupportAssetSource();
+                if (source != null) {
+                    source.setBattlefieldSupportAssetEnabled(state.isAssetEnabled());
+                    source.setAssetFilePath(state.getAssetFilePath());
+                    if (this instanceof BFSLinkedEditor linkedEditor) {
+                        linkedEditor.setBattlefieldSupportAssetLinked(state.isAssetEnabled());
+                    }
+                }
                 refreshAll();
             }
         } catch (Exception e) {
             logger.error("Failed to apply saved state", e);
         }
+    }
+
+    /**
+     * The linked Battlefield Support Asset carrier this editor holds alongside its primary entity, or {@code null} when
+     * there is none. Derived from {@link #getBattlefieldSupportAssetSource()}: non-eligible editors and the standalone
+     * asset editor (whose {@link #getEntity()} already is the asset) have no source and return {@code null}; eligible
+     * base-unit editors expose their source so the base-class dirty/undo/redo/tab-state/save machinery can track the
+     * base unit and its asset as a single unit of state.
+     *
+     * @return the linked asset carrier when enabled, or {@code null}
+     */
+    public @Nullable BattlefieldSupportAsset getBattlefieldSupportAsset() {
+        BFSAssetSource source = getBattlefieldSupportAssetSource();
+        return (source == null) ? null : source.getEnabledAsset();
+    }
+
+    /** @return the linked asset carrier without creating or enabling it, or {@code null}. */
+    public @Nullable BattlefieldSupportAsset getBattlefieldSupportAssetCarrier() {
+        BFSAssetSource source = getBattlefieldSupportAssetSource();
+        return (source == null) ? null : source.getExistingBattlefieldSupportAssetCarrier();
+    }
+
+    /** @return whether this editor's linked asset is enabled. */
+    public boolean isBattlefieldSupportAssetEnabled() {
+        BFSAssetSource source = getBattlefieldSupportAssetSource();
+        return (source != null) && source.isBattlefieldSupportAssetEnabled();
+    }
+
+    /**
+     * @return the file the linked asset was loaded from / last saved to (a {@code .bfs} path), or {@code null} for a
+     *       newly-added asset or an editor with no linked asset. Used to preserve the asset's save location across
+     *       tab-state (session restore).
+     */
+    public @Nullable String getBattlefieldSupportAssetFilePath() {
+        BFSAssetSource source = getBattlefieldSupportAssetSource();
+        return (source == null) ? null : source.getAssetFilePath();
+    }
+
+    /**
+     * @return the base destination whose linked sidecar still needs to be saved, or {@code null} when the pair is
+     *       complete. Used by tab-state persistence so an ordinary Save after session restore cannot target the old
+     *       sidecar.
+     */
+    public @Nullable String getPendingPairedSaveFileName() {
+        return pendingPairedSaveFileName;
+    }
+
+    /** Restores an incomplete paired-save destination from tab-state persistence. */
+    public void restorePendingPairedSaveFileName(@Nullable String pendingFileName) {
+        pendingPairedSaveFileName = ((pendingFileName == null) || pendingFileName.isBlank())
+              ? null : pendingFileName;
+        if (pendingPairedSaveFileName != null) {
+            forceDirtyUntilNextSave = true;
+        }
+    }
+
+    /**
+     * The linked Battlefield Support Asset source (carrier + enable flag + asset file path) this editor holds, or
+     * {@code null} when this editor cannot hold a linked asset. Eligible base-unit editors override this to expose their
+     * {@code BFSLinkedAssetSupport}.
+     *
+     * @return the asset source, or {@code null}
+     */
+    protected @Nullable BFSAssetSource getBattlefieldSupportAssetSource() {
+        return null;
+    }
+
+    /**
+     * @return whether this editor can hold a linked Battlefield Support Asset alongside its base unit (i.e. it is one of
+     *       the eligible base-unit editors). Used by the open pipeline to decide whether to look for a linked asset.
+     */
+    public boolean canHoldLinkedBattlefieldSupportAsset() {
+        return getBattlefieldSupportAssetSource() != null;
+    }
+
+    /**
+     * Adopts a linked Battlefield Support Asset loaded from a file/cache when opening this base unit, recording where it
+     * came from. Called by the open pipeline before the tabs are built, so the Asset tab shows enabled. The default is a
+     * no-op (editors that cannot hold an asset); eligible editors adopt it via their source.
+     *
+     * @param asset         the loaded asset carrier, or {@code null} for none
+     * @param assetFilePath the {@code .bfs} file the asset was loaded from, or {@code null}
+     */
+    public void adoptLinkedBattlefieldSupportAsset(@Nullable BattlefieldSupportAsset asset,
+          @Nullable String assetFilePath) {
+                adoptLinkedBattlefieldSupportAsset(asset, assetFilePath, asset != null);
+        }
+
+        /** Restores the complete linked-asset state, including a disabled carrier. */
+        public void adoptLinkedBattlefieldSupportAsset(@Nullable BattlefieldSupportAsset asset,
+                    @Nullable String assetFilePath, boolean enabled) {
+        BFSAssetSource source = getBattlefieldSupportAssetSource();
+        if (source != null) {
+            source.adoptAsset(asset);
+            source.setBattlefieldSupportAssetEnabled(enabled);
+            source.setAssetFilePath(assetFilePath);
+        }
+    }
+
+    /**
+     * Re-injects a Battlefield Support Asset carrier restored from a memento (undo/redo/reload) back onto this editor.
+     * The default is a no-op (for editors with no linked asset); eligible base-unit editors override this to adopt the
+     * restored carrier.
+     *
+     * @param asset the restored asset carrier, or {@code null} if the memento had none
+     */
+    protected void applyRestoredAsset(@Nullable BattlefieldSupportAsset asset) {
+        // No-op by default; eligible base-unit editors override.
     }
 
     /**
@@ -365,8 +490,8 @@ public abstract class MegaMekLabMainUI extends JPanel
     }
 
     public boolean saveUnitAs() {
+        commitPendingEditorChanges();
         warnOnInvalid();
-        commitFluffTabChanges();
         UnitUtil.compactCriticalSlots(getEntity());
         refreshAll();
         final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
@@ -376,34 +501,83 @@ public abstract class MegaMekLabMainUI extends JPanel
         if (file == null) {
             return false;
         }
-        forceDirtyUntilNextSave = false;
-        setFileName(file);
-        resetDirty();
-        return true;
-
+        return completePairedSave(file, true, fileSaver.getLastUnitFileUUIDConflictChoice());
     }
 
     public boolean saveUnit() {
         if (getEntity() == null) {
             logger.error("Tried to save null entity.");
             return false;
-        } else {
-            warnOnInvalid();
         }
-        commitFluffTabChanges();
+        commitPendingEditorChanges();
+        warnOnInvalid();
         UnitUtil.compactCriticalSlots(entity);
         final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
         final MegaMekLabFileSaver fileSaver = new MegaMekLabFileSaver(logger,
               resources.getString("dialog.saveAs.title"));
         refreshAll(); // The crits may have moved
+        final String previousFileName = getFileName();
         String file = fileSaver.saveUnit(getParentFrame(), this, getEntity());
         if (file == null) {
             return false;
         }
-        forceDirtyUntilNextSave = false;
+        boolean baseMovedOrNew = !file.equals(previousFileName);
+        return completePairedSave(file, baseMovedOrNew, fileSaver.getLastUnitFileUUIDConflictChoice());
+    }
+
+    /**
+     * Finishes a base-unit save by saving its linked sidecar and tracking whether the pair remains incomplete. A failed
+     * destination remains pending across Reload/Undo/session restore; a later ordinary Save therefore still treats it
+     * as Save As and retries the co-located sidecar instead of overwriting the sidecar associated with the prior base
+     * file.
+     */
+    boolean completePairedSave(String file, boolean baseMovedOrNew,
+          @Nullable PopupMessages.UnitFileUUIDChoice baseConflictChoice) {
+        boolean pendingDestination = file.equals(pendingPairedSaveFileName);
+        boolean requiresFreshSidecar = baseMovedOrNew || pendingDestination;
+        if (!saveLinkedAsset(new java.io.File(file), requiresFreshSidecar, baseConflictChoice)) {
+            setFileName(file);
+            if (requiresFreshSidecar) {
+                pendingPairedSaveFileName = file;
+            }
+            forceDirtyUntilNextSave = true;
+            refreshHeader();
+            return false;
+        }
         setFileName(file);
+        pendingPairedSaveFileName = null;
+        forceDirtyUntilNextSave = false;
         resetDirty();
         return true;
+    }
+
+    /**
+     * Writes (or, when the asset has been disabled, offers to delete) the linked Battlefield Support Asset {@code .bfs}
+     * sidecar for a base unit just saved to {@code baseFile}. A no-op for editors with no linked-asset source.
+     *
+     * @param baseFile           the base unit file that was just saved
+     * @param baseMovedOrNew     whether the base was saved to a new/different file (so the sidecar is written fresh
+     *                           beside it rather than to the asset's previous location)
+     * @param baseConflictChoice the UUID conflict choice made for the base unit (so the asset follows it), or
+     *                           {@code null} if the base save had no conflict
+     */
+    private boolean saveLinkedAsset(java.io.File baseFile, boolean baseMovedOrNew,
+          @Nullable PopupMessages.UnitFileUUIDChoice baseConflictChoice) {
+        BFSAssetSource source = getBattlefieldSupportAssetSource();
+        if (source == null) {
+            return true;
+        }
+        // Pass the base unit's final UUID so the sidecar is re-linked to it: the base UUID may have just changed during
+        // the save (e.g. Save-As over an existing file adopts that file's UUID), which would otherwise leave the
+        // sidecar pointing at the stale in-memory UUID.
+        try {
+            return BFSLinkedFiles.handleSidecarOnSave(getParentFrame(), source, baseFile,
+                getEntity().getUnitFileUUID(), baseMovedOrNew, baseConflictChoice);
+        } catch (IOException e) {
+            logger.error(e, "Failed to write linked Battlefield Support Asset sidecar");
+            PopupMessages.showFileWriteError(getParentFrame(), e.getMessage());
+            return false;
+        }
     }
 
     public boolean exit() {
@@ -423,6 +597,11 @@ public abstract class MegaMekLabMainUI extends JPanel
         if (fluffTab != null) {
             fluffTab.commitChanges();
         }
+    }
+
+    /** Commits controls that normally update on focus loss before save refreshes the editor. */
+    protected void commitPendingEditorChanges() {
+        commitFluffTabChanges();
     }
 
     /**
