@@ -87,6 +87,9 @@ dependencies {
     implementation 'com.formdev:flatlaf:3.7.1'
     implementation 'com.formdev:flatlaf-extras:3.7.1'
 
+    implementation 'org.commonmark:commonmark:0.30.0'
+    implementation 'org.jsoup:jsoup:1.23.2'
+
     implementation('org.apache.commons:commons-collections4:4.5.0')
 
     testImplementation 'org.mockito:mockito-core:5.23.0'
