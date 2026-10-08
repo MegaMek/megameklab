@@ -308,11 +308,22 @@ tasks.register("copyLicenseFiles", Copy) {
     into fileStagingDir
 }
 
+tasks.register('officialUnitList', JavaExec) {
+    dependsOn jar
+    mustRunAfter(stageDataFiles)
+    description = 'Compiles a list of all units that come from official sources and saves it in the docs folder.'
+    group = 'utility'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'megamek.MegaMek'
+    args = ['-oul', "${projectDir}/docs/OfficialUnitList.txt"]
+}
+
 tasks.register('stageFiles', Copy) {
     description = 'Stages files that are to be copied into the distribution.'
 
     mustRunAfter(stageDataFiles)
     dependsOn gradle.includedBuild('megamek').task(':megamek:compileJava')
+    dependsOn officialUnitList
     dependsOn generateDynamicFiles
     dependsOn copyLicenseFiles
     if (rootProject.hasProperty('suiteReleaseVersion')) {
