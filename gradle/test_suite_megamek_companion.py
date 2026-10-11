@@ -1,4 +1,4 @@
-"""Material Gradle packaging regressions using the shared archive fixtures."""
+"""Material Gradle companion and launch-script packaging regressions."""
 
 import os
 from pathlib import Path
@@ -52,7 +52,7 @@ class CompanionPackagingTests(unittest.TestCase):
         primary.parent.mkdir(parents=True)
         primary.write_bytes(self.fixture.jar["MegaMekLab"])
         for name, content in self.fixture.entries("MegaMekLab").items():
-            if name == "lib/MegaMek.jar":
+            if name == "lib/MegaMek.jar" or name.startswith("bin/"):
                 continue
             target = self.root / "payload" / name
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -73,6 +73,13 @@ dependencies {
 tasks.named('jar') {
     archiveFileName = 'MegaMekLab.jar'
     enabled = false
+}
+tasks.register('createStartScripts', CreateStartScripts) {
+    applicationName = 'MegaMekLab'
+    mainClass = application.mainClass
+    outputDir = startScripts.outputDir
+    classpath = jar.outputs.files + files(sourceSets.main.runtimeClasspath.files)
+            .filter { it.name.endsWith('.jar') }
 }
 tasks.register('stageFiles')
 apply from: file(rootProject.property('companionScript'))
@@ -167,6 +174,32 @@ tasks.register('verifyExternal') {
         self.assertEqual((installed / "MegaMek.jar").read_bytes(),
                          self.fixture.jar["MegaMek"])
         self.assertTrue((installed / "other.jar").is_file())
+        scripts = installed.parent / "bin"
+        self.assertEqual({path.name for path in scripts.iterdir()},
+                         {"MegaMekLab", "MegaMekLab.bat"})
+        for name in ("MegaMekLab", "MegaMekLab.bat"):
+            self.assertIn(b"Fixture", (scripts / name).read_bytes())
+
+    def test_suite_scripts_replace_stale_aliases_before_packaging(self):
+        self.run_gradle(suite=False, companion=False)
+        scripts = self.root / "build" / "scripts"
+        for name in ("megameklab", "megameklab.bat"):
+            (scripts / name).write_bytes(b"stale default launcher")
+        output = self.run_gradle()
+        self.assertIn(":clearSuiteStartScripts", output)
+        self.assertIn(":createStartScripts", output)
+        self.assertEqual({path.name for path in scripts.iterdir()},
+                         {"MegaMekLab", "MegaMekLab.bat"})
+        with tarfile.open(self.tar) as archive:
+            prefix = "MegaMekLab-0.51.02/bin/"
+            launchers = {member.name.removeprefix(prefix): archive.extractfile(member).read()
+                         for member in archive.getmembers()
+                         if member.isfile() and member.name.startswith(prefix)}
+        self.assertEqual(set(launchers), {"MegaMekLab", "MegaMekLab.bat"})
+        for content in launchers.values():
+            for entry in (b"Fixture", b"MegaMekLab.jar", b"MegaMek.jar", b"other.jar"):
+                self.assertIn(entry, content)
+        self.assertEqual(self.packaged_jar(), self.fixture.jar["MegaMek"])
 
     def test_normal_build_keeps_sibling_jar(self):
         output = self.run_gradle(suite=False, companion=False)
