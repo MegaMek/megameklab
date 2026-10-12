@@ -523,6 +523,7 @@ tasks.register("packagePrepWork") {
 def suiteVersion = rootProject.findProperty('suiteReleaseVersion')?.toString()
 def labVersion = rootProject.findProperty('suiteMegaMekLabVersion')?.toString() ?: suiteVersion
 def gameVersionExpected = rootProject.findProperty('suiteMegaMekVersion')?.toString() ?: suiteVersion
+
 if (suiteVersion != null) {
     def suiteIdentity = [
             schemaVersion      : '1',
