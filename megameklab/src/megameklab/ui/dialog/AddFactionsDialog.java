@@ -181,7 +181,7 @@ public class AddFactionsDialog extends JDialog {
                   + (alreadyChosen.contains(code) ?
                   " - " + I18N.getString("AddFactionsDialog.alreadyAdded.text") :
                   ""));
-            umbrellaCheckBoxes.put(umbrella.getKey(), checkBox);
+            umbrellaCheckBoxes.put(code, checkBox);
             umbrellaPanel.add(checkBox);
         }
         topPanel.add(umbrellaPanel);
