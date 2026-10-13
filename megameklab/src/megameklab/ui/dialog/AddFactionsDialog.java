@@ -175,9 +175,12 @@ public class AddFactionsDialog extends JDialog {
         JPanel umbrellaPanel = new JPanel(new GridLayout(0, GROUP_COLUMNS));
         umbrellaPanel.setBorder(BorderFactory.createTitledBorder(I18N.getString("AddFactionsDialog.groups.text")));
         for (Map.Entry<String, String> umbrella : UMBRELLA_KEYS.entrySet()) {
-            JCheckBox checkBox = new JCheckBox(umbrella.getValue() + " (" + umbrella.getKey() + ")");
-            checkBox.setEnabled(!alreadyChosen.contains(umbrella.getKey()));
-            checkBox.setSelected(alreadyChosen.contains(umbrella.getKey()));
+            String code = umbrella.getKey();
+            JCheckBox checkBox = new JCheckBox(umbrella.getValue()
+                  + " (" + code + ")"
+                  + (alreadyChosen.contains(code) ?
+                  " - " + I18N.getString("AddFactionsDialog.alreadyAdded.text") :
+                  ""));
             umbrellaCheckBoxes.put(umbrella.getKey(), checkBox);
             umbrellaPanel.add(checkBox);
         }
@@ -301,12 +304,12 @@ public class AddFactionsDialog extends JDialog {
         List<String> chosen = new ArrayList<>();
 
         for (Map.Entry<String, JCheckBox> entry : umbrellaCheckBoxes.entrySet()) {
-            if (entry.getValue().isSelected() && !alreadyChosen.contains(entry.getKey())) {
+            if (entry.getValue().isSelected()) {
                 chosen.add(entry.getKey());
             }
         }
+
         for (Map.Entry<String, JCheckBox> entry : factionCheckBoxes.entrySet()) {
-            // No already-chosen guard here: re-adding a faction is how a player gives it a second year range.
             if (entry.getValue().isSelected()) {
                 chosen.add(entry.getKey());
             }
