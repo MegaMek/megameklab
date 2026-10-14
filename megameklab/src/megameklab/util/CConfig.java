@@ -52,6 +52,7 @@ import java.util.stream.Collectors;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
+import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.common.Configuration;
 import megamek.common.enums.WeaponSortOrder;
 import megamek.common.game.Game;
@@ -641,6 +642,9 @@ public final class CConfig {
         setParam(GUI_WS_MAIN_UI_WINDOW, "");
         setParam(GUI_HHW_MAIN_UI_WINDOW, "");
         setParam(GUI_TABBED_WINDOW, "");
+        GUIPreferences GUIP = GUIPreferences.getInstance();
+        GUIP.setMekSelectorPosX(0);
+        GUIP.setMekSelectorPosY(0);
         saveConfig();
     }
 
