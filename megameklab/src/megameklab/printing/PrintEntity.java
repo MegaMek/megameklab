@@ -398,7 +398,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     /**
-     * Resize the Weapons & Equipment Inventory when unit data fields are moved out of the way
+     * Resize the Weapons and Equipment Inventory when unit data fields are moved out of the way
      * (Used when the unit role or tech level is hidden).
      * The supplied element parameter should have the height by which the inventory should be extended upward.
      * @param shiftedElement The id of an element used for the height calculation, typically the element moved out of
