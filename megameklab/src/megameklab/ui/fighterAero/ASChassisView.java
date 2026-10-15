@@ -80,14 +80,15 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
 
     // Engines that can be used by aerospace or conventional fighters and the order they appear in the combobox
     private final static int[] ENGINE_TYPES = {
-          Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE, Engine.LIGHT_ENGINE,
-          Engine.COMPACT_ENGINE, Engine.FISSION, Engine.COMBUSTION_ENGINE
+          Engine.COMBUSTION_ENGINE, Engine.FISSION, Engine.COMPACT_ENGINE, Engine.NORMAL_ENGINE, Engine.LIGHT_ENGINE,
+          Engine.XL_ENGINE, Engine.XXL_ENGINE
     };
 
     // see MML#2095, TO:AUE p.120 and TM p.215 (errata!)
     private final static List<Integer> CF_ENGINE_TYPES = List.of(
-          Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE, Engine.LIGHT_ENGINE,
-          Engine.FISSION, Engine.COMBUSTION_ENGINE);
+          Engine.COMBUSTION_ENGINE, Engine.FISSION, Engine.NORMAL_ENGINE, Engine.LIGHT_ENGINE, Engine.XL_ENGINE,
+          Engine.XXL_ENGINE
+    );
 
     private final SpinnerNumberModel spnTonnageModel = new SpinnerNumberModel(20, 5, 100, 5);
     private String[] fighterTypeNames;
@@ -352,12 +353,10 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
             if (e.engineValid && techManager.isLegal(e) && (validCFEngine(e) || validASFEngine(e))) {
                 retVal.add(e);
             }
-            // Only add the opposite tech base if the engine is different.
-            if (isMixed && e.getSideTorsoCriticalSlots().length > 0) {
-                e = new Engine(getEngineRating(), i, altFlags);
-                if (e.engineValid && techManager.isLegal(e) && (validCFEngine(e) || validASFEngine(e))) {
-                    retVal.add(e);
-                }
+            // Only add the opposite tech base if the engine is not mixed tech.
+            e = new Engine(getEngineRating(), i, altFlags);
+            if (isMixed && !e.isMixedTech() && e.engineValid && techManager.isLegal(e) && (validCFEngine(e) || validASFEngine(e))) {
+                retVal.add(e);
             }
         }
         return retVal;
