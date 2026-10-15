@@ -44,23 +44,11 @@ import java.awt.GridLayout;
 import java.io.Serial;
 import java.text.MessageFormat;
 import java.util.*;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSlider;
-import javax.swing.JSpinner;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.ListSelectionModel;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
+import jakarta.annotation.Nonnull;
 import megamek.client.ratgenerator.AvailabilityRating;
 import megamek.client.ratgenerator.FactionRecord;
 import megamek.client.ratgenerator.MissionRole;
@@ -80,7 +68,6 @@ import megameklab.ui.generalUnit.AvailabilityTableModel.AvailabilityRow;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.AvailabilityCalibration;
-import org.jspecify.annotations.NonNull;
 
 /**
  * Lets a player say which factions field a custom unit, and how often, so it turns up in generated forces.
@@ -253,7 +240,7 @@ public class AvailabilityTab extends ITab {
         add(centreScroll, BorderLayout.CENTER);
     }
 
-    private @NonNull JScrollPane createWarningScroll() {
+    private @Nonnull JScrollPane createWarningScroll() {
         JScrollPane warningScroll = new JScrollPane(warningArea) {
             @Override
             public Dimension getPreferredSize() {

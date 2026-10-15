@@ -32,16 +32,19 @@
  */
 package megameklab.ui.util;
 
+import java.awt.Component;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 
-import megamek.common.annotations.Nullable;
+import jakarta.annotation.Nullable;
 import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.Mounted;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.units.AeroSpaceFighter;
 import megamek.common.units.Entity;
-import megamek.common.equipment.Mounted;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.logging.MMLogger;
@@ -50,10 +53,6 @@ import megameklab.ui.PopupMessages;
 import megameklab.util.AeroUtil;
 import megameklab.util.BattleArmorUtil;
 import megameklab.util.UnitUtil;
-
-import java.awt.Component;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
 
 /**
  * This is a base class for some of the transfer handlers used in MML. There is a conflict of targets between unifying

@@ -35,7 +35,7 @@ package megameklab.ui.battlefieldSupport;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
-import megamek.common.annotations.Nullable;
+import jakarta.annotation.Nullable;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.battlefieldSupport.BFSAssetType;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;

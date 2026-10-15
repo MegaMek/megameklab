@@ -48,7 +48,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import javax.swing.JOptionPane;
 
-import megamek.common.annotations.Nullable;
+import jakarta.annotation.Nullable;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.loaders.MekFileParser;

@@ -32,7 +32,13 @@
  */
 package megameklab.util;
 
-import megamek.common.annotations.Nullable;
+import static megamek.common.units.BaConstructionUtil.isFilledApm;
+import static megamek.common.units.BaConstructionUtil.isFilledDwp;
+
+import java.util.List;
+import java.util.stream.IntStream;
+
+import jakarta.annotation.Nullable;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.EquipmentType;
@@ -48,11 +54,6 @@ import megamek.common.weapons.attacks.StopSwarmAttack;
 import megamek.common.weapons.attacks.SwarmAttack;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.logging.MMLogger;
-
-import java.util.List;
-import java.util.stream.IntStream;
-
-import static megamek.common.units.BaConstructionUtil.*;
 
 public final class BattleArmorUtil {
 

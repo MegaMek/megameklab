@@ -37,8 +37,8 @@ import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JDialog;
 
+import jakarta.annotation.Nullable;
 import megamek.common.TechConstants;
-import megamek.common.annotations.Nullable;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
