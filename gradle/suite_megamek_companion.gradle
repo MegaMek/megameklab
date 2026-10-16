@@ -1,0 +1,49 @@
+def suiteVersion = rootProject.findProperty('suiteReleaseVersion')
+def companionArchive = rootProject.findProperty('suiteMegaMekArchiveFile')
+if (companionArchive != null && suiteVersion == null) {
+    throw new GradleException('suiteMegaMekArchiveFile requires suiteReleaseVersion')
+}
+
+ext.suiteMegaMekJar = {
+    companionArchive != null
+            ? layout.buildDirectory.file('suite/companions/MegaMek.jar').get().asFile
+            : new File(mmDir, 'megamek/build/libs/MegaMek.jar')
+}
+def companionFiles = files(suiteMegaMekJar())
+
+if (suiteVersion != null) {
+    if (companionArchive != null) {
+        def prepare = tasks.register('prepareSuiteMegaMekCompanion') {
+            description = 'Verifies the supplied MegaMek archive and copies its exact primary JAR.'
+            group = 'verification'
+            doLast {
+                verifySuiteArchiveShared('MegaMek', rootProject.file(companionArchive),
+                        suiteMegaMekJar(), [:], [:], true)
+            }
+        }
+        tasks.named('stageFiles') {
+            dependsOn prepare
+        }
+        companionFiles.builtBy prepare
+    } else {
+        tasks.named('stageFiles') {
+            dependsOn gradle.includedBuild('megamek').task(':megamek:jar')
+        }
+    }
+}
+
+distributions.main.contents {
+    from(companionFiles) {
+        into 'lib'
+    }
+    if (suiteVersion != null) {
+        // The application plugin contributes a rebuilt runtime JAR before this
+        // copy. Exclude that source, not the validated companion with the same name.
+        eachFile { details ->
+            if (details.path ==~ /(?:[^\/]+\/)?lib\/MegaMek\.jar/
+                    && details.file.canonicalFile != suiteMegaMekJar().canonicalFile) {
+                details.exclude()
+            }
+        }
+    }
+}

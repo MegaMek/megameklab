@@ -46,8 +46,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import jakarta.annotation.Nullable;
 import megamek.client.ui.clientGUI.GUIPreferences;
-import megamek.common.annotations.Nullable;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.equipment.Mounted;
 import megamek.common.ui.DetachedTabInfo;

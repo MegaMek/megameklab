@@ -50,6 +50,7 @@ import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import jakarta.annotation.Nullable;
 import megamek.client.ui.CopySystemDataAction;
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
@@ -61,7 +62,6 @@ import megamek.client.ui.dialogs.unitSelectorDialogs.EntityReadoutDialog;
 import megamek.client.ui.entityreadout.EntityReadout;
 import megamek.client.ui.util.UIUtil;
 import megamek.client.ui.util.ViewFormatting;
-import megamek.common.annotations.Nullable;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.enums.Faction;
 import megamek.common.interfaces.ITechManager;

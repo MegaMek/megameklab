@@ -49,6 +49,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import jakarta.annotation.Nullable;
 import megamek.MegaMek;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.client.ui.util.UIUtil;
@@ -59,7 +60,6 @@ import megamek.client.ui.widget.SkinSpecification.UIComponents;
 import megamek.client.ui.widget.SkinXMLHandler;
 import megamek.client.ui.widget.SkinnedJPanel;
 import megamek.common.Configuration;
-import megamek.common.annotations.Nullable;
 import megamek.common.loaders.MekSummary;
 import megamek.common.units.Entity;
 import megamek.common.util.ImageUtil;

@@ -44,9 +44,9 @@ import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import jakarta.annotation.Nullable;
 import megamek.client.ui.util.UIUtil.FixedYPanel;
 import megamek.common.CriticalSlot;
-import megamek.common.annotations.Nullable;
 import megamek.common.equipment.Mounted;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.units.FixedWingSupport;

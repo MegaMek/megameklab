@@ -34,7 +34,7 @@ package megameklab.ui.battlefieldSupport;
 
 import java.io.File;
 
-import megamek.common.annotations.Nullable;
+import jakarta.annotation.Nullable;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.loaders.MekSummary;

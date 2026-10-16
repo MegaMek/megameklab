@@ -53,13 +53,13 @@ import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jakarta.annotation.Nullable;
 import megamek.client.generator.RandomNameGenerator;
 import megamek.client.ui.util.FluffImageHelper;
 import megamek.client.ui.util.UIUtil;
 import megamek.common.Configuration;
 import megamek.common.CriticalSlot;
 import megamek.common.SimpleTechLevel;
-import megamek.common.annotations.Nullable;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.eras.Era;
 import megamek.common.eras.Eras;
@@ -398,7 +398,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     /**
-     * Resize the Weapons & Equipment Inventory when unit data fields are moved out of the way
+     * Resize the Weapons and Equipment Inventory when unit data fields are moved out of the way
      * (Used when the unit role or tech level is hidden).
      * The supplied element parameter should have the height by which the inventory should be extended upward.
      * @param shiftedElement The id of an element used for the height calculation, typically the element moved out of

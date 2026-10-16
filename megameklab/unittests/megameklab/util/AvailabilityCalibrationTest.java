@@ -45,19 +45,19 @@ class AvailabilityCalibrationTest {
     @Test
     void describeGivesAWordForEveryStepOfTheScale() {
         // The slider shows these, so a player never has to know the scale is logarithmic
-        assertEquals("none", AvailabilityCalibration.describe(0));
-        assertEquals("rare", AvailabilityCalibration.describe(3));
-        assertEquals("uncommon", AvailabilityCalibration.describe(5));
-        assertEquals("typical", AvailabilityCalibration.describe(6));
-        assertEquals("common", AvailabilityCalibration.describe(8));
-        assertEquals("ubiquitous", AvailabilityCalibration.describe(10));
+        assertEquals("None", AvailabilityCalibration.describe(0));
+        assertEquals("Rare", AvailabilityCalibration.describe(3));
+        assertEquals("Uncommon", AvailabilityCalibration.describe(5));
+        assertEquals("Typical", AvailabilityCalibration.describe(6));
+        assertEquals("Common", AvailabilityCalibration.describe(8));
+        assertEquals("Ubiquitous", AvailabilityCalibration.describe(10));
     }
 
     @Test
     void describeClampsOutOfRangeValues() {
         // A hand-edited file can carry anything; the tab must not blow up on it
-        assertEquals("none", AvailabilityCalibration.describe(-4));
-        assertEquals("ubiquitous", AvailabilityCalibration.describe(99));
+        assertEquals("None", AvailabilityCalibration.describe(-4));
+        assertEquals("Ubiquitous", AvailabilityCalibration.describe(99));
     }
 
     @Test

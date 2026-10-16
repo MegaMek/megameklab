@@ -123,7 +123,11 @@ jobs:
           java-version: ${{ matrix.java-version }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.3.0
+        uses: gradle/actions/setup-gradle@v6.4.0
+
+      - name: Test suite companion packaging
+        working-directory: megameklab
+        run: python3 -B -m unittest discover -s gradle -p 'test_suite_megamek_companion.py' -v
 
       - name: Add MMLRevision file
         run: |

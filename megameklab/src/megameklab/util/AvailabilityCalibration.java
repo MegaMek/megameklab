@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import megamek.client.ratgenerator.AvailabilityRating;
 import megamek.client.ratgenerator.ChassisRecord;
@@ -57,6 +58,7 @@ import megamek.client.ratgenerator.RATGenerator;
  * </p>
  */
 public final class AvailabilityCalibration {
+    private static final ResourceBundle I18N = ResourceBundle.getBundle("megameklab.resources.Views");
 
     /** How many comparable designs to offer. Enough to calibrate against, few enough to read at a glance. */
     public static final int COMPARABLE_UNIT_COUNT = 3;
@@ -78,12 +80,12 @@ public final class AvailabilityCalibration {
      *
      * @param availability the availability value, 0 to 10
      *
-     * @return a word for it, for example "typical"
+     * @return a word for it, for example "Typical"
      */
     public static String describe(int availability) {
         int clamped = Math.clamp(availability, 0, COMMONNESS_WORDS.length - 1);
 
-        return COMMONNESS_WORDS[clamped];
+        return I18N.getString("AvailabilityCalibration.prevalence." + COMMONNESS_WORDS[clamped].replace(' ', '_'));
     }
 
     /**

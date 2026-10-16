@@ -34,7 +34,7 @@ package megameklab.printing;
 
 import java.awt.Color;
 
-import megamek.common.annotations.Nullable;
+import jakarta.annotation.Nullable;
 import megamek.common.enums.WeaponSortOrder;
 import megameklab.util.CConfig;
 

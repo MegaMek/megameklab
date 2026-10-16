@@ -36,7 +36,7 @@ import java.awt.print.PageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import megamek.common.annotations.Nullable;
+import jakarta.annotation.Nullable;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.battlefieldSupport.cardDrawer.BattlefieldSupportCard;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
