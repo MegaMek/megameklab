@@ -48,6 +48,7 @@ import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import jakarta.annotation.Nullable;
 import megamek.SuiteConstants;
 import megamek.client.Client;
 import megamek.codeUtilities.StringUtility;
@@ -55,7 +56,6 @@ import megamek.common.CriticalSlot;
 import megamek.common.Player;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
-import megamek.common.annotations.Nullable;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.battlefieldSupport.BattlefieldSupportAssetYaml;

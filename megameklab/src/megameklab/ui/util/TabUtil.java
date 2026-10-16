@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
 
-import megamek.common.annotations.Nullable;
+import jakarta.annotation.Nullable;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;

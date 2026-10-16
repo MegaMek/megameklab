@@ -67,7 +67,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import megamek.common.annotations.Nullable;
+import jakarta.annotation.Nullable;
 import megamek.common.util.ImageUtil;
 import megamek.logging.MMLogger;
 import megameklab.printing.reference.ReferenceTable;

@@ -39,8 +39,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
+import jakarta.annotation.Nullable;
 import megamek.client.ui.util.UIUtil;
-import megamek.common.annotations.Nullable;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.units.Jumpship;
 import megamek.common.units.SmallCraft;

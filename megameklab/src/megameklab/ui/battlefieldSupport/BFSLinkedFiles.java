@@ -42,7 +42,7 @@ import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import megamek.common.annotations.Nullable;
+import jakarta.annotation.Nullable;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.util.MegaMekLabFileSaver;
