@@ -61,6 +61,7 @@ import megamek.client.ui.widget.SkinXMLHandler;
 import megamek.client.ui.widget.SkinnedJPanel;
 import megamek.common.Configuration;
 import megamek.common.loaders.MekSummary;
+import megamek.common.ui.AppIcons;
 import megamek.common.units.Entity;
 import megamek.common.util.ImageUtil;
 import megamek.common.util.ManagedVolatileImage;
@@ -101,6 +102,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         super(UIComponents.MainMenuBorder, 1);
         frame = new JFrame("MegaMekLab");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        AppIcons.apply(frame, "megameklab");
         lastDpiScaleFactor = UIUtil.getMonitorScaleFactor(frame);
         tipOfTheDay = new TipOfTheDay(resourceMap.getString("TipOfTheDay.title.text"),
               "megameklab.resources.TipOfTheDay",
