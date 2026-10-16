@@ -992,7 +992,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         if (isSuperheavy()) {
             flags |= Engine.SUPERHEAVY_ENGINE;
         }
-        if (isIndustrial()) {
+        if (isPrimitive() || isIndustrial()) {
             flags |= Engine.INDUSTRIAL_ENGINE;
         }
         return new Engine(getEngineRating(), e.getEngineType(), flags);
