@@ -790,14 +790,16 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         if (getEngineRating() > 400) {
             flags |= Engine.LARGE_ENGINE;
         }
+        if (isIndustrial()) {
+            flags |= Engine.INDUSTRIAL_ENGINE;
+        }
+        int altFlags = flags ^ Engine.CLAN_ENGINE;
         int[] engineTypes = ENGINE_TYPES;
         if (isPrimitive() || isIndustrial()) {
             engineTypes = INDUSTRIAL_ENGINE_TYPES;
-            flags |= Engine.INDUSTRIAL_ENGINE;
         } else if (getBaseTypeIndex() == BASE_TYPE_LAM) {
             engineTypes = LAM_ENGINE_TYPES;
         }
-        int altFlags = flags ^ Engine.CLAN_ENGINE;
         // Non-superheavies can use non-fusion engines under experimental rules (TO:AUE p.120)
         // Industrials and primitives can use non-fusion under standard rules
         boolean allowNonFusion = isIndustrial() || isPrimitive() || (!isSuperheavy()
@@ -992,7 +994,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         if (isSuperheavy()) {
             flags |= Engine.SUPERHEAVY_ENGINE;
         }
-        if (isPrimitive() || isIndustrial()) {
+        if (isIndustrial()) {
             flags |= Engine.INDUSTRIAL_ENGINE;
         }
         return new Engine(getEngineRating(), e.getEngineType(), flags);
