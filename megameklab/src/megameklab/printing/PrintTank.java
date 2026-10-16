@@ -310,10 +310,11 @@ public class PrintTank extends PrintEntity {
             fillCoreComponentCriticalDamage(TURRET_LOCKED, tank.isTurretLocked(tank.getLocTurret()));
             fillCoreComponentCriticalDamage(STABILIZER_HIT_TURRET, tank.isStabiliserHit(tank.getLocTurret()));
         } else if (turretCount == 2) {
-            fillCoreComponentCriticalDamage(TURRET_LOCKED_FRONT, tank.isTurretLocked(tank.getLocTurret()));
-            fillCoreComponentCriticalDamage(TURRET_LOCKED_REAR, tank.isTurretLocked(tank.getLocTurret2()));
-            fillCoreComponentCriticalDamage(STABILIZER_HIT_TURRET_FRONT, tank.isStabiliserHit(tank.getLocTurret()));
-            fillCoreComponentCriticalDamage(STABILIZER_HIT_TURRET_REAR, tank.isStabiliserHit(tank.getLocTurret2()));
+            // A dual-turret tank's first turret location is the rear turret and its second is the front turret.
+            fillCoreComponentCriticalDamage(TURRET_LOCKED_FRONT, tank.isTurretLocked(tank.getLocTurret2()));
+            fillCoreComponentCriticalDamage(TURRET_LOCKED_REAR, tank.isTurretLocked(tank.getLocTurret()));
+            fillCoreComponentCriticalDamage(STABILIZER_HIT_TURRET_FRONT, tank.isStabiliserHit(tank.getLocTurret2()));
+            fillCoreComponentCriticalDamage(STABILIZER_HIT_TURRET_REAR, tank.isStabiliserHit(tank.getLocTurret()));
         }
         if (tank instanceof VTOL vtol) {
             fillCoreComponentCriticalDamage(FLIGHT_STABILIZER_HIT, vtol.isStabiliserHit(VTOL.LOC_ROTOR));
