@@ -56,13 +56,6 @@ import megamek.client.ui.dialogs.abstractDialogs.CostDisplayDialog;
 import megamek.client.ui.dialogs.abstractDialogs.WeightDisplayDialog;
 import megamek.client.ui.util.UIUtil;
 import megamek.common.battleArmor.BattleArmor;
-import megamek.common.equipment.AmmoType;
-import megamek.common.equipment.Engine;
-import megamek.common.equipment.MiscType;
-import megamek.common.equipment.Mounted;
-import megamek.common.equipment.WeaponType;
-import megamek.common.units.Aero;
-import megamek.common.units.Mek;
 import megamek.common.verifier.TestEntity;
 import megamek.utilities.DebugEntity;
 import megameklab.ui.BugReportHelper;
@@ -71,6 +64,7 @@ import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
+import megameklab.util.HeatGenerationEstimate;
 import megameklab.util.UnitUtil;
 
 public class StatusBar extends ITab {
@@ -250,66 +244,13 @@ public class StatusBar extends ITab {
     }
 
     /**
-     * Returns an estimated value of the total heat generation for Meks and Aerospace (0 for other types). This method
-     * is very specific to this use and cannot be generalized. It shouldn't be used elsewhere. It is here in StatusBar
-     * to avoid duplication in BMStatusBar and ASStatusBar.
+     * Returns an estimated value of the total heat generation for Meks and Aerospace (0 for other types), as worked
+     * out by {@link HeatGenerationEstimate}. It is here in StatusBar to avoid duplication in BMStatusBar and
+     * ASStatusBar.
      *
      * @return An estimated value of the total heat generation.
      */
     protected long estimatedHeatGeneration() {
-        if (!(getEntity() instanceof Mek) && !(getEntity() instanceof Aero)) {
-            return 0;
-        }
-        double heat = 0;
-
-        if (getEntity() instanceof Mek mek) {
-            if (mek.getJumpMP() > 0) {
-                heat += mek.getJumpHeat(mek.getJumpMP());
-            } else if (mek.getEngineType() == Engine.XXL_ENGINE) {
-                heat += 6;
-            } else {
-                heat += 2;
-            }
-        }
-
-        for (Mounted<?> mounted : getEntity().getTotalWeaponList()) {
-            WeaponType weaponType = (WeaponType) mounted.getType();
-            double weaponHeat = weaponType.getHeat();
-
-            if (mounted.isMissing() || mounted.isHit() || mounted.isDestroyed() || mounted.isBreached()) {
-                continue;
-            }
-
-            if ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.ROCKET_LAUNCHER)
-                  || weaponType.hasFlag(WeaponType.F_ONE_SHOT)) {
-                weaponHeat *= 0.25;
-            }
-
-            if ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ULTRA) || (weaponType.getAmmoType()
-                  == AmmoType.AmmoTypeEnum.AC_ULTRA_THB)) {
-                weaponHeat *= 2;
-            }
-
-            if (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ROTARY) {
-                weaponHeat *= 6;
-            }
-
-            if ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_STREAK) || (weaponType.getAmmoType()
-                  == AmmoType.AmmoTypeEnum.LRM_STREAK)) {
-                weaponHeat *= 0.5;
-            }
-            heat += weaponHeat;
-        }
-
-        for (Mounted<?> m : getEntity().getMisc()) {
-            if (m.getType().hasFlag(MiscType.F_LASER_INSULATOR)) {
-                heat--;
-            } else if (m.getType().hasFlag(MiscType.F_PPC_CAPACITOR)) {
-                heat += 5;
-            } else {
-                heat += m.getType().getHeat();
-            }
-        }
-        return Math.round(heat);
+        return HeatGenerationEstimate.estimate(getEntity());
     }
 }
