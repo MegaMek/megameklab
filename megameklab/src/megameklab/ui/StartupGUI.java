@@ -475,7 +475,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         if (medalImage == null) {
             return; // Skip drawing if medalImage is not initialized
         }
-        VolatileImage image = medalImage.getImage();
+        VolatileImage image = medalImage.getImage(frame.getGraphicsConfiguration());
         if (image.getWidth(null) > 0 && image.getHeight(null) > 0) {
             double medalScalePercent = 0.10; // Medal height as % of panel
 
@@ -507,7 +507,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         if (logoImage == null) {
             return 0; // Skip drawing if logoImage is not initialized
         }
-        VolatileImage image = logoImage.getImage();
+        VolatileImage image = logoImage.getImage(frame.getGraphicsConfiguration());
         int targetLogoHeight = 0;
         if (image.getWidth(null) > 0 && image.getHeight(null) > 0) {
             double logoWidthScalePercent = 0.3f; // Logo width as 30% of panel width
