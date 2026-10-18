@@ -61,6 +61,7 @@ import megamek.client.ui.widget.SkinXMLHandler;
 import megamek.client.ui.widget.SkinnedJPanel;
 import megamek.common.Configuration;
 import megamek.common.loaders.MekSummary;
+import megamek.common.ui.AppIcons;
 import megamek.common.units.Entity;
 import megamek.common.util.ImageUtil;
 import megamek.common.util.ManagedVolatileImage;
@@ -101,6 +102,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         super(UIComponents.MainMenuBorder, 1);
         frame = new JFrame("MegaMekLab");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        AppIcons.apply(frame, "megameklab");
         lastDpiScaleFactor = UIUtil.getMonitorScaleFactor(frame);
         tipOfTheDay = new TipOfTheDay(resourceMap.getString("TipOfTheDay.title.text"),
               "megameklab.resources.TipOfTheDay",
@@ -481,7 +483,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         if (medalImage == null) {
             return; // Skip drawing if medalImage is not initialized
         }
-        VolatileImage image = medalImage.getImage();
+        VolatileImage image = medalImage.getImage(frame.getGraphicsConfiguration());
         if (image.getWidth(null) > 0 && image.getHeight(null) > 0) {
             double medalScalePercent = 0.10; // Medal height as % of panel
 
@@ -513,7 +515,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         if (logoImage == null) {
             return 0; // Skip drawing if logoImage is not initialized
         }
-        VolatileImage image = logoImage.getImage();
+        VolatileImage image = logoImage.getImage(frame.getGraphicsConfiguration());
         int targetLogoHeight = 0;
         if (image.getWidth(null) > 0 && image.getHeight(null) > 0) {
             double logoWidthScalePercent = 0.3f; // Logo width as 30% of panel width

@@ -57,6 +57,7 @@ import javax.swing.event.ChangeListener;
 
 import megamek.MegaMek;
 import megamek.common.preference.PreferenceManager;
+import megamek.common.ui.AppIcons;
 import megamek.common.ui.CloseableTab;
 import megamek.common.ui.DetachedTabInfo;
 import megamek.common.ui.EnhancedTabbedPane;
@@ -98,6 +99,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      */
     public MegaMekLabTabbedUI(MegaMekLabMainUI... entities) {
         super("MegaMekLab");
+        AppIcons.apply(this, "megameklab");
         openWindows.add(this);
         JButton newButton = createNewButton();
         JButton openButton = createOpenButton();
