@@ -108,17 +108,17 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
 
     // Engines that can be used by Meks and the order they appear in the combobox
     private final static int[] ENGINE_TYPES = {
-          Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE, Engine.FUEL_CELL, Engine.LIGHT_ENGINE,
-          Engine.COMPACT_ENGINE, Engine.FISSION, Engine.COMBUSTION_ENGINE
+          Engine.COMBUSTION_ENGINE, Engine.FUEL_CELL, Engine.FISSION, Engine.COMPACT_ENGINE, Engine.NORMAL_ENGINE,
+          Engine.LIGHT_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE
     };
     // Industrial (and primitive) Meks can use non-fusion engines under standard rules, but cannot use
     // any fusion engines other than standard.
     private final static int[] INDUSTRIAL_ENGINE_TYPES = {
-          Engine.NORMAL_ENGINE, Engine.FUEL_CELL, Engine.FISSION, Engine.COMBUSTION_ENGINE
+          Engine.COMBUSTION_ENGINE, Engine.FUEL_CELL, Engine.FISSION, Engine.NORMAL_ENGINE
     };
     // LAMs can only use fusion engines that are contained entirely within the center torso.
     private final static int[] LAM_ENGINE_TYPES = {
-          Engine.NORMAL_ENGINE, Engine.COMPACT_ENGINE
+          Engine.COMPACT_ENGINE, Engine.NORMAL_ENGINE
     };
 
     // Internal structure for non-industrial Meks
@@ -790,6 +790,9 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         if (getEngineRating() > 400) {
             flags |= Engine.LARGE_ENGINE;
         }
+        if (isIndustrial()) {
+            flags |= Engine.INDUSTRIAL_ENGINE;
+        }
         int altFlags = flags ^ Engine.CLAN_ENGINE;
         int[] engineTypes = ENGINE_TYPES;
         if (isPrimitive() || isIndustrial()) {
@@ -797,8 +800,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         } else if (getBaseTypeIndex() == BASE_TYPE_LAM) {
             engineTypes = LAM_ENGINE_TYPES;
         }
-        // Non-superheavies can use non-fusion engines under experimental rules
-        // industrials and primitives can use non-fusion under standard rules
+        // Non-superheavies can use non-fusion engines under experimental rules (TO:AUE p.120)
+        // Industrials and primitives can use non-fusion under standard rules
         boolean allowNonFusion = isIndustrial() || isPrimitive() || (!isSuperheavy()
               && techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0);
         for (int i : engineTypes) {
@@ -807,13 +810,11 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
                   && techManager.isLegal(e)) {
                 retVal.add(e);
             }
-            // Only add the opposite tech base if the engine is different.
-            if (isMixed && e.getSideTorsoCriticalSlots().length > 0) {
-                e = new Engine(getEngineRating(), i, altFlags);
-                if (e.engineValid && (e.isFusion() || allowNonFusion)
-                      && techManager.isLegal(e)) {
-                    retVal.add(e);
-                }
+            // Only add the opposite tech base if the engine is not mixed tech.
+            e = new Engine(getEngineRating(), i, altFlags);
+            if (isMixed && !e.isMixedTech() && e.engineValid && (e.isFusion() || allowNonFusion)
+                  && techManager.isLegal(e)) {
+                retVal.add(e);
             }
         }
         return retVal;
@@ -992,6 +993,9 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         }
         if (isSuperheavy()) {
             flags |= Engine.SUPERHEAVY_ENGINE;
+        }
+        if (isIndustrial()) {
+            flags |= Engine.INDUSTRIAL_ENGINE;
         }
         return new Engine(getEngineRating(), e.getEngineType(), flags);
     }
