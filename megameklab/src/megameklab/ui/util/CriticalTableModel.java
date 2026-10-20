@@ -150,7 +150,7 @@ public class CriticalTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int col) {
         if ((col == TONNAGE) && kgStandard) {
-            return "Kg";
+            return "kg";
         } else if ((col == SIZE) && (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)) {
             return "Size/Shots";
         } else if (col == SIZE && unit.isHandheldWeapon()) {
