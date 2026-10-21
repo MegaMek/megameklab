@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -150,7 +150,7 @@ public class CriticalTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int col) {
         if ((col == TONNAGE) && kgStandard) {
-            return "Kg";
+            return "kg";
         } else if ((col == SIZE) && (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)) {
             return "Size/Shots";
         } else if (col == SIZE && unit.isHandheldWeapon()) {
