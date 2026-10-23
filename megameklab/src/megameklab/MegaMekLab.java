@@ -78,6 +78,7 @@ public class MegaMekLab {
     private static boolean noStartup;
 
     public static void main(String... args) {
+        Locale.setDefault(Locale.Category.FORMAT, getMMLOptions().getNumberFormatLocale());
         MegaMek.setOriginProject(MMLConstants.PROJECT_NAME);
         boolean multiInstanceMode = hasArgument(args, "--multi");
         noStartup = hasArgument(args, "--no-startup");
