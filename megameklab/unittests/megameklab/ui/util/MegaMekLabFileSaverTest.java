@@ -35,18 +35,18 @@ package megameklab.ui.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockStatic;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.charset.StandardCharsets;
-import java.io.IOException;
-import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.equipment.Engine;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.units.BipedMek;
@@ -210,5 +210,16 @@ class MegaMekLabFileSaverTest {
 
         assertThrows(IOException.class,
               () -> MegaMekLabFileSaver.writeUnitToFile(new File(parentFile, "asset.bfs"), asset));
+    }
+
+    @Test
+    void sanitizeFilenameReplacesCharactersIllegalOnWindows() {
+        assertEquals("A_B_C_D_E_F_G_H_I_", MegaMekLabFileSaver.sanitizeFilename("A/B\\C<D>E:F\"G|H?I*"));
+    }
+
+    @Test
+    void sanitizeFilenameKeepsNonAsciiLetters() {
+        assertEquals("Büffel Engineering Support Vehicle VII Mk II",
+              MegaMekLabFileSaver.sanitizeFilename("Büffel Engineering Support Vehicle VII Mk II"));
     }
 }
