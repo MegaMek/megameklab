@@ -44,6 +44,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -89,7 +93,7 @@ import megamek.logging.MMLogger;
 
 /**
  * Author: Drake
- * 
+ *
  * This dialog allows editing of sourcebook information stored in the data/sourcebooks folder.
  * Should be used with caution as changes will affect all units that reference the edited sourcebook.
  */
@@ -113,6 +117,7 @@ public class SourcebookEditorDialog extends AbstractMMLDialog {
     private final JTextField txtUrl = new JTextField();
     private final JCheckBox chkIsPublished = new JCheckBox("Published");
     private final JCheckBox chkCanon = new JCheckBox("Canon");
+    private final JTextField txtPublishedDate = new JTextField();
     private final JTextField txtMulUrl = new JTextField();
     private final JTextArea txtDescription = new JTextArea(10, 42);
     private final JLabel lblValidationSummary = new JLabel();
@@ -258,6 +263,9 @@ public class SourcebookEditorDialog extends AbstractMMLDialog {
         constraints.weightx = 1;
         panel.add(checkboxPanel, constraints);
 
+        txtPublishedDate.setName("txtPublishedDate");
+        txtPublishedDate.setToolTipText("First printing, as precise as known: YYYY, YYYY-MM or YYYY-MM-DD");
+        addField(panel, constraints, row++, "First Published:", txtPublishedDate);
         addBrowseField(panel, constraints, row++, "MUL URL:", txtMulUrl);
 
         constraints.gridx = 0;
@@ -703,6 +711,7 @@ public class SourcebookEditorDialog extends AbstractMMLDialog {
         txtUrl.setText(text(sourceBook.getUrl()));
         chkIsPublished.setSelected(sourceBook.getIspublished());
         chkCanon.setSelected(sourceBook.isCanon());
+        txtPublishedDate.setText(text(sourceBook.getPublished()));
         txtMulUrl.setText(text(sourceBook.getMul_url()));
         txtDescription.setText(text(sourceBook.getDescription()));
         txtDescription.setCaretPosition(0);
@@ -728,6 +737,7 @@ public class SourcebookEditorDialog extends AbstractMMLDialog {
         txtUrl.setText("");
         chkIsPublished.setSelected(true);
         chkCanon.setSelected(true);
+        txtPublishedDate.setText("");
         txtMulUrl.setText("");
         txtDescription.setText("");
         savedSourcebookState = currentSourcebookState();
@@ -786,6 +796,15 @@ public class SourcebookEditorDialog extends AbstractMMLDialog {
             JOptionPane.showMessageDialog(this, "MUL ID must be a number.", "Sourcebooks", JOptionPane.ERROR_MESSAGE);
             return null;
         }
+        String publishedDate = blankToNull(txtPublishedDate.getText());
+        if ((publishedDate != null) && !isValidPublishedDate(publishedDate)) {
+            JOptionPane.showMessageDialog(this,
+                  "First Published must be a date as YYYY, YYYY-MM or YYYY-MM-DD, such as 2016-02-10.",
+                  "Sourcebooks",
+                  JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+        sourceBook.setPublished(publishedDate);
         sourceBook.setSku(blankToNull(txtSku.getText()));
         sourceBook.setTitle(blankToNull(txtTitle.getText()));
         sourceBook.setAbbrev(blankToNull(txtAbbrev.getText()));
@@ -879,6 +898,7 @@ public class SourcebookEditorDialog extends AbstractMMLDialog {
               normalizedText(txtUrl.getText()),
               chkIsPublished.isSelected(),
               chkCanon.isSelected(),
+              normalizedText(txtPublishedDate.getText()),
               normalizedText(txtMulUrl.getText()),
               normalizedText(txtDescription.getText()));
     }
@@ -896,10 +916,34 @@ public class SourcebookEditorDialog extends AbstractMMLDialog {
         return trimmedValue.isBlank() ? null : trimmedValue;
     }
 
+    /**
+     * @param value A publish date as typed, already trimmed
+     *
+     * @return {@code true} if the value is a real date written as YYYY, YYYY-MM or YYYY-MM-DD
+     */
+    static boolean isValidPublishedDate(String value) {
+        if (value.isEmpty() || !Character.isDigit(value.charAt(0))) {
+            return false;
+        }
+        try {
+            switch (value.length()) {
+                case 4 -> Year.parse(value);
+                case 7 -> YearMonth.parse(value);
+                case 10 -> LocalDate.parse(value);
+                default -> {
+                    return false;
+                }
+            }
+            return true;
+        } catch (DateTimeParseException exception) {
+            return false;
+        }
+    }
+
     private record SourcebookState(String fileName, String id, String sku, String title, String abbrev, String image,
-          String url, boolean isPublished, boolean canon, String mulUrl, String description) {
+          String url, boolean isPublished, boolean canon, String publishedDate, String mulUrl, String description) {
         private static SourcebookState empty() {
-            return new SourcebookState("", "", "", "", "", "", "", false, false, "", "");
+            return new SourcebookState("", "", "", "", "", "", "", false, false, "", "", "");
         }
     }
 

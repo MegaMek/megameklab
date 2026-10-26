@@ -260,7 +260,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         sourcePanel.add(editSourceButton);
         editSourceButton.setToolTipText(resourceMap.getString("BasicInfoView.configSource.tooltip"));
         sourceMulLinkButton.setToolTipText(resourceMap.getString("BasicInfoView.browseSourcebook.tooltip"));
-        sourceMulLinkButton.addActionListener(e -> openSourcebookMUL(sourceAbbreviation));
+        sourceMulLinkButton.addActionListener(event -> openSourcebookPage(sourceAbbreviation));
         sourcePanel.add(sourceMulLinkButton);
         add(sourcePanel, gbc);
         txtSource.setEditable(false);
@@ -287,7 +287,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         publishedPanel.add(editPublishedButton);
         editPublishedButton.setToolTipText(resourceMap.getString("BasicInfoView.configPublished.tooltip"));
         publishedMulLinkButton.setToolTipText(resourceMap.getString("BasicInfoView.browseSourcebook.tooltip"));
-        publishedMulLinkButton.addActionListener(e -> openSourcebookMUL(publishedAbbreviation));
+        publishedMulLinkButton.addActionListener(event -> openSourcebookPage(publishedAbbreviation));
         publishedPanel.add(publishedMulLinkButton);
         add(publishedPanel, gbc);
         txtPublished.setEditable(false);
@@ -603,7 +603,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         } else {
             textField.setToolTipText("<html>%s</html>".formatted(String.join("<hr>", sourceTooltips)));
         }
-        mulLinkButton.setEnabled(shouldShowSourcebookMULButton(sourceList));
+        mulLinkButton.setEnabled(shouldShowSourcebookLinkButton(sourceList));
     }
 
     private void updateNonCanonSourceLabel() {
@@ -880,15 +880,15 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     }
 
     /**
-     * The sourcebook MUL button should be shown when any selected sourcebook has a MUL URL and the system seems to
+     * The sourcebook link button should be shown when any selected sourcebook has a link and the system seems to
      * support calling a standard browser.
      *
-     * @return true when the "Open Sourcebook MUL in Browser" Button can be used
+     * @return true when the "Open Sourcebook Page in Browser" Button can be used
      */
-    private boolean shouldShowSourcebookMULButton(String sourceList) {
+    private boolean shouldShowSourcebookLinkButton(String sourceList) {
         return canBrowseDesktop() && sourceBooks.loadSourceBooks(sourceList)
               .stream()
-              .anyMatch(BasicInfoView::hasMulUrl);
+              .anyMatch(BasicInfoView::hasLinkUrl);
     }
 
     private boolean canBrowseDesktop() {
@@ -914,30 +914,31 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     }
 
     /**
-     * Opens the Master Unit List sourcebook page in the System Standard Explorer, if possible.
+     * Opens the sourcebook's shop page (or its Master Unit List page, if it has no shop page) in the System
+     * Standard Explorer, if possible.
      */
-    private void openSourcebookMUL(String sourceList) {
-        List<SourceBook> sourcebooksWithMul = sourceBooks.loadSourceBooks(sourceList)
+    private void openSourcebookPage(String sourceList) {
+        List<SourceBook> sourcebooksWithLink = sourceBooks.loadSourceBooks(sourceList)
               .stream()
-              .filter(BasicInfoView::hasMulUrl)
+              .filter(BasicInfoView::hasLinkUrl)
               .toList();
-        if (sourcebooksWithMul.isEmpty()) {
+        if (sourcebooksWithLink.isEmpty()) {
             return;
         }
 
-        SourceBook sourceBook = (sourcebooksWithMul.size() == 1)
-              ? sourcebooksWithMul.getFirst()
-              : chooseSourcebookMUL(sourcebooksWithMul).orElse(null);
+        SourceBook sourceBook = (sourcebooksWithLink.size() == 1)
+              ? sourcebooksWithLink.getFirst()
+              : chooseSourcebookPage(sourcebooksWithLink).orElse(null);
         if (sourceBook != null) {
-            openSourcebookMUL(sourceBook);
+            openSourcebookPage(sourceBook);
         }
     }
 
-    private Optional<SourceBook> chooseSourcebookMUL(List<SourceBook> sourcebooksWithMul) {
-        JList<SourceBook> sourceBookList = new JList<>(sourcebooksWithMul.toArray(SourceBook[]::new));
+    private Optional<SourceBook> chooseSourcebookPage(List<SourceBook> sourcebooksWithLink) {
+        JList<SourceBook> sourceBookList = new JList<>(sourcebooksWithLink.toArray(SourceBook[]::new));
         sourceBookList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         sourceBookList.setSelectedIndex(0);
-        sourceBookList.setVisibleRowCount(Math.min(sourcebooksWithMul.size(), 8));
+        sourceBookList.setVisibleRowCount(Math.min(sourcebooksWithLink.size(), 8));
         sourceBookList.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
@@ -951,7 +952,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
         JScrollPane scrollPane = new JScrollPane(sourceBookList);
         JOptionPane optionPane = new JOptionPane(scrollPane, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-        JDialog dialog = optionPane.createDialog(this, "Open Sourcebook MUL");
+        JDialog dialog = optionPane.createDialog(this, "Open Sourcebook Page");
         sourceBookList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent event) {
@@ -970,22 +971,22 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         return Optional.empty();
     }
 
-    private void openSourcebookMUL(SourceBook sourceBook) {
+    private void openSourcebookPage(SourceBook sourceBook) {
         try {
-            Desktop.getDesktop().browse(URI.create(sourceBook.getMul_url()));
+            Desktop.getDesktop().browse(URI.create(sourceBook.getLinkUrl()));
         } catch (Exception ex) {
             LOGGER.error("", ex);
             JOptionPane.showMessageDialog(this, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private static boolean hasMulUrl(SourceBook sourceBook) {
-        return (sourceBook.getMul_url() != null) && !sourceBook.getMul_url().isBlank();
+    private static boolean hasLinkUrl(SourceBook sourceBook) {
+        return sourceBook.getLinkUrl() != null;
     }
 
     private static String sourcebookDisplayName(SourceBook sourceBook) {
         String abbrev = (sourceBook.getAbbrev() == null || sourceBook.getAbbrev().isBlank())
-              ? sourceBook.getMul_url()
+              ? sourceBook.getLinkUrl()
               : sourceBook.getAbbrev();
         String title = (sourceBook.getTitle() == null || sourceBook.getTitle().isBlank())
               ? abbrev
