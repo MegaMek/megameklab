@@ -967,8 +967,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     protected String formatCost() {
-        NumberFormat nf = NumberFormat.getNumberInstance(Locale.getDefault());
-        return nf.format(getEntity().getCost(true)) + " C-bills";
+        NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        return numberFormat.format(getEntity().getCost(true)) + " C-bills";
     }
 
     private String entityName() {

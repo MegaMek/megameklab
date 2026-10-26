@@ -46,6 +46,7 @@ import io.sentry.Sentry;
 import megamek.MMLoggingConstants;
 import megamek.MegaMek;
 import megamek.SuiteConstants;
+import megamek.SuiteOptions;
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.dialogs.LicensingDialog;
 import megamek.client.ui.panels.battlefieldSupport.ConfigurableBFSCardPanel;
@@ -78,6 +79,7 @@ public class MegaMekLab {
     private static boolean noStartup;
 
     public static void main(String... args) {
+        Locale.setDefault(Locale.Category.FORMAT, SuiteOptions.getNumberFormatLocale());
         MegaMek.setOriginProject(MMLConstants.PROJECT_NAME);
         boolean multiInstanceMode = hasArgument(args, "--multi");
         noStartup = hasArgument(args, "--no-startup");
