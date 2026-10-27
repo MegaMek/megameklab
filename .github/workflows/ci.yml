@@ -133,9 +133,10 @@ jobs:
         run: |
           echo ${{ github.sha }} >> megameklab/megameklab/mml-revision.txt
 
-      - name: Test All
+      # MegaMek tests run in its own repo's CI, and the nightly still runs testAll.
+      - name: Test and Build
         working-directory: megameklab
-        run: ./gradlew testAll --stacktrace --scan -x checkstyleMain -x checkstyleTest
+        run: ./gradlew build --stacktrace --scan -x checkstyleMain -x checkstyleTest -PextraVersion="PR-${{ github.event.number }}-${{ env.COMMIT_SHORT_SHA }}"
 
       - name: Upload Test Logs on Failure
         uses: actions/upload-artifact@v7
@@ -150,10 +151,6 @@ jobs:
           directory: ./megameklab/megameklab/build/reports/jacoco/test
           fail_ci_if_error: false
           verbose: true
-
-      - name: Build with Gradle
-        working-directory: megameklab
-        run: ./gradlew build -x test -PextraVersion="PR-${{ github.event.number }}-${{ env.COMMIT_SHORT_SHA }}"
 
       - name: Upload TarGZ Release
         uses: actions/upload-artifact@v7
