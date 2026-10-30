@@ -36,20 +36,27 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.Mounted;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.units.Aero;
 import megamek.common.units.AeroSpaceFighter;
+import megamek.common.units.BipedMek;
+import megamek.common.units.ConvFighter;
 import megamek.common.units.Entity;
+import megamek.common.units.Mek;
+import megamek.common.units.SupportTank;
 import megamek.common.units.Tank;
 import megameklab.testing.util.InitializeTypes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Equipment the fighter and vehicle equipment lists add to an Omni unit goes in as a pod, as it does on a Mek (MekHQ
- * #10770). The lists added it as fixed, so a fighter's new ammunition, or any new weapon on an Omni vehicle, altered
- * the base chassis and made a MekHQ refit Class F. The lists add equipment through {@link UnitUtil#addMounted}.
+ * Equipment MegaMekLab adds to an Omni unit goes in as a pod unless the rules fix it to the chassis, for every unit
+ * type that can be an Omni: Meks, aerospace and conventional fighters, combat vehicles and support vehicles. The
+ * equipment lists, the vehicle jump jets and the Mek CASE selector added new equipment as fixed, so a new weapon,
+ * ammunition bin or jump jet altered the base chassis and made a MekHQ refit Class F (MekHQ #10770 and #10774). They
+ * now add equipment through {@link UnitUtil#addMounted}, or ask {@link UnitUtil#canPodMount} directly.
  */
 @ExtendWith(value = InitializeTypes.class)
 class OmniPodDefaultTest {
@@ -60,34 +67,61 @@ class OmniPodDefaultTest {
         return mounted;
     }
 
+    private static <T extends Entity> T omni(T unit) {
+        unit.setOmni(true);
+        return unit;
+    }
+
+    @Test
+    void aWeaponAddedToAnOmniMekIsAPodBeforeItIsPlaced() throws LocationFullException {
+        assertTrue(add(omni(new BipedMek()), "CLSRM4", Entity.LOC_NONE).isOmniPodMounted());
+    }
+
+    @Test
+    void caseAddedToAnOmniMekCanBeAPod() {
+        Mek mek = omni(new BipedMek());
+
+        assertTrue(UnitUtil.canPodMount(mek,
+              Mounted.createMounted(mek, EquipmentType.get(EquipmentTypeLookup.IS_CASE))));
+    }
+
+    @Test
+    void equipmentTheRulesFixToTheChassisStaysFixed() throws LocationFullException {
+        assertFalse(add(omni(new BipedMek()), EquipmentTypeLookup.IS_MASC, Entity.LOC_NONE).isOmniPodMounted());
+    }
+
     @Test
     void ammunitionAddedToAnOmniFighterIsAPod() throws LocationFullException {
-        AeroSpaceFighter fighter = new AeroSpaceFighter();
-        fighter.setOmni(true);
+        assertTrue(add(omni(new AeroSpaceFighter()), "IS Ammo LRM-10", Aero.LOC_FUSELAGE).isOmniPodMounted());
+    }
 
-        assertTrue(add(fighter, "IS Ammo LRM-10", Aero.LOC_FUSELAGE).isOmniPodMounted());
+    @Test
+    void ammunitionAddedToAnOmniConventionalFighterIsAPod() throws LocationFullException {
+        assertTrue(add(omni(new ConvFighter()), "IS Ammo LRM-10", Aero.LOC_FUSELAGE).isOmniPodMounted());
     }
 
     @Test
     void aWeaponAddedToAnOmniVehicleIsAPod() throws LocationFullException {
-        Tank tank = new Tank();
-        tank.setOmni(true);
-
-        assertTrue(add(tank, "ISLRM10", Entity.LOC_NONE).isOmniPodMounted());
+        assertTrue(add(omni(new Tank()), "ISLRM10", Entity.LOC_NONE).isOmniPodMounted());
     }
 
     @Test
     void ammunitionAddedToAnOmniVehicleIsAPod() throws LocationFullException {
-        Tank tank = new Tank();
-        tank.setOmni(true);
+        assertTrue(add(omni(new Tank()), "IS Ammo LRM-10", Tank.LOC_BODY).isOmniPodMounted());
+    }
 
-        assertTrue(add(tank, "IS Ammo LRM-10", Tank.LOC_BODY).isOmniPodMounted());
+    @Test
+    void jumpJetsAddedToAnOmniVehicleArePods() throws LocationFullException {
+        assertTrue(add(omni(new Tank()), EquipmentTypeLookup.VEHICLE_JUMP_JET, Tank.LOC_BODY).isOmniPodMounted());
+    }
+
+    @Test
+    void aWeaponAddedToAnOmniSupportVehicleIsAPod() throws LocationFullException {
+        assertTrue(add(omni(new SupportTank()), "ISLRM10", Entity.LOC_NONE).isOmniPodMounted());
     }
 
     @Test
     void equipmentAddedToAStandardVehicleIsFixed() throws LocationFullException {
-        Tank tank = new Tank();
-
-        assertFalse(add(tank, "ISLRM10", Entity.LOC_NONE).isOmniPodMounted());
+        assertFalse(add(new Tank(), "ISLRM10", Entity.LOC_NONE).isOmniPodMounted());
     }
 }

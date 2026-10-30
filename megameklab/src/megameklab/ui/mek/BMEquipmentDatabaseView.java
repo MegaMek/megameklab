@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2021-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -77,7 +77,7 @@ class BMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             try {
                 mount = Mounted.createMounted(getMek(), equip);
                 UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
-                getMek().addEquipment(mount, Entity.LOC_NONE, false);
+                UnitUtil.addMounted(getMek(), mount, Entity.LOC_NONE, false);
                 UnitUtil.removeHiddenAmmo(mount);
             } catch (LocationFullException ignored) {
                 // this can't happen, we add to Entity.LOC_NONE
