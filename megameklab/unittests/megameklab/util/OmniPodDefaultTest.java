@@ -32,6 +32,7 @@
  */
 package megameklab.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -113,6 +114,20 @@ class OmniPodDefaultTest {
     @Test
     void jumpJetsAddedToAnOmniVehicleArePods() throws LocationFullException {
         assertTrue(add(omni(new Tank()), EquipmentTypeLookup.VEHICLE_JUMP_JET, Tank.LOC_BODY).isOmniPodMounted());
+    }
+
+    @Test
+    void clearingAnOmniVehiclesPodsTakesItsPodJumpJetsAndTheirJumpMP() throws LocationFullException {
+        Tank tank = omni(new Tank());
+        for (int jumpJet = 0; jumpJet < 3; jumpJet++) {
+            add(tank, EquipmentTypeLookup.VEHICLE_JUMP_JET, Tank.LOC_BODY);
+        }
+        assertEquals(3, tank.getOriginalJumpMP());
+
+        UnitUtil.resetBaseChassis(tank);
+
+        assertEquals(0, tank.getOriginalJumpMP());
+        assertTrue(tank.getMisc().isEmpty(), "The pod jump jets are removed with the other pods");
     }
 
     @Test
