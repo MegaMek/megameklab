@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -94,8 +94,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
     // Engines that can be used by meks and the order they appear in the combobox
     private final static int[] ENGINE_TYPES = {
-          Engine.COMBUSTION_ENGINE, Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE,
-          Engine.FUEL_CELL, Engine.LIGHT_ENGINE, Engine.COMPACT_ENGINE, Engine.FISSION
+          Engine.COMBUSTION_ENGINE, Engine.FUEL_CELL, Engine.FISSION, Engine.COMPACT_ENGINE, Engine.NORMAL_ENGINE,
+          Engine.LIGHT_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE
     };
     private final Engine NO_ENGINE = new Engine(0, Engine.NONE, Engine.TANK_ENGINE);
 
@@ -465,13 +465,10 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
             if (e.engineValid && techManager.isLegal(e)) {
                 retVal.add(e);
             }
-            // Only add the opposite tech base if the engine is different.
-            // (i.e. different slot requirement)
-            if (isMixed && e.getSideTorsoCriticalSlots().length > 0) {
-                e = new Engine(getEngineRating(), i, altFlags);
-                if (e.engineValid && techManager.isLegal(e)) {
-                    retVal.add(e);
-                }
+            // Only add the opposite tech base if the engine is not mixed tech.
+            e = new Engine(getEngineRating(), i, altFlags);
+            if (isMixed && !e.isMixedTech() && e.engineValid && techManager.isLegal(e)) {
+                retVal.add(e);
             }
         }
         return retVal;

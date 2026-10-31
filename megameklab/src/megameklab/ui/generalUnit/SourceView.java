@@ -91,8 +91,8 @@ public class SourceView extends Box {
         });
         add(editButton);
 
-        mulLinkButton.setToolTipText("Open the selected sourcebook's Master Unit List page.");
-        mulLinkButton.addActionListener(e -> openSourcebookMUL(sourceAbbreviation));
+        mulLinkButton.setToolTipText("Open the selected sourcebook's shop page.");
+        mulLinkButton.addActionListener(event -> openSourcebookPage(sourceAbbreviation));
         add(mulLinkButton);
 
         updateControls();
@@ -120,19 +120,19 @@ public class SourceView extends Box {
         sourceField.setText(sourceAbbreviation);
         sourceField.setToolTipText(sources.isEmpty() ? defaultTooltip : sourceAbbreviation);
         mulLinkButton.setEnabled(!sourceBooks.loadSourceBooks(sourceAbbreviation).stream()
-              .filter(SourceView::hasMulUrl).toList().isEmpty());
+              .filter(SourceView::hasLinkUrl).toList().isEmpty());
     }
 
-    private void openSourcebookMUL(String sourceList) {
-        List<SourceBook> withMul = sourceBooks.loadSourceBooks(sourceList).stream()
-              .filter(SourceView::hasMulUrl).toList();
-        if (withMul.isEmpty()) {
+    private void openSourcebookPage(String sourceList) {
+        List<SourceBook> withLink = sourceBooks.loadSourceBooks(sourceList).stream()
+              .filter(SourceView::hasLinkUrl).toList();
+        if (withLink.isEmpty()) {
             return;
         }
-        SourceBook sourceBook = (withMul.size() == 1) ? withMul.get(0) : chooseSourcebookMUL(withMul).orElse(null);
+        SourceBook sourceBook = (withLink.size() == 1) ? withLink.get(0) : chooseSourcebookPage(withLink).orElse(null);
         if (sourceBook != null) {
             try {
-                Desktop.getDesktop().browse(URI.create(sourceBook.getMul_url()));
+                Desktop.getDesktop().browse(URI.create(sourceBook.getLinkUrl()));
             } catch (Exception ex) {
                 LOGGER.error("", ex);
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -140,14 +140,14 @@ public class SourceView extends Box {
         }
     }
 
-    private Optional<SourceBook> chooseSourcebookMUL(List<SourceBook> withMul) {
-        Object[] options = withMul.stream().map(SourceView::displayName).toArray();
-        Object choice = JOptionPane.showInputDialog(this, "Open Sourcebook MUL", "Open Sourcebook MUL",
+    private Optional<SourceBook> chooseSourcebookPage(List<SourceBook> withLink) {
+        Object[] options = withLink.stream().map(SourceView::displayName).toArray();
+        Object choice = JOptionPane.showInputDialog(this, "Open Sourcebook Page", "Open Sourcebook Page",
               JOptionPane.PLAIN_MESSAGE, null, options, options.length > 0 ? options[0] : null);
         if (choice == null) {
             return Optional.empty();
         }
-        for (SourceBook book : withMul) {
+        for (SourceBook book : withLink) {
             if (displayName(book).equals(choice)) {
                 return Optional.of(book);
             }
@@ -155,13 +155,13 @@ public class SourceView extends Box {
         return Optional.empty();
     }
 
-    private static boolean hasMulUrl(SourceBook sourceBook) {
-        return (sourceBook.getMul_url() != null) && !sourceBook.getMul_url().isBlank();
+    private static boolean hasLinkUrl(SourceBook sourceBook) {
+        return sourceBook.getLinkUrl() != null;
     }
 
     private static String displayName(SourceBook sourceBook) {
         String abbrev = (sourceBook.getAbbrev() == null || sourceBook.getAbbrev().isBlank())
-              ? sourceBook.getMul_url()
+              ? sourceBook.getLinkUrl()
               : sourceBook.getAbbrev();
         String title = (sourceBook.getTitle() == null || sourceBook.getTitle().isBlank()) ? abbrev
               : sourceBook.getTitle();

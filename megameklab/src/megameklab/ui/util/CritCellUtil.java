@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2021-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -154,7 +154,7 @@ public final class CritCellUtil {
             } else if ((mounted.getType() instanceof MiscType miscType) && miscType.hasFlag(MiscType.F_AP_MOUNT)
                   && (mounted.getLinked() != null)) {
                 // armored gloves may also act as an APM, TM p.171
-                name += " (attached " + mounted.getLinked().getName() + ")";
+                name += " (Attached " + mounted.getLinked().getName() + ")";
             }
 
             cell.setText(" " + name);

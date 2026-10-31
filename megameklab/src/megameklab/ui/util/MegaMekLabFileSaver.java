@@ -96,12 +96,23 @@ public class MegaMekLabFileSaver {
      * @return A default filename for the Entity
      */
     public static String createUnitFilename(Entity entity) {
-        String fileName = (entity.getChassis() + ' ' + entity.getModel()).trim();
-        fileName = fileName.replaceAll("[/\\\\<>:\"|?*]", "_");
+        String fileName = sanitizeFilename((entity.getChassis() + ' ' + entity.getModel()).trim());
         if (entity instanceof BattlefieldSupportAsset) {
             return fileName + ".bfs";
         }
         return fileName + ((entity instanceof Mek) ? ".mtf" : ".blk");
+    }
+
+    /**
+     * Replaces every character that is not legal in a Windows filename with an underscore, so a unit name can be used
+     * as a filename on any platform.
+     *
+     * @param name The unit name, without an extension
+     *
+     * @return The name with each illegal character replaced
+     */
+    public static String sanitizeFilename(String name) {
+        return name.replaceAll("[/\\\\<>:\"|?*]", "_");
     }
 
     /**

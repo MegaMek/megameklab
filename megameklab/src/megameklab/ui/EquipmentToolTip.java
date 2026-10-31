@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -64,10 +64,10 @@ public final class EquipmentToolTip {
         if (eq instanceof MiscMounted && (eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
               || eq.getType().hasFlag(MiscType.F_AP_MOUNT))
               && (eq.getLinked() != null)) {
-            sb.append(" (attached ").append(eq.getLinked().getName()).append(")");
+            sb.append(" (Attached ").append(eq.getLinked().getName()).append(")");
         }
         if (eq.isSquadSupportWeapon()) {
-            sb.append(" (squad support weapon)");
+            sb.append(" (Squad Support Weapon)");
         }
         if (eq.getType() instanceof InfantryWeapon) {
             sb.append("<br>Damage/Trooper: ");
@@ -81,7 +81,7 @@ public final class EquipmentToolTip {
             sb.append("<br>Mass: ");
             if (TestEntity.usesKgStandard(unit)) {
                 sb.append(Math.round(eq.getTonnage() * 1000));
-                sb.append(" Kg");
+                sb.append(" kg");
             } else {
                 sb.append(eq.getTonnage());
                 sb.append(" tons");
