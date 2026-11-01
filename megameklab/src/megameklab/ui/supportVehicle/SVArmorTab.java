@@ -132,16 +132,24 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
     public void armorTypeChanged(int at, int armorTechLevel) {
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
             double initialArmorTonnage = getEntity().getArmorWeight();
+            double initialArmorPoints = getEntity().getLabTotalArmorPoints();
             UnitUtil.removeISorArmorMounts(getEntity(), false);
             getEntity().setArmorTechLevel(armorTechLevel);
             getEntity().setArmorType(at);
             ArmorType armor = ArmorType.of(at, TechConstants.isClan(armorTechLevel));
             getEntity().setBARRating(armor.getBAR());
             getEntity().setArmorTechRating(panArmor.getTechRating());
-            double maxArmorTonnage = UnitUtil.getMaximumArmorTonnage(getEntity());
-            if (initialArmorTonnage > maxArmorTonnage) {
-                getEntity().setArmorTonnage(maxArmorTonnage);
+
+            if (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+                double weight = initialArmorPoints * TestSupportVehicle.armorWeightPerPoint(getEntity());
+                getEntity().setArmorTonnage(TestEntity.ceil(weight, Ceil.KILO));
+            } else {
+                double maxArmorTonnage = UnitUtil.getMaximumArmorTonnage(getEntity());
+                if (initialArmorTonnage > maxArmorTonnage) {
+                    getEntity().setArmorTonnage(maxArmorTonnage);
+                }
             }
+
             panArmorAllocation.showPatchwork(false);
             panPatchwork.setVisible(false);
         } else {
@@ -159,8 +167,13 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
 
     @Override
     public void armorTechRatingChanged(TechRating techRating) {
+        double initialArmorPoints = getEntity().getLabTotalArmorPoints();
         getEntity().setArmorTechRating(techRating);
         getEntity().recalculateTechAdvancement();
+        if (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+            double weight = initialArmorPoints * TestSupportVehicle.armorWeightPerPoint(getEntity());
+            getEntity().setArmorTonnage(TestEntity.ceil(weight, Ceil.KILO));
+        }
         panArmor.setFromEntity(getEntity());
         panArmorAllocation.setFromEntity(getEntity());
         refresh.refreshSummary();
@@ -170,7 +183,12 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
 
     @Override
     public void armorBARRatingChanged(int bar) {
+        double initialArmorPoints = getEntity().getLabTotalArmorPoints();
         getEntity().setBARRating(bar);
+        if (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+            double weight = initialArmorPoints * TestSupportVehicle.armorWeightPerPoint(getEntity());
+            getEntity().setArmorTonnage(TestEntity.ceil(weight, Ceil.KILO));
+        }
         panArmor.setFromEntity(getEntity());
         panArmorAllocation.setFromEntity(getEntity());
         refresh.refreshSummary();
