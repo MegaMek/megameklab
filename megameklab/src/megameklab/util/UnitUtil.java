@@ -289,7 +289,7 @@ public class UnitUtil {
         } else if (unit instanceof BattleArmor battleArmor) {
             BattleArmorUtil.removeAllCriticalSlotsFrom(battleArmor);
         } else {
-            // weapon bays can never be outside of their location, so delete them
+            // weapon bays can never be outside their location, so delete them
             List<Mounted<?>> weaponBays =
                   unit.getEquipment().stream()
                         .filter(m -> m.getType() instanceof BayWeapon)
@@ -844,11 +844,8 @@ public class UnitUtil {
         } else if (unit.isSupportVehicle()) {
             // Max armor is determined by number of points.
             double weight = TestSupportVehicle.maxArmorFactor(unit) * TestSupportVehicle.armorWeightPerPoint(unit);
-            if (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
-                return TestEntity.round(weight, Ceil.KILO);
-            } else {
-                return TestEntity.ceil(weight, Ceil.HALF_TON);
-            }
+            return TestEntity.ceil(weight, unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT ?
+                  Ceil.KILO : Ceil.HALF_TON);
         } else if (unit instanceof Tank) {
             double points = Math.floor((unit.getWeight() * 3.5) + 40);
             armorWeight = points / armorPerTon;
