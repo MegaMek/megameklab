@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2021-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -126,7 +126,7 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                           && (equip instanceof MiscType)) && equip.hasFlag(MiscType.F_BLUE_SHIELD)) {
                         getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
                     } else {
-                        getEntity().addEquipment(mount, Entity.LOC_NONE, false);
+                        UnitUtil.addMounted(getEntity(), mount, Entity.LOC_NONE, false);
                     }
                     UnitUtil.removeHiddenAmmo(mount);
                 }
@@ -162,7 +162,7 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     private void addBodyAmmo(EquipmentType equip, int count, int loc) throws LocationFullException {
         for (int i = 0; i < count; i++) {
             Mounted<?> mount = Mounted.createMounted(getEntity(), equip);
-            getEntity().addEquipment(mount, loc, false);
+            UnitUtil.addMounted(getEntity(), mount, loc, false);
         }
     }
 

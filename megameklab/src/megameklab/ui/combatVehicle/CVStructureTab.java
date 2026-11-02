@@ -69,8 +69,8 @@ import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestTank;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
-import megameklab.ui.generalUnit.ArmorAllocationView;
 import megameklab.ui.battlefieldSupport.BFSLinkedEditor;
+import megameklab.ui.generalUnit.ArmorAllocationView;
 import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.generalUnit.IconView;
 import megameklab.ui.generalUnit.MVFArmorView;
@@ -480,7 +480,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
             getTank().setOriginalJumpMP(0);
             for (int i = 0; i < jumpMP; i++) {
                 try {
-                    getTank().addEquipment(jumpJet, Tank.LOC_BODY);
+                    UnitUtil.addMounted(getTank(), Mounted.createMounted(getTank(), jumpJet), Tank.LOC_BODY, false);
                 } catch (LocationFullException e) {
                     LOGGER.error("", e);
                 }

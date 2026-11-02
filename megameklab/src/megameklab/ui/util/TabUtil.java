@@ -241,7 +241,7 @@ public class TabUtil {
                             if (line.length > 1) {
                                 mounted.setSize(Double.parseDouble(line[1]));
                             }
-                            loadedUnit.addEquipment(mounted, Entity.LOC_NONE, false);
+                            UnitUtil.addMounted(loadedUnit, mounted, Entity.LOC_NONE, false);
                         }
                     } catch (Exception e) {
                         LOGGER.warn(e, "Could not read meta file for entity file {}:{}", entityFile, fileName);
