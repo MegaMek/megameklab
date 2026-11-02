@@ -239,6 +239,10 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panBasicInfo.setTechFaction(techFaction);
     }
 
+    public void setGameYearOverride(int gameYear) {
+        panBasicInfo.setGameYearOverride(gameYear);
+    }
+
     private void removeAllListeners() {
         panBasicInfo.removeListener(this);
         panChassis.removeListener(this);

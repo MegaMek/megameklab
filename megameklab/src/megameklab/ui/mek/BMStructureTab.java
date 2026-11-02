@@ -253,6 +253,10 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panBasicInfo.setTechFaction(techFaction);
     }
 
+    public void setGameYearOverride(int gameYear) {
+        panBasicInfo.setGameYearOverride(gameYear);
+    }
+
     private void resetSystemCrits() {
         getMek().clearCockpitCrits();
         getMek().clearGyroCrits();

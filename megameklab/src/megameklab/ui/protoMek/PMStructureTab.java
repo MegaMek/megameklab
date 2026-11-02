@@ -222,6 +222,10 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         panBasicInfo.setTechFaction(techFaction);
     }
 
+    public void setGameYearOverride(int gameYear) {
+        panBasicInfo.setGameYearOverride(gameYear);
+    }
+
     public void removeAllListeners() {
         panBasicInfo.removeListener(this);
         panChassis.removeListener(this);
