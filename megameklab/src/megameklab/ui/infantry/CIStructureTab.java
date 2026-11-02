@@ -181,6 +181,10 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         basicInfoView.setTechFaction(techFaction);
     }
 
+    public void setGameYearOverride(int gameYear) {
+        basicInfoView.setGameYearOverride(gameYear);
+    }
+
     public void refresh() {
 
         basicInfoView.setFromEntity(getInfantry());

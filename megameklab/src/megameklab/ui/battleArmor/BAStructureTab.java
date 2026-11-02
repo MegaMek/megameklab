@@ -60,8 +60,8 @@ import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
-import megameklab.ui.generalUnit.BAProtoArmorView;
 import megameklab.ui.battlefieldSupport.BFSLinkedEditor;
+import megameklab.ui.generalUnit.BAProtoArmorView;
 import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.generalUnit.IconView;
 import megameklab.ui.generalUnit.MovementView;
@@ -188,6 +188,10 @@ public class BAStructureTab extends ITab implements BABuildListener, ArmorAlloca
      */
     public void setTechFaction(Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
+    }
+
+    public void setGameYearOverride(int gameYear) {
+        panBasicInfo.setGameYearOverride(gameYear);
     }
 
     public void addAllListeners() {

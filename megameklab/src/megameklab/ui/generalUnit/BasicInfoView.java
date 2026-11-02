@@ -150,6 +150,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
     private int prevYear = 3145;
     private int prevBuildYear = -1;
+    private int gameYearOverride = -1;
     private String sourceAbbreviation = "";
     private String publishedAbbreviation = "";
     private Entity currentEntity;
@@ -530,8 +531,22 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         cbFaction.setSelectedItem(techFaction);
     }
 
+    /**
+     * Sets a game year that replaces the tech year from the MegaMekLab settings for this view. Hosts such as MekHQ use
+     * this to apply their own tech availability rules without changing the user's MegaMekLab configuration.
+     *
+     * @param gameYear The year to use for tech availability checks, or a value of zero or less to use the MegaMekLab
+     *                 settings again. {@link Integer#MAX_VALUE} makes all tech available regardless of year.
+     */
+    public void setGameYearOverride(int gameYear) {
+        gameYearOverride = gameYear;
+    }
+
     @Override
     public int getGameYear() {
+        if (gameYearOverride > 0) {
+            return Math.max(getTechIntroYear(), gameYearOverride);
+        }
         if (CConfig.getBooleanParam(CConfig.TECH_USE_YEAR)) {
             return Math.max(getTechIntroYear(), CConfig.getIntParam(CConfig.TECH_YEAR));
         }
