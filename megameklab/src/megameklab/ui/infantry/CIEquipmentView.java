@@ -60,6 +60,7 @@ import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.WeaponType;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.ConvInfantry;
+import megamek.common.units.EntityMovementMode;
 import megamek.common.verifier.TestInfantry;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.ui.EntitySource;
@@ -292,6 +293,14 @@ public class CIEquipmentView extends IView implements ActionListener {
                     if (eSource.getTechManager() != null
                           && !eSource.getTechManager().isLegal(etype)
                           && hideUnavailableButton.isSelected()) {
+                        return false;
+                    }
+
+                    if (etype.hasFlag(WeaponType.F_INF_SUPPORT)
+                          && ((TestInfantry.maxSecondaryWeapons(getInfantry()) == 0)
+                          || (etype.is("Particle Cannon (Support)")
+                          && getInfantry().getMovementMode() != EntityMovementMode.INF_MOTORIZED
+                          && getInfantry().getMovementMode() != EntityMovementMode.TRACKED))) {
                         return false;
                     }
 
