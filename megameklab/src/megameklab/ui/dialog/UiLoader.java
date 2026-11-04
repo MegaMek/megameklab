@@ -53,6 +53,7 @@ import megameklab.ui.StartupGUI;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.battlefieldSupport.BFSLinkedOpen;
 import megameklab.ui.battlefieldSupport.BFSMainUI;
+import megameklab.ui.building.BuildingMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
 import megameklab.ui.combatVehicle.GEMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
@@ -229,6 +230,10 @@ public class UiLoader {
             return new WSMainUI(primitive);
         } else if (type == Entity.ETYPE_HANDHELD_WEAPON) {
             return new HHWMainUI();
+        } else if (type == Entity.ETYPE_BUILDING_ENTITY) {
+            return new BuildingMainUI();
+        } else if (type == Entity.ETYPE_MOBILE_STRUCTURE) {
+            return new BuildingMainUI(true);
         } else if (type == Entity.ETYPE_GUN_EMPLACEMENT) {
             return new GEMainUI();
         } else if (type == Entity.ETYPE_BATTLEFIELD_SUPPORT_ASSET) {
@@ -351,6 +356,8 @@ public class UiLoader {
             return new WSMainUI(entity, filename);
         } else if (type == Entity.ETYPE_HANDHELD_WEAPON) {
             return new HHWMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_BUILDING_ENTITY || type == Entity.ETYPE_MOBILE_STRUCTURE) {
+            return new BuildingMainUI(entity, filename);
         } else if (type == Entity.ETYPE_GUN_EMPLACEMENT) {
             return new GEMainUI(entity, filename);
         } else if (type == Entity.ETYPE_BATTLEFIELD_SUPPORT_ASSET) {

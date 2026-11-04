@@ -55,6 +55,7 @@ import megamek.common.equipment.MiscType;
 import megamek.common.equipment.WeaponType;
 import megamek.common.equipment.enums.BombType;
 import megamek.common.equipment.enums.MiscTypeFlag;
+import megamek.common.units.AbstractBuildingEntity;
 import megamek.common.units.Aero;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityWeightClass;
@@ -62,6 +63,7 @@ import megamek.common.units.Infantry;
 import megamek.common.units.Mek;
 import megamek.common.units.ProtoMek;
 import megamek.common.units.Tank;
+import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.tag.TAGWeapon;
 import megameklab.util.BattleArmorUtil;
 import megameklab.util.UnitUtil;
@@ -92,7 +94,7 @@ public enum EquipmentDatabaseCategory {
 
     CAPITAL("Capital",
           (eq, en) -> (eq instanceof WeaponType) && ((WeaponType) eq).isCapital() || eq.is("Screen Launcher"),
-          Entity::isLargeCraft),
+          e -> e.isLargeCraft() || e instanceof AbstractBuildingEntity),
 
     PHYSICAL("Physical",
           (eq, en) -> UnitUtil.isPhysicalWeapon(eq) || isIndustrialEquipment(eq),
@@ -110,7 +112,7 @@ public enum EquipmentDatabaseCategory {
           (eq, en) -> ((eq instanceof MiscType)
                 && !UnitUtil.isPhysicalWeapon(eq)
                 && !UnitUtil.isJumpJet(eq)
-                && !UnitUtil.isHeatSink(eq)
+                && (!UnitUtil.isHeatSink(eq) || en instanceof AbstractBuildingEntity)
                 && !(isIndustrialEquipment(eq) && ((en instanceof Tank) || en.isSupportVehicle() || en instanceof Mek))
                 && !eq.is(MECHANICAL_JUMP_BOOSTER)
                 && !eq.hasFlag(F_LAM_FUEL_TANK)
@@ -128,6 +130,7 @@ public enum EquipmentDatabaseCategory {
                 && !(eq.hasFlag(F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMEK))
                 && !(eq.hasFlag(F_SPONSON_TURRET) && en.isSupportVehicle())
                 && !eq.hasFlag(F_PINTLE_TURRET))
+                || (en instanceof AbstractBuildingEntity && eq instanceof InfantryWeapon)
                 || eq.is(CL_BA_BOMB_RACK)
                 || eq.is(COOLANT_POD)
                 || eq.is(BattleArmor.MINE_LAUNCHER)

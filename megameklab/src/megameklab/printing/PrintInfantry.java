@@ -502,8 +502,9 @@ public class PrintInfantry extends PrintEntity {
                   || (otherWeapon != null && otherWeapon.hasFlag(WeaponType.F_INF_POINT_BLANK))) {
                 mod++;
             }
-            if (weapon.hasFlag(WeaponType.F_INF_ENCUMBER)
-                  || (otherWeapon != null && otherWeapon.hasFlag(WeaponType.F_INF_ENCUMBER))) {
+            if (weapon.hasFlag(WeaponType.F_INF_ENCUMBER) || weapon.getCrew() > 1
+                  || (otherWeapon != null && (otherWeapon.hasFlag(WeaponType.F_INF_ENCUMBER)
+                        || otherWeapon.getCrew() > 1))) {
                 mod++;
             }
         }
