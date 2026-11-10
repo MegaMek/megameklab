@@ -52,6 +52,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import jakarta.annotation.Nullable;
 import megamek.client.ui.CopySystemDataAction;
+import megamek.client.ui.ReleaseNotesAction;
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.client.ui.dialogs.abstractDialogs.BVDisplayDialog;
@@ -1273,6 +1274,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         helpMenu.addSeparator();
 
+        helpMenu.add(new ReleaseNotesAction("megameklab"));
         final JMenuItem miAbout = new JMenuItem(resources.getString("miAbout.text"));
         miAbout.setName("miAbout");
         miAbout.setMnemonic(KeyEvent.VK_A);
