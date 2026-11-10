@@ -90,8 +90,6 @@ public class StatusBar extends ITab {
         setLayout(new BorderLayout());
         this.parent = parent;
         costFormatter = new DecimalFormat();
-        costFormatter.setMinimumFractionDigits(2);
-        costFormatter.setMaximumFractionDigits(2);
 
         statusComponents.setOpaque(false);
         add(statusComponents, BorderLayout.CENTER);

@@ -126,7 +126,7 @@ jobs:
           java-version: ${{ matrix.java-version }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.4.0
+        uses: gradle/actions/setup-gradle@v6.4.1
 
       - name: Test suite companion packaging
         working-directory: megameklab
@@ -136,7 +136,7 @@ jobs:
         run: |
           echo ${{ github.sha }} >> megameklab/megameklab/mml-revision.txt
 
-      # MegaMek tests run in its own repo's CI, and the nightly still runs testAll.
+      # MegaMek tests run in its own repo's CI.
       - name: Test and Build
         working-directory: megameklab
         run: ./gradlew build --stacktrace --scan -x checkstyleMain -x checkstyleTest -PextraVersion="PR-${{ github.event.number }}-${{ env.COMMIT_SHORT_SHA }}"

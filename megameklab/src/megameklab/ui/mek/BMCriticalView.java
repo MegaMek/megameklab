@@ -687,7 +687,10 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
 
         if (selected != null) {
             try {
-                mek.addEquipment(Mounted.createMounted(mek, selected), loc, false);
+                Mounted<?> caseMount = Mounted.createMounted(mek, selected);
+                mek.addEquipment(caseMount, loc, false);
+                // Set directly rather than through UnitUtil.addMounted, which also moves automatic Clan CASE
+                caseMount.setOmniPodMounted(UnitUtil.canPodMount(mek, caseMount));
             } catch (Exception ignored) {
                 // Should not happen after the space check above
             }

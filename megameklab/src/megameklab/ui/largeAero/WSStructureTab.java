@@ -192,6 +192,10 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panInfo.setTechFaction(techFaction);
     }
 
+    public void setGameYearOverride(int gameYear) {
+        panInfo.setGameYearOverride(gameYear);
+    }
+
     public void refresh() {
         removeAllListeners();
 

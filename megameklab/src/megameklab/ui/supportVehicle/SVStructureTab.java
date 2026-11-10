@@ -239,6 +239,10 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panBasicInfo.setTechFaction(techFaction);
     }
 
+    public void setGameYearOverride(int gameYear) {
+        panBasicInfo.setGameYearOverride(gameYear);
+    }
+
     private void removeAllListeners() {
         panBasicInfo.removeListener(this);
         panChassis.removeListener(this);
@@ -375,7 +379,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             getSV().setOriginalJumpMP(0);
             for (int i = 0; i < jumpMP; i++) {
                 try {
-                    getSV().addEquipment(jumpJet, Tank.LOC_BODY);
+                    UnitUtil.addMounted(getSV(), Mounted.createMounted(getSV(), jumpJet), Tank.LOC_BODY, false);
                 } catch (LocationFullException e) {
                     LOGGER.error("", e);
                 }

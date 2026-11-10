@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2021-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -84,7 +84,7 @@ class CVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 } else if (TestTank.isBodyEquipment(equip)) {
                     loc = Tank.LOC_BODY;
                 }
-                getTank().addEquipment(mount, loc, false);
+                UnitUtil.addMounted(getTank(), mount, loc, false);
                 UnitUtil.removeHiddenAmmo(mount);
             } catch (LocationFullException ignored) {
                 // this can't happen, we add to Entity.LOC_NONE
