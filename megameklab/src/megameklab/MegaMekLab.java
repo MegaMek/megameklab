@@ -49,7 +49,7 @@ import megamek.SuiteConstants;
 import megamek.SuiteOptions;
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.dialogs.LicensingDialog;
-import megamek.client.ui.dialogs.releaseNotes.ReleaseNotesDialog;
+import megamek.client.ui.dialogs.releaseNotes.ReleaseNotes;
 import megamek.client.ui.panels.battlefieldSupport.ConfigurableBFSCardPanel;
 import megamek.client.ui.preferences.SuitePreferences;
 import megamek.client.ui.util.UIUtil;
@@ -268,8 +268,8 @@ public class MegaMekLab {
         if (!noStartup) {
             LicensingDialog.showIfNeeded(null,
                   "Welcome to " + MMLConstants.PROJECT_NAME + " " + MMLConstants.VERSION);
-            ReleaseNotesDialog.showAfterUpdate(null, "megameklab");
         }
+        ReleaseNotes.rememberRunningVersion();
     }
 
     private static void setLookAndFeel() {
