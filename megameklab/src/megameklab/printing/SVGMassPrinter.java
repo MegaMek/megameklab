@@ -154,6 +154,7 @@ public class SVGMassPrinter {
     private static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
     private static boolean SKIP_UNIT_FILES = true; // Set to true to skip BLK/MTF re-save generation
     private static boolean SKIP_DETAILED_CALCULATIONS = false; // Set to true to skip the detailed BV/Cost calculations
+    private static boolean INCLUDE_BUILDINGS = false; // Set to true to export gun emplacements, buildings and mobile structures
     private static final boolean EXPORT_CALCULATION_DETAILS_TO_FILES = true; // Set to true to not embed the detailed BV/Cost calculations into the units.json but in a subfolder keyed by name
     private static boolean EXPORT_CALCULATIONS_AS_TEXT = true;
     private static String RULES_SYSTEM = OptionsConstants.RULES_CORE;
@@ -2463,6 +2464,7 @@ public class SVGMassPrinter {
                     case "--skip-equipment" -> SKIP_EQUIPMENT = parseBool(inlineValue);
                     case "--skip-unit-files" -> SKIP_UNIT_FILES = parseBool(inlineValue);
                     case "--save-unit-files" -> SKIP_UNIT_FILES = !parseBool(inlineValue);
+                    case "--include-buildings" -> INCLUDE_BUILDINGS = parseBool(inlineValue);
                     case "--save-calculations" -> SKIP_DETAILED_CALCULATIONS = !parseBool(inlineValue);
                     case "--calculations-as-text" -> EXPORT_CALCULATIONS_AS_TEXT = parseBool(inlineValue);
                     case "--rules" -> {
@@ -2630,6 +2632,7 @@ public class SVGMassPrinter {
                 --skip-equipment[=bool]       Skip equipment generation (default: %s)
                 --skip-unit-files[=bool]      Skip BLK/MTF re-save (default: %s)
                 --save-unit-files[=bool]      Enable BLK/MTF re-save (inverse of --skip-unit-files)
+                --include-buildings[=bool]    Export gun emplacements, buildings and mobile structures (default: %s)
                 --save-calculations[=bool]    Export calculation details (default: %s)
                 --calculations-as-text[=bool] Export calculation details as .txt rather than structured .json (default: %s)
                 --rules <core|tw>              Rules used for sheets and metadata (default: core)
@@ -2640,7 +2643,7 @@ public class SVGMassPrinter {
 
               Boolean flags accept true/false/1/0/yes/no/on/off; a bare flag (e.g. --skip-svg) means true.
               """.formatted(ROOT_FOLDER, SHEETS_DIR, UNIT_FILES_DIR, TYPEFACE,
-              SKIP_SVG, SKIP_UNITS, SKIP_EQUIPMENT, SKIP_UNIT_FILES,
+              SKIP_SVG, SKIP_UNITS, SKIP_EQUIPMENT, SKIP_UNIT_FILES, INCLUDE_BUILDINGS,
               !SKIP_DETAILED_CALCULATIONS, EXPORT_CALCULATIONS_AS_TEXT);
         java.lang.System.out.println(usage);
     }
@@ -2782,10 +2785,13 @@ public class SVGMassPrinter {
               synchronized (loadEntityLock) {
                   entity = mekSummary.loadEntity();
               }
-              if ((entity == null) || (entity instanceof GunEmplacement)
-                    || (entity instanceof BattlefieldSupportAsset)) {
+              if ((entity == null) || (entity instanceof BattlefieldSupportAsset)) {
                   // BFS cards use the card-print pipeline and are intentionally omitted from this mass record-sheet
                   // export used by MekBay.
+                  return null;
+              }
+              if (!INCLUDE_BUILDINGS
+                    && ((entity instanceof GunEmplacement) || (entity instanceof AbstractBuildingEntity))) {
                   return null;
               }
               UnitData unitData = new UnitData(entity);
