@@ -1,0 +1,196 @@
+# MegaMek Data (C) 2025-2026 by The MegaMek Team is licensed under CC BY-NC-SA 4.0.
+# To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
+#
+# NOTICE: The MegaMek organization is a non-profit group of volunteers
+# creating free software for the BattleTech community.
+#
+# MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+# of The Topps Company, Inc. All Rights Reserved.
+#
+# Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+# InMediaRes Productions, LLC.
+#
+# MechWarrior Copyright Microsoft Corporation. MegaMek Data was created under
+# Microsoft's "Game Content Usage Rules"
+# <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+# affiliated with Microsoft.
+
+uuid:019f583e-c94a-714b-8e3f-d1c6c214e3f8
+generator:MegaMek Suite 0.51.01 on 2026-07-12
+chassis:Black Hawk-KU
+model:BHKU-OE
+mul id:351
+
+Config:Biped OmniMek
+techbase:Inner Sphere
+era:3063
+source:TR:3058U,TR:CI
+published:RS:CI
+rules level:2
+role:Skirmisher
+
+quirk:easy_maintain
+
+mass:60
+engine:300 XL Engine
+structure:IS Standard
+myomer:Standard
+
+heat sinks:19 IS Double
+base chassis heat sinks:12
+walk mp:5
+jump mp:5
+
+armor:Standard(Inner Sphere)
+LA armor:20
+RA armor:20
+LT armor:20
+RT armor:20
+CT armor:30
+HD armor:9
+LL armor:28
+RL armor:28
+RTL armor:8
+RTR armor:8
+RTC armor:9
+
+Weapons:12
+ER Medium Laser, Left Arm
+ER Medium Laser, Left Arm
+ER Medium Laser, Left Arm
+ER Medium Laser, Left Arm
+ER Medium Laser, Left Arm
+ER Medium Laser, Left Arm
+ER Medium Laser, Right Arm
+ER Medium Laser, Right Arm
+ER Medium Laser, Right Arm
+ER Medium Laser, Right Arm
+ER Medium Laser, Right Arm
+ER Medium Laser, Right Arm
+
+Left Arm:
+Shoulder
+Upper Arm Actuator
+Lower Arm Actuator
+ISDoubleHeatSink (OMNIPOD)
+ISDoubleHeatSink (OMNIPOD)
+ISDoubleHeatSink (OMNIPOD)
+ISERMediumLaser (OMNIPOD)
+ISERMediumLaser (OMNIPOD)
+ISERMediumLaser (OMNIPOD)
+ISERMediumLaser (OMNIPOD)
+ISERMediumLaser (OMNIPOD)
+ISERMediumLaser (OMNIPOD)
+
+Right Arm:
+Shoulder
+Upper Arm Actuator
+Lower Arm Actuator
+ISERMediumLaser (OMNIPOD)
+ISERMediumLaser (OMNIPOD)
+ISERMediumLaser (OMNIPOD)
+ISERMediumLaser (OMNIPOD)
+ISERMediumLaser (OMNIPOD)
+ISERMediumLaser (OMNIPOD)
+-Empty-
+-Empty-
+-Empty-
+
+Left Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink (OMNIPOD)
+ISDoubleHeatSink (OMNIPOD)
+ISDoubleHeatSink (OMNIPOD)
+ISDoubleHeatSink (OMNIPOD)
+ISDoubleHeatSink (OMNIPOD)
+ISDoubleHeatSink (OMNIPOD)
+
+Right Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink (OMNIPOD)
+ISDoubleHeatSink (OMNIPOD)
+ISDoubleHeatSink (OMNIPOD)
+ISDoubleHeatSink (OMNIPOD)
+ISDoubleHeatSink (OMNIPOD)
+ISDoubleHeatSink (OMNIPOD)
+
+Center Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Gyro
+Gyro
+Gyro
+Gyro
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Jump Jet
+-Empty-
+
+Head:
+Life Support
+Sensors
+Cockpit
+-Empty-
+Sensors
+Life Support
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+Jump Jet
+Jump Jet
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+Jump Jet
+Jump Jet
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+overview:<p>The Black Hawk-KU is an Inner Sphere OmniMech born from the Draconis Combine's crash program to reverse-engineer captured Clan technology following the Clan Invasion. After salvaging numerous examples of the Nova from the fighting on Luthien in 3052, Combine scientists discovered that, unlike most Clan designs, the Nova employed standard-grade materials for its chassis and armor rather than compact Clan-exclusive composites. Engineers at Luthien Armor Works realized they could replicate this design far more readily than other Clan OmniMechs.</p><p>The resulting Black Hawk-KU, introduced in 3055, required a ten-ton weight increase to sixty tons in order to mount heavier Inner Sphere weaponry while maintaining comparable performance to its Clan progenitor. Despite this compromise, the design proved swift, flexible, and effective. Licensing agreements spread production across multiple factories in the Federated Suns and Lyran Alliance, making the Black Hawk-KU one of the most widely produced Inner Sphere OmniMechs of its generation.</p>
+
+capabilities:<p>Built on an Alshain 52 Endo Steel chassis and powered by a Vlar 300 XL engine, the Black Hawk-KU matches the Nova's top speed of eighty-six kilometers per hour despite its additional ten tons of mass. Five Icarus Standard jump jets provide the same one-hundred-fifty-meter jump range as its Clan cousin, ensuring the design retains the mobility that makes the Nova chassis family so tactically flexible. Twelve and a half tons of Mitchel Argon armor provide near-maximum protection for the chassis weight, and fourteen double heat sinks manage the waste heat common to its various configurations across seventeen tons of available pod space.</p><p>In its Primary configuration, the Black Hawk-KU mounts six medium lasers, four medium pulse lasers, and two small lasers, aping the Nova Prime's emphasis on close-range energy weapon saturation. While the Inner Sphere weapons lack the range and hitting power of their Clan counterparts, they generate significantly less waste heat. This means the Black Hawk-KU is particularly less prone to heat-triggered shutdowns after an alpha strike, a practical advantage that partially compensates for the reduced per-weapon lethality.</p><p>The pod technology allows pilots and commanders to tailor configurations to mission requirements and personal preferences. Some loadouts replicate Clan originals while others play to Inner Sphere weapons strengths. Independent analysis in What 'Mech? magazine comparing Luthien Armor Works and Coventry Metal Works production favors the Steiner variant, citing superior manufacturing processes and tighter quality control, though both producers deliver functionally identical designs using locally sourced equipment.</p>
+
+deployment:<p>The most direct translation of the original Nova Prime's signature loadout, Alternate Configuration E carries twelve ER medium lasers distributed across both arms. Five additional double heat sinks attempt to manage the massive waste heat generated when all weapons fire simultaneously, though even with nineteen total sinks the configuration remains prone to overheating during sustained engagements. This variant appeals to aggressive MechWarriors willing to accept thermal management challenges in exchange for raw destructive output at short range.</p>
+
+history:<p>The Black Hawk-KU was initially deployed with the Legion of Vega for field tests against Clan Smoke Jaguar, where the Inner Sphere copies proved their resilience against their smaller but more advanced Clan cousins. These early engagements validated the design concept and demonstrated that Inner Sphere engineering could produce a competitive OmniMech platform. The design went on to serve with distinction during Operations Bird Dog and Bulldog, the campaign to liberate the Smoke Jaguar occupation zone, where captured Clan weapon pods were even mounted on some Black Hawk-KUs to bolster task force firepower.</p><p>The Black Hawk-KU saw further combat during the First Combine-Dominion War against the Ghost Bears and in operations against the Federated Suns during the FedCom Civil War. These conflicts also resulted in several examples falling into enemy hands. The Ghost Bears especially employ captured Black Hawk-KUs equipped with Clan weapon pods in their second-line clusters, while the handful acquired by the Armed Forces of the Federated Suns serve within the Brigade of Guards.</p><p>Prior to the FedCom Civil War, only units within the Lyran State Command received the Coventry Metal Works production models. The licensing deal, concluded at the First Whitting Conference, also brought StarCorps Industries into the program with facilities on Crofton, Loburg, Son Hoa, and St. Ives. The civil conflict hampered manufacturing, but a significant number of licensed models still entered service. The Lyran Alliance Armed Forces maintained a particularly large contingent thanks to the Coventry and Loburg production lines. In stark contrast to the limited numbers employed by the AFFS, the LAAF's access to multiple domestic producers ensured a steady supply throughout the Jihad and into the Dark Age.</p><p>The Black Hawk-KU remains in production at multiple facilities across the Inner Sphere as of the early thirty-second century, though the Luthien facility's output has been disrupted by the successive upheavals that have struck the Draconis Combine. The design's widespread adoption across multiple factions confirms the soundness of the original Luthien Armor Works engineering team's decision to base their reverse-engineering effort on the Nova's accessible standard-technology construction.</p>
+
+manufacturer:Luthien Armor Works - OmniMech Production Facility|Coventry Metal Works|Corean Enterprises|StarCorps Industries|StarCorps Industries|StarCorps Industries|StarCorps Industries|Victory Industries (formerly Norse BattleMech Works)
+
+primaryfactory:Luthien|Coventry|New Avalon|Crofton|Loburg|Son Hoa|St. Ives|Marduk
+
+fluffdate:2026-02-10 14:00:04
+

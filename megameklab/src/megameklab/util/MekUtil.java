@@ -109,8 +109,32 @@ public final class MekUtil {
     }
 
     /**
+     * An OmniMek's placed fixed heat sinks belong to its base chassis, so lowering the heat sink count takes them after
+     * the engine's integral heat sinks. Heat sinks added back fill the engine first, so lowering and raising the count
+     * then keeps the same fixed heat sinks instead of swapping them for pods, which a MekHQ refit treats as altering the
+     * base chassis (MegaMekLab #2400). Compact heat sinks keep the original order, as their pair counting expects the
+     * engine's heat sinks to go last.
+     *
+     * @param unit the Mek losing heat sinks
+     *
+     * @return {@code true} if placed fixed heat sinks go after the engine's integral heat sinks
+     */
+    private static boolean isKeepingPlacedFixedHeatSinksLast(Mek unit) {
+        if (!unit.isOmni()) {
+            return false;
+        }
+        if (unit.hasCompactHeatSinks()) {
+            logger.debug("[OmniHeatSinks] {}: compact heat sinks, placed fixed heat sinks keep the original removal order",
+                  unit.getShortName());
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Removes the specified number of heat sinks from the mek Heat sinks are removed first with LOC_NONE above the free
-     * crit limit then they are removed with a location, and lastly they are removed below the free crit limit
+     * crit limit then they are removed with a location, and lastly they are removed below the free crit limit. On an
+     * OmniMek, pods go before the engine's integral heat sinks, and placed fixed heat sinks go last.
      *
      */
     public static void removeHeatSinks(Mek unit, int number) {
@@ -155,8 +179,13 @@ public final class MekUtil {
         }
         toRemove.addAll(unassigned);
         toRemove.addAll(omniAssigned);
-        toRemove.addAll(assigned);
-        toRemove.addAll(free);
+        if (isKeepingPlacedFixedHeatSinksLast(unit)) {
+            toRemove.addAll(free);
+            toRemove.addAll(assigned);
+        } else {
+            toRemove.addAll(assigned);
+            toRemove.addAll(free);
+        }
         if (unit.hasCompactHeatSinks()) {
             // Need to do some number magic here. The unassigned, omniAssigned, and assigned slots
             // should each contain two heat sinks, but if we dip into the free then we are looking
