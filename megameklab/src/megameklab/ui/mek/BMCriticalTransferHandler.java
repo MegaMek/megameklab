@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -267,7 +267,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
                         UnitUtil.removeCriticalSlots(getUnit(), eq);
                         UnitUtil.changeMountStatus(getUnit(), eq, Entity.LOC_NONE, Entity.LOC_NONE, false);
                     } else {
-                        eq.setOmniPodMounted(UnitUtil.canPodMount(getUnit(), eq));
+                        UnitUtil.keepPodStatusWhereAllowed(getUnit(), eq);
                     }
                 } else {
                     UnitUtil.removeCriticalSlots(getUnit(), eq, fixedLocation);

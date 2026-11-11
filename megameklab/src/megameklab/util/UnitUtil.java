@@ -368,8 +368,9 @@ public class UnitUtil {
 
     /**
      * Adds the given Mounted equipment to the given unit in the given location, applying rearMounted, by forwarding to
-     * Entity.addEquipment() -- see that method for details. Also sets the equipment to pod-mounted on Omni units if
-     * possible, and updates Clan CASE placement on Meks. This method is an MML wrapper for Entity.addEquipment().
+     * Entity.addEquipment() -- see that method for details. On Omni units, new equipment becomes pod-mounted if
+     * possible, while equipment already on the unit that is only being placed keeps its pod or fixed status. Also
+     * updates Clan CASE placement on Meks. This method is an MML wrapper for Entity.addEquipment().
      *
      * @param unit        The Entity
      * @param mounted     The equipment to add
@@ -381,8 +382,13 @@ public class UnitUtil {
      */
     public static void addMounted(Entity unit, Mounted<?> mounted, int loc, boolean rearMounted)
           throws LocationFullException {
+        boolean isAlreadyOnUnit = unit.getEquipmentNum(mounted) != -1;
         unit.addEquipment(mounted, loc, rearMounted);
-        mounted.setOmniPodMounted(canPodMount(unit, mounted));
+        if (isAlreadyOnUnit) {
+            keepPodStatusWhereAllowed(unit, mounted);
+        } else {
+            mounted.setOmniPodMounted(canPodMount(unit, mounted));
+        }
 
         if (unit instanceof Mek mek) {
             MekUtil.updateClanCasePlacement(mek);
@@ -644,6 +650,23 @@ public class UnitUtil {
      */
     public static Mounted<?> findUnallocatedAmmo(Entity unit, EquipmentType at) {
         return ConstructionUtil.findUnallocatedAmmo(unit, at);
+    }
+
+    /**
+     * Keeps equipment that is being moved or placed on an Omni unit pod-mounted or fixed as it was, turning a pod into
+     * fixed equipment only where the rules no longer allow it as a pod. Placing equipment must not decide its status
+     * afresh: re-placed fixed equipment that silently became a pod altered the base chassis, and a MekHQ refit to the
+     * design became Class F (MegaMekLab #2400, MekHQ #10981).
+     *
+     * @param unit    the unit the equipment is on
+     * @param mounted the equipment being moved or placed
+     */
+    public static void keepPodStatusWhereAllowed(Entity unit, Mounted<?> mounted) {
+        if (mounted.isOmniPodMounted() && !canPodMount(unit, mounted)) {
+            LOGGER.debug("[OmniPods] {}: {} can no longer be a pod here and becomes fixed", unit.getShortName(),
+                  mounted.getName());
+            mounted.setOmniPodMounted(false);
+        }
     }
 
     /**
