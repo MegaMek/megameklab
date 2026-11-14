@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -33,7 +33,6 @@
 package megameklab.printing;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -94,23 +93,16 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      *
      * @param weapon The weapon to add to the bay
      *
-     * @return Whether true if the weapon was added as new, false if it was already in the bay and just incremented
+     * @return Whether this is the first weapon of its type in the bay
      */
     public boolean addBayWeapon(Mounted<?> weapon) {
-        boolean asNew;
         WeaponType weaponType = (WeaponType) weapon.getType();
-        if (weapons.containsKey(weaponType)) {
-            weapons.put(weaponType, weapons.get(weaponType) + 1);
-            asNew = false;
-        } else {
-            weapons.put(weaponType, 1);
-            asNew = true;
-        }
+        int count = weapons.merge(weaponType, 1, Integer::sum);
         if (null != weapon.getLinkedBy()) {
-            augmentations.putIfAbsent(weaponType, new HashMap<>());
-            augmentations.get(weaponType).merge(weapon.getLinkedBy().getType(), 1, Integer::sum);
+            augmentations.computeIfAbsent(weaponType, ignored -> new HashMap<>())
+                  .merge(weapon.getLinkedBy().getType(), 1, Integer::sum);
         }
-        return asNew;
+        return count == 1;
     }
 
     /**
@@ -119,128 +111,55 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      * @param ammo The ammo to add to the bay
      */
     public void addBayAmmo(WeaponType weaponType, AmmoMounted ammo) {
-        if (weaponType instanceof AmmoWeapon) {
-            if (ammo.getBaseShotsLeft() > 0) {
-                if (weaponAmmo.containsKey(weaponType)) {
-                    // If the ammo is already in the bay, just add to the count.
-                    List<Mounted<?>> ammoList = weaponAmmo.get(weaponType);
-                    ammoList.add(ammo);
-                } else {
-                    // If the ammo isn't in the bay, add it to the list.
-                    List<Mounted<?>> ammoList = new ArrayList<>();
-                    ammoList.add(ammo);
-                    weaponAmmo.put(weaponType, ammoList);
-                }
-            }
-            // If the ammo is empty, we don't want to add it to the bay.
+        if (weaponType instanceof AmmoWeapon && ammo.getBaseShotsLeft() > 0) {
+            weaponAmmo.computeIfAbsent(weaponType, ignored -> new ArrayList<>()).add(ammo);
         }
-        // If the weapon isn't an ammo weapon, we don't want to add it to the bay.
     }
 
-    /**
-     * Determines if two WeaponBayTexts are laterally similar and hence can be combined. That is, if there is a weapon
-     * bay on the left side that is identical to one on the right side, then those two can be combined in a location
-     * like FRS/FLS. This allows weapon lists to be compacted.
-     *
-     * @param other The other instance
-     *
-     * @return Whether the two bays are identical
-     */
-    public boolean canCombine(WeaponBayText other) {
-        // Check for opposing sides
-        return loc.size() == 1
-              && checkOpposingSide(loc.getFirst(), other.loc.getFirst(), rear, other.rear)
-              && weapons.equals(other.weapons)
-              && ammunitionMatch(other) && augmentations.equals(other.augmentations);
+    /** Immutable contents, excluding location. Ammo is a multiset of individual bins, not a shot total. */
+    CombinationKey combinationKey() {
+        Map<WeaponType, Map<AmmoDescriptor, Integer>> ammo = new HashMap<>();
+        for (Map.Entry<WeaponType, List<Mounted<?>>> entry : weaponAmmo.entrySet()) {
+            Map<AmmoDescriptor, Integer> counts = new HashMap<>();
+            for (Mounted<?> mounted : entry.getValue()) {
+                counts.merge(new AmmoDescriptor(mounted.getType().getShortName(), mounted.getBaseShotsLeft()), 1,
+                      Integer::sum);
+            }
+            ammo.put(entry.getKey(), Map.copyOf(counts));
+        }
+        Map<WeaponType, Map<EquipmentType, Integer>> augmentations = new HashMap<>();
+        for (Map.Entry<WeaponType, Map<EquipmentType, Integer>> entry : this.augmentations.entrySet()) {
+            augmentations.put(entry.getKey(), Map.copyOf(entry.getValue()));
+        }
+        return new CombinationKey(Map.copyOf(weapons), Map.copyOf(ammo), Map.copyOf(augmentations));
     }
 
-    /**
-     * Used to compare ammunition across WeaponBayTexts. Since Mounted.equals isn't implemented, we can't directly use
-     * Map.equals.
-     *
-     * @param other The other bay
-     *
-     * @return Whether the ammo types and number of shots per type match
-     */
-    private boolean ammunitionMatch(WeaponBayText other) {
-        // If the number is different, the ammo doesn't match
-        if ((weaponAmmo.size() != other.weaponAmmo.size())) {
-            return false;
-        }
-        // We then check the keys if they match
-        if (!weaponAmmo.keySet().equals(other.weaponAmmo.keySet())) {
-            return false;
-        }
-        // Now we compare the ammo sets of each weapon
-        for (WeaponType weaponType : weaponAmmo.keySet()) {
-            List<Mounted<?>> ammoListThis = weaponAmmo.get(weaponType);
-            List<Mounted<?>> ammoListOther = other.weaponAmmo.get(weaponType);
-            if (ammoListThis == null || ammoListOther == null) {
-                return false;
-            }
-            // If the number of ammo types is different, the ammo doesn't match
-            if (ammoListThis.size() != ammoListOther.size()) {
-                return false;
-            }
-            boolean[] otherMatched = new boolean[ammoListOther.size()];
-            Arrays.fill(otherMatched, false);
+    record CombinationKey(Map<WeaponType, Integer> weapons,
+                          Map<WeaponType, Map<AmmoDescriptor, Integer>> ammo,
+                          Map<WeaponType, Map<EquipmentType, Integer>> augmentations) { }
 
-            for (Mounted<?> mountedThis : ammoListThis) {
-                if (!(mountedThis instanceof AmmoMounted ammoThis)) {
-                    return false; // Should not happen
-                }
-                final String nameThis = ammoThis.getType().getShortName();
-                int shotsThis = ammoThis.getBaseShotsLeft();
-                boolean foundMatch = false;
-                for (int i = 0; i < ammoListOther.size(); i++) {
-                    if (otherMatched[i]) {
-                        continue; // Skip already matched items
-                    }
+    record AmmoDescriptor(String name, int shots) { }
 
-                    Mounted<?> mountedOther = ammoListOther.get(i);
-                    if (!(mountedOther instanceof AmmoMounted ammoOther)) {
-                        // This shouldn't happen
-                        return false;
-                    }
-
-                    String nameOther = ammoOther.getType().getShortName();
-                    int shotsOther = ammoOther.getBaseShotsLeft();
-
-                    // Check if names and shots match
-                    if (nameThis.equals(nameOther) && shotsThis == shotsOther) {
-                        otherMatched[i] = true;
-                        foundMatch = true;
-                        break; // Found a match, move to the next item
-                    }
-                }
-
-                // If no match was found in the other list
-                if (!foundMatch) {
-                    return false;
-                }
-            }
-        }
-        // we matched all
-        return true;
-    }
-
-    private boolean checkOpposingSide(int loc1, int loc2, boolean rear1, boolean rear2) {
-        return switch (loc1) {
-            // Jumpship.LOC_FLS and Jumpship.LOC_FRS are the same indices as
-            // Dropship.LOC_LEFT_WING and Dropship.LOC_RIGHT_WING
-            case Jumpship.LOC_FLS -> loc2 == Jumpship.LOC_FRS && rear1 == rear2;
-            case Jumpship.LOC_FRS -> loc2 == Jumpship.LOC_FLS && rear1 == rear2;
-            case Jumpship.LOC_ALS -> loc2 == Jumpship.LOC_ARS;
-            case Jumpship.LOC_ARS -> loc2 == Jumpship.LOC_ALS;
-            case Warship.LOC_LBS -> loc2 == Warship.LOC_RBS;
-            case Warship.LOC_RBS -> loc2 == Warship.LOC_LBS;
-            default -> false;
+    static int opposingLocation(int location) {
+        return switch (location) {
+            case Jumpship.LOC_FLS -> Jumpship.LOC_FRS;
+            case Jumpship.LOC_FRS -> Jumpship.LOC_FLS;
+            case Jumpship.LOC_ALS -> Jumpship.LOC_ARS;
+            case Jumpship.LOC_ARS -> Jumpship.LOC_ALS;
+            case Warship.LOC_LBS -> Warship.LOC_RBS;
+            case Warship.LOC_RBS -> Warship.LOC_LBS;
+            default -> -1;
         };
+    }
+
+    static boolean rearMustMatch(int location) {
+        // The front-side indices also represent the left/right wings on a DropShip.
+        return location == Jumpship.LOC_FLS || location == Jumpship.LOC_FRS;
     }
 
     /**
      * Combine two WeaponBayTexts. Since they should both contain the same weapons, the only thing that needs to be
-     * updated is the locations. This should only be called if canCombine returns true for both WeaponBayTexts.
+     * updated is the locations. The caller must first match their contents and opposing locations.
      *
      * @param other The other bay to combine with this one
      */

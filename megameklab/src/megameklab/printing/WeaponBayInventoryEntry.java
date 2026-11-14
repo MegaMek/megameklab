@@ -293,7 +293,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             return DASH;
         }
         if (isCapital) {
-            return String.valueOf((int) av);
+            return String.valueOf(Math.round(av));
         }
         return ((int) av) + " (" + ((int) stdAV) + ")";
     }
