@@ -452,6 +452,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         updateSpecializations();
         platoonTypeView.setFromEntity(getInfantry());
         weaponView.setFromEntity(getInfantry());
+        weaponChoiceTable.refresh();
         specializationChoiceTable.refresh();
         mountChoiceTable.refresh();
         refresh.refreshPreview();
