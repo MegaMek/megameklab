@@ -276,7 +276,7 @@ public class CIEquipmentView extends IView implements ActionListener {
         RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = new RowFilter<>() {
             @Override
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
-                ConvInfantry inf = getInfantry();
+                ConvInfantry infantry = getInfantry();
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
 
@@ -284,7 +284,7 @@ public class CIEquipmentView extends IView implements ActionListener {
                     return false;
                 }
 
-                if (inf.getSquadSize() < TestInfantry.weaponCrew(inf, weapon)) {
+                if (infantry.getSquadSize() < TestInfantry.weaponCrew(infantry, weapon)) {
                     return false;
                 }
 
@@ -301,10 +301,10 @@ public class CIEquipmentView extends IView implements ActionListener {
                     }
 
                     if (etype.hasFlag(WeaponType.F_INF_SUPPORT)
-                          && ((TestInfantry.maxSecondaryWeapons(inf) == 0)
+                          && ((TestInfantry.maxSecondaryWeapons(infantry) == 0)
                           || (etype.is("Particle Cannon (Support)")
-                          && inf.getMovementMode() != EntityMovementMode.INF_MOTORIZED
-                          && inf.getMovementMode() != EntityMovementMode.TRACKED))) {
+                          && infantry.getMovementMode() != EntityMovementMode.INF_MOTORIZED
+                          && infantry.getMovementMode() != EntityMovementMode.TRACKED))) {
                         return false;
                     }
 
