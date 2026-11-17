@@ -276,14 +276,18 @@ public class CIEquipmentView extends IView implements ActionListener {
         RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = new RowFilter<>() {
             @Override
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
+                ConvInfantry infantry = getInfantry();
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
+
                 if (!(etype instanceof InfantryWeapon weapon)) {
                     return false;
                 }
-                if (getInfantry().getSquadSize() < (getInfantry().getSecondaryWeaponsPerSquad() * weapon.getCrew())) {
+
+                if (infantry.getSquadSize() < TestInfantry.weaponCrew(infantry, weapon)) {
                     return false;
                 }
+
                 if ((showArchaicButton.isSelected() && etype.hasFlag(WeaponType.F_INF_ARCHAIC))
                       || (showPersonalButton.isSelected() && !etype.hasFlag(WeaponType.F_INF_ARCHAIC)
                       && !etype.hasFlag(WeaponType.F_INF_SUPPORT))
@@ -297,10 +301,10 @@ public class CIEquipmentView extends IView implements ActionListener {
                     }
 
                     if (etype.hasFlag(WeaponType.F_INF_SUPPORT)
-                          && ((TestInfantry.maxSecondaryWeapons(getInfantry()) == 0)
+                          && ((TestInfantry.maxSecondaryWeapons(infantry) == 0)
                           || (etype.is("Particle Cannon (Support)")
-                          && getInfantry().getMovementMode() != EntityMovementMode.INF_MOTORIZED
-                          && getInfantry().getMovementMode() != EntityMovementMode.TRACKED))) {
+                          && infantry.getMovementMode() != EntityMovementMode.INF_MOTORIZED
+                          && infantry.getMovementMode() != EntityMovementMode.TRACKED))) {
                         return false;
                     }
 
@@ -311,6 +315,7 @@ public class CIEquipmentView extends IView implements ActionListener {
                         return true;
                     }
                 }
+
                 return false;
             }
         };

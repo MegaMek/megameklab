@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -452,6 +452,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         updateSpecializations();
         platoonTypeView.setFromEntity(getInfantry());
         weaponView.setFromEntity(getInfantry());
+        weaponChoiceTable.refresh();
         specializationChoiceTable.refresh();
         mountChoiceTable.refresh();
         refresh.refreshPreview();
@@ -464,6 +465,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         getInfantry().setSquadSize(squadSize);
         getInfantry().autoSetInternal();
         platoonTypeView.setFromEntity(getInfantry());
+        weaponChoiceTable.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
