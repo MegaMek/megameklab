@@ -284,9 +284,7 @@ public class CIEquipmentView extends IView implements ActionListener {
                     return false;
                 }
 
-                int weaponCrew = TestInfantry.weaponCrew(inf, weapon);
-
-                if (inf.getSquadSize() < weaponCrew) {
+                if (inf.getSquadSize() < TestInfantry.weaponCrew(inf, weapon)) {
                     return false;
                 }
 
