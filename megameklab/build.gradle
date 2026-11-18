@@ -44,7 +44,12 @@ sourceSets {
 }
 
 ext {
-    mmlJvmOptions = ['-Xmx1024m', '-Dsun.awt.disablegrab=true']
+    // Java4Shell (CVE-2026-114938): the JIT's fast Base64 decoder can write past its buffer on AVX-512 CPUs, and
+    // embedded unit icons and fluff images are Base64. -XX:-UseBASE64Intrinsics uses the plain decoder instead. Base64
+    // decoding is rare, so there is no noticeable cost. Remove once Java 21 builds before the fix are no longer
+    // supported. It is also set on applicationDefaultJvmArgs and the SVG mass printer below.
+    base64SafeguardJvmOption = '-XX:-UseBASE64Intrinsics'
+    mmlJvmOptions = ['-Xmx1024m', '-Dsun.awt.disablegrab=true', base64SafeguardJvmOption]
     fileStagingDir = "${layout.buildDirectory.get()}/files"
 
     mmDir = "${rootDir}/../megamek"
@@ -108,6 +113,7 @@ application {
     mainClass = 'megameklab.MegaMekLab'
     applicationDefaultJvmArgs = [
             '-Xmx1024m',
+            base64SafeguardJvmOption,
     ]
 }
 
@@ -368,6 +374,8 @@ tasks.register('createStartScripts', CreateStartScripts) {
     description = 'Create shell script for generic distribution.'
     applicationName = 'MegaMekLab'
     mainClass = application.mainClass
+    // This and startScripts both write the bin/ launcher, so it must pass the same JVM options or whichever runs last wins
+    defaultJvmOpts = mmlJvmOptions
     outputDir = startScripts.outputDir
     classpath = jar.outputs.files + files(project.sourceSets.main.runtimeClasspath.files)
             .filter { it.name.endsWith(".jar") }
@@ -381,7 +389,7 @@ tasks.register('createSvgMassPrinterScripts', CreateStartScripts) {
     classpath = jar.outputs.files + files(project.sourceSets.main.runtimeClasspath.files)
             .filter { it.name.endsWith(".jar") }
     // The mass export loads every unit; give it plenty of heap by default.
-    defaultJvmOpts = ['-Xmx4g']
+    defaultJvmOpts = ['-Xmx4g', base64SafeguardJvmOption]
 }
 
 apply from: rootProject.file('gradle/suite_megamek_companion.gradle')
