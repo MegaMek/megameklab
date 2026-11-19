@@ -158,6 +158,7 @@ public class SVBuildTab extends ITab implements ActionListener {
         for (Mounted<?> mount : getEntity().getEquipment()) {
             // Fixed shouldn't be removed
             if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
+                  || UnitUtil.isFixedOmniMount(getEntity(), mount)
                   || mount.is(EquipmentTypeLookup.PINTLE_TURRET)
                   || mount.is(EquipmentTypeLookup.MAST_MOUNT)
                   || ((mount instanceof MiscMounted)

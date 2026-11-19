@@ -54,6 +54,7 @@ import megamek.client.ui.util.UIUtil;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
@@ -202,12 +203,25 @@ public abstract class AbstractEquipmentTab extends ITab {
         fireTableRefresh();
     }
 
-    private void removeAllEquipment(ActionEvent e) {
+    /**
+     * Removes the equipment shown in the load out list. On an Omni unit, fixed equipment that is placed in a location
+     * belongs to the base chassis and stays; only pod-mounted and unallocated equipment is removed.
+     */
+    private void removeAllEquipment(ActionEvent event) {
         removeHeatSinks();
-        for (int count = 0; count < loadOutModel.getRowCount(); count++) {
-            loadOutModel.removeMounted(count);
+        int keptFixedCount = 0;
+        for (int row = 0; row < loadOutModel.getRowCount(); row++) {
+            Mounted<?> mounted = (Mounted<?>) loadOutModel.getValueAt(row, CriticalTableModel.EQUIPMENT);
+            if (UnitUtil.isFixedOmniMount(getEntity(), mounted) && (mounted.getLocation() != Entity.LOC_NONE)) {
+                keptFixedCount++;
+            } else {
+                loadOutModel.removeMounted(row);
+            }
         }
+        LOGGER.debug("[OmniPods] {}: Remove All kept {} placed fixed item(s)", getEntity().getShortName(),
+              keptFixedCount);
         loadOutModel.removeAllCrits();
+        getLoadOut().forEach(loadOutModel::addCrit);
         fireTableRefresh();
     }
 
