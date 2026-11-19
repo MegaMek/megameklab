@@ -107,7 +107,6 @@ import megamek.common.equipment.*;
 import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.loaders.MekSummary;
 import megamek.common.loaders.MekSummaryCache;
-import megamek.common.loaders.UnitFluffLoader;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.OptionsConstants;
@@ -1868,7 +1867,7 @@ public class SVGMassPrinter {
 
         private static Map<String, Object> getFluffAttributes(Entity entity) {
             Map<String, Object> fluffMap = new HashMap<>();
-            EntityFluff entityFluff = UnitFluffLoader.displayFluff(entity);
+            EntityFluff entityFluff = entity.getFluff();
             String fluffPath = FluffImageHelper.getFluffImagePath(entity);
             if (fluffPath != null) {
                 if (!fluffPath.endsWith("hud.png")) {
