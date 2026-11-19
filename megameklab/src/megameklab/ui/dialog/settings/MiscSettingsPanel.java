@@ -50,8 +50,8 @@ import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.comboBoxes.MMComboBox;
 import megamek.client.ui.dialogs.buttonDialogs.CommonSettingsDialog;
 import megamek.client.ui.dialogs.helpDialogs.HelpDialog;
-import megamek.common.preference.PreferenceManager;
 import megamek.common.options.OptionsConstants;
+import megamek.common.preference.PreferenceManager;
 import megamek.logging.MMLogger;
 import megameklab.ui.MMLStartUp;
 import megameklab.ui.MulDndBehaviour;
@@ -74,6 +74,7 @@ public class MiscSettingsPanel extends JPanel {
     private final JCheckBox chkSkipSavePrompts = new JCheckBox();
     private final JCheckBox chkIncludeLicense = new JCheckBox();
     private final JCheckBox chkShowAvailabilityTab = new JCheckBox();
+    private final JCheckBox chkShowUnitFluff = new JCheckBox();
     private final JTextField txtUserDir = new JTextField(20);
     private final JSlider guiScale = new JSlider();
     private final MMComboBox<MulDndBehaviour> cbMulOpenBehaviour = new MMComboBox<>("MUL Drag and Drop behaviour",
@@ -163,6 +164,10 @@ public class MiscSettingsPanel extends JPanel {
         chkShowAvailabilityTab.setToolTipText(resources.getString("ConfigurationDialog.chkShowAvailabilityTab.tooltip"));
         chkShowAvailabilityTab.setSelected(CConfig.showAvailabilityTab());
 
+        chkShowUnitFluff.setText(resources.getString("ConfigurationDialog.chkShowUnitFluff.text"));
+        chkShowUnitFluff.setToolTipText(resources.getString("ConfigurationDialog.chkShowUnitFluff.tooltip"));
+        chkShowUnitFluff.setSelected(PreferenceManager.getClientPreferences().getShowUnitFluffText());
+
         guiScale.setMajorTickSpacing(3);
         guiScale.setMinimum(7);
         guiScale.setMaximum(24);
@@ -192,9 +197,10 @@ public class MiscSettingsPanel extends JPanel {
         gridPanel.add(chkSkipSavePrompts);
         gridPanel.add(chkIncludeLicense);
         gridPanel.add(chkShowAvailabilityTab);
+        gridPanel.add(chkShowUnitFluff);
         gridPanel.add(scaleLine);
 
-        SpringUtilities.makeCompactGrid(gridPanel, 10, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 11, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -219,12 +225,17 @@ public class MiscSettingsPanel extends JPanel {
               selectedMulBehaviour.ordinal() :
               MulDndBehaviour.LOAD_FORCE.ordinal();
         miscSettings.put(CConfig.MISC_MUL_OPEN_BEHAVIOUR, String.valueOf(ordinalToSave));
-        // User directory and gui scale are stored in MM's client settings, not in CConfig, therefore not added here
+        // User directory, gui scale and showing unit fluff are stored in MM's client settings, not in CConfig, therefore
+        // not added here
         return miscSettings;
     }
 
     String getUserDir() {
         return txtUserDir.getText();
+    }
+
+    boolean showUnitFluff() {
+        return chkShowUnitFluff.isSelected();
     }
 
     float guiScale() {
