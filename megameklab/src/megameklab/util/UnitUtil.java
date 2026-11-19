@@ -282,8 +282,12 @@ public class UnitUtil {
      * {@code Entity.LOC_NONE}. Generally, equipment that does not make sense when unallocated is either deleted or left
      * in its location. Depending on unit type, ammo is left in place when its placement is not free (fighters).
      * Unallocated Clan CASE is removed (but all other forms of CASE/CASE II/CASE-P are not). Weapon bays are deleted.
+     * On an Omni unit, fixed equipment belongs to the base chassis and is left in its location; only pod-mounted
+     * equipment is unallocated.
      */
     public static void removeAllCriticalSlots(Entity unit) {
+        LOGGER.debug("[OmniPods] {}: resetting slots, fixed Omni equipment {}", unit.getShortName(),
+              unit.isOmni() ? "stays in place" : "does not apply (not an Omni)");
         if (unit instanceof AeroSpaceFighter fighter) {
             AeroUtil.removeAllCriticalSlotsFromFighter(fighter);
         } else if (unit instanceof BattleArmor battleArmor) {
@@ -302,15 +306,19 @@ public class UnitUtil {
                 for (int i = 0; i < unit.getNumberOfCriticalSlots(loc); i++) {
                     CriticalSlot cs = unit.getCritical(loc, i);
                     if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                        Mounted<?> m1 = cs.getMount();
-                        Mounted<?> m2 = cs.getMount2();
-                        if ((m2 != null) && (!UnitUtil.isFixedLocationSpreadEquipment(m2.getType()))) {
-                            UnitUtil.removeCriticalSlots(unit, m2);
-                            UnitUtil.changeMountStatus(unit, m2, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                        Mounted<?> firstMount = cs.getMount();
+                        Mounted<?> secondMount = cs.getMount2();
+                        if ((secondMount != null)
+                              && !UnitUtil.isFixedLocationSpreadEquipment(secondMount.getType())
+                              && !isFixedOmniMount(unit, secondMount)) {
+                            UnitUtil.removeCriticalSlots(unit, secondMount);
+                            UnitUtil.changeMountStatus(unit, secondMount, Entity.LOC_NONE, Entity.LOC_NONE, false);
                         }
-                        if ((m1 != null) && (!UnitUtil.isFixedLocationSpreadEquipment(m1.getType()))) {
-                            UnitUtil.removeCriticalSlots(unit, m1);
-                            UnitUtil.changeMountStatus(unit, m1, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                        if ((firstMount != null)
+                              && !UnitUtil.isFixedLocationSpreadEquipment(firstMount.getType())
+                              && !isFixedOmniMount(unit, firstMount)) {
+                            UnitUtil.removeCriticalSlots(unit, firstMount);
+                            UnitUtil.changeMountStatus(unit, firstMount, Entity.LOC_NONE, Entity.LOC_NONE, false);
                         }
                     }
                 }
@@ -667,6 +675,19 @@ public class UnitUtil {
                   mounted.getName());
             mounted.setOmniPodMounted(false);
         }
+    }
+
+    /**
+     * Checks whether the equipment is part of an Omni unit's base chassis, that is, fixed rather than pod-mounted.
+     * Equipment on a unit that is not an Omni is never fixed in this sense.
+     *
+     * @param unit    the unit the equipment is on
+     * @param mounted the equipment to test
+     *
+     * @return {@code true} when the unit is an Omni and the equipment is not pod-mounted
+     */
+    public static boolean isFixedOmniMount(Entity unit, Mounted<?> mounted) {
+        return unit.isOmni() && !mounted.isOmniPodMounted();
     }
 
     /**

@@ -39,7 +39,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -54,6 +57,7 @@ import megamek.client.ui.util.UIUtil;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
@@ -81,6 +85,8 @@ public abstract class AbstractEquipmentTab extends ITab {
     protected final CriticalTableModel loadOutModel;
     private final JTable loadOutTable = new JTable();
     private final AbstractEquipmentDatabaseView equipDatabase;
+    private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Tabs");
+    private final JButton removeAllButton = new JButton();
 
     public AbstractEquipmentTab(EntitySource eSource) {
         super(eSource);
@@ -102,8 +108,16 @@ public abstract class AbstractEquipmentTab extends ITab {
 
         JButton removeButton = new JButton("Remove");
         removeButton.setMnemonic('R');
-        JButton removeAllButton = new JButton("Remove All");
+        updateRemoveAllButtonText();
+        // Ticking the Omni box on the Structure tab does not refresh this tab, so relabel when it is shown
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent event) {
+                updateRemoveAllButtonText();
+            }
+        });
         removeAllButton.setMnemonic('l');
+        removeAllButton.setToolTipText(resources.getString("EquipmentTab.RemoveAll.tooltip"));
         removeButton.addActionListener(this::removeSelectedEquipment);
         removeAllButton.addActionListener(this::removeAllEquipment);
 
@@ -202,16 +216,39 @@ public abstract class AbstractEquipmentTab extends ITab {
         fireTableRefresh();
     }
 
-    private void removeAllEquipment(ActionEvent e) {
+    /**
+     * Removes the equipment shown in the load out list. On an Omni unit, fixed equipment that is placed in a location
+     * belongs to the base chassis and stays; only pod-mounted and unallocated equipment is removed.
+     */
+    private void removeAllEquipment(ActionEvent event) {
         removeHeatSinks();
-        for (int count = 0; count < loadOutModel.getRowCount(); count++) {
-            loadOutModel.removeMounted(count);
+        int keptFixedCount = 0;
+        for (int row = 0; row < loadOutModel.getRowCount(); row++) {
+            Mounted<?> mounted = (Mounted<?>) loadOutModel.getValueAt(row, CriticalTableModel.EQUIPMENT);
+            if (UnitUtil.isFixedOmniMount(getEntity(), mounted) && (mounted.getLocation() != Entity.LOC_NONE)) {
+                keptFixedCount++;
+            } else {
+                loadOutModel.removeMounted(row);
+            }
         }
+        LOGGER.debug("[OmniPods] {}: Remove All kept {} placed fixed item(s)", getEntity().getShortName(),
+              keptFixedCount);
         loadOutModel.removeAllCrits();
+        getLoadOut().forEach(loadOutModel::addCrit);
         fireTableRefresh();
     }
 
+    /**
+     * Labels the Remove All button for the current unit. On an Omni unit it keeps the base chassis equipment, so the
+     * label says it removes the pods.
+     */
+    private void updateRemoveAllButtonText() {
+        String textKey = getEntity().isOmni() ? "EquipmentTab.RemoveAllPods.text" : "EquipmentTab.RemoveAll.text";
+        removeAllButton.setText(resources.getString(textKey));
+    }
+
     public void refresh() {
+        updateRemoveAllButtonText();
         removeHeatSinks();
         loadOutModel.removeAllCrits();
         getLoadOut().forEach(loadOutModel::addCrit);
