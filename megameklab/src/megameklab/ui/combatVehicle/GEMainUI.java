@@ -55,6 +55,7 @@ import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.StatusBar;
 import megameklab.ui.util.TabScrollPane;
+import megameklab.util.CConfig;
 
 public class GEMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
     private GEStructureTab structureTab;
@@ -103,7 +104,9 @@ public class GEMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
 
         configPane.addTab("Structure", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", new TabScrollPane(equipmentTab));
-        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        if (CConfig.showFluffTab()) {
+            configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        }
         configPane.addTab("Preview", previewTab);
         configPane.addTab("Analysis", analysisTab);
         // The Asset tab is only shown while the asset is enabled; the checkbox in the Structure tab toggles it.

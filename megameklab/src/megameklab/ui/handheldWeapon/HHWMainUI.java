@@ -44,10 +44,11 @@ import megamek.common.equipment.Mounted;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Entity;
 import megameklab.ui.MegaMekLabMainUI;
-import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.AnalysisTab;
+import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.util.TabScrollPane;
+import megameklab.util.CConfig;
 
 public class HHWMainUI extends MegaMekLabMainUI {
     private HHWStructureTab structureTab;
@@ -89,7 +90,9 @@ public class HHWMainUI extends MegaMekLabMainUI {
 
         configPane.addTab("Structure", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", new TabScrollPane(equipmentTab));
-        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        if (CConfig.showFluffTab()) {
+            configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        }
         configPane.addTab("Preview", previewTab);
         configPane.addTab("Analysis", analysisTab);
 

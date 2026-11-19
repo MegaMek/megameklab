@@ -112,7 +112,9 @@ public class ASMainUI extends MegaMekLabMainUI {
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
-        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        if (CConfig.showFluffTab()) {
+            configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        }
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
         if (CConfig.showAvailabilityTab()) {
             configPane.addTab("Availability", availabilityTab);

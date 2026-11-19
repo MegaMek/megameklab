@@ -222,7 +222,9 @@ public class WSMainUI extends MegaMekLabMainUI {
         configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
         configPane.addTab("Transport Bays", new TabScrollPane(transportTab));
-        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        if (CConfig.showFluffTab()) {
+            configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        }
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
         if (CConfig.showAvailabilityTab()) {
             configPane.addTab("Availability", availabilityTab);
