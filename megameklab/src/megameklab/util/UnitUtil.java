@@ -1105,15 +1105,13 @@ public class UnitUtil {
                     return 0;
                 }
 
-                if (wm.getLinkedBy() instanceof MiscMounted linkMount) {
-                    if (linkMount.getType().hasFlag(MiscTypeFlag.F_LASER_INSULATOR)) {
-                        heat--;
-                    } else if (linkMount.getType().hasFlag(MiscTypeFlag.F_PPC_CAPACITOR)
-                          && wm.hasChargedOrChargingCapacitor() == 0) {
-                        // If the capacitor is charged it will have been counted already, only add 5 heat if it's
-                        // not charged. For Lab purposes, we always pretend that the capacitor is charged.
-                        heat += 5;
-                    }
+                if (wm.getEnhancement(MiscTypeFlag.F_LASER_INSULATOR) != null) {
+                    heat--;
+                } else if ((wm.getEnhancement(MiscTypeFlag.F_PPC_CAPACITOR) != null)
+                      && wm.hasChargedOrChargingCapacitor() == 0) {
+                    // If the capacitor is charged it will have been counted already, only add 5 heat if it's
+                    // not charged. For Lab purposes, we always pretend that the capacitor is charged.
+                    heat += 5;
                 }
 
                 // Order matters since RACWeapons are UACWeapons

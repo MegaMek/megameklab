@@ -517,7 +517,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 return DASH;
             }
         } else if (row == 1) {
-            if (hasPulseModule) {
+            if (hasPulseModule && hasInsulator) {
+                return Integer.toString(mount.getType().getHeat() + 2 - 1) + '*';
+            } else if (hasPulseModule) {
                 return Integer.toString(mount.getType().getHeat() + 2);
             } else if (hasCapacitor) {
                 return Integer.toString(mount.getType().getHeat() + 5);
@@ -745,8 +747,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     private boolean hasLinkedEquipment(Mounted<?> eq, EquipmentFlag flag) {
-        return (eq.getLinkedBy() != null) && (eq.getLinkedBy().getType() instanceof MiscType)
-              && eq.getLinkedBy().getType().hasFlag(flag);
+        return eq.getEnhancement(flag) != null;
     }
 
     @Override

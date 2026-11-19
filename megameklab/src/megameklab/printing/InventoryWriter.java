@@ -44,6 +44,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -1051,7 +1052,10 @@ public class InventoryWriter {
                 rowGroup = rootGroup;
                 if (row > 0) {
                     if (line instanceof StandardInventoryEntry stdInv) {
-                        Mounted<?> modMount = stdInv.getMounted().getLinkedBy();
+                        // The second row names the pulse module when a laser also carries an insulator
+                        Mounted<?> modMount = Objects.requireNonNullElse(
+                              stdInv.getMounted().getEnhancement(MiscType.F_RISC_LASER_PULSE_MODULE),
+                              stdInv.getMounted().getLinkedBy());
                         if (stdInv.getMounted().getType() instanceof MMLWeapon) {
                             modMount = null; //MML print their module directly inline
                         }

@@ -198,11 +198,13 @@ public class AeroBayTransferHandler extends TransferHandler {
                         }
                         UnitUtil.removeCriticalSlots(eSource.getEntity(), m);
                         UnitUtil.changeMountStatus(eSource.getEntity(), m, Entity.LOC_NONE, Entity.LOC_NONE, false);
-                        if ((mount.getType() instanceof WeaponType) && (m.getLinkedBy() != null)) {
-                            UnitUtil.removeCriticalSlots(eSource.getEntity(), m.getLinkedBy());
-                            UnitUtil.changeMountStatus(eSource.getEntity(), m.getLinkedBy(),
-                                  Entity.LOC_NONE, Entity.LOC_NONE, false);
-                            m.getLinkedBy().setLinked(null);
+                        if (mount.getType() instanceof WeaponType) {
+                            for (Mounted<?> linked : m.getLinkedEquipment()) {
+                                UnitUtil.removeCriticalSlots(eSource.getEntity(), linked);
+                                UnitUtil.changeMountStatus(eSource.getEntity(), linked,
+                                      Entity.LOC_NONE, Entity.LOC_NONE, false);
+                                linked.setLinked(null);
+                            }
                         }
                     }
                     UnitUtil.compactCriticalSlots(eSource.getEntity());
