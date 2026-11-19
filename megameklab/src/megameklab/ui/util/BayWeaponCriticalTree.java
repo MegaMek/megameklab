@@ -67,6 +67,7 @@ import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.AmmoType.AmmoTypeEnum;
 import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponMounted;
@@ -1074,6 +1075,8 @@ public class BayWeaponCriticalTree extends JTree {
                 }
             }
             if (null != bayNode) {
+                // Moving the weapon unlinks its enhancements, so they are taken along and linked to it again
+                List<MiscMounted> enhancements = eq.getEnhancements();
                 moveToArc(eq);
                 EquipmentNode eqNode = new EquipmentNode(eq);
                 model.insertNodeInto(eqNode, bayNode, bayNode.getChildCount());
@@ -1081,8 +1084,9 @@ public class BayWeaponCriticalTree extends JTree {
 
                 if (eq instanceof WeaponMounted) {
                     bay.addWeaponToBay(eSource.getEntity().getEquipmentNum(eq));
-                    for (Mounted<?> linked : eq.getLinkedEquipment()) {
-                        moveToArc(linked);
+                    for (MiscMounted enhancement : enhancements) {
+                        moveToArc(enhancement);
+                        enhancement.setLinked(eq);
                     }
                 } else if (eq instanceof AmmoMounted) {
                     bay.addAmmoToBay(eSource.getEntity().getEquipmentNum(eq));
@@ -1250,12 +1254,15 @@ public class BayWeaponCriticalTree extends JTree {
         }
         // Now go through all the equipment in the bay
         for (WeaponMounted weapon : bay.getBayWeapons()) {
+            // Moving the weapon unlinks its enhancements, so they are taken along and linked to it again
+            List<MiscMounted> enhancements = weapon.getEnhancements();
             moveToArc(weapon);
             EquipmentNode node = new EquipmentNode(weapon);
             model.insertNodeInto(node, bayNode, bayNode.getChildCount());
             node.setParent(bayNode);
-            for (Mounted<?> linked : weapon.getLinkedEquipment()) {
-                moveToArc(linked);
+            for (MiscMounted enhancement : enhancements) {
+                moveToArc(enhancement);
+                enhancement.setLinked(weapon);
             }
         }
         for (AmmoMounted ammo : bay.getBayAmmo()) {
