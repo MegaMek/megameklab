@@ -98,6 +98,7 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
         CConfig.applyRulesSystem();
         CConfig.saveConfig();
         PreferenceManager.getClientPreferences().setUserDir(miscSettingsPanel.getUserDir());
+        PreferenceManager.getClientPreferences().setShowUnitFluffText(miscSettingsPanel.showUnitFluff());
         if (miscSettingsPanel.guiScale() != GUIPreferences.getInstance().getGUIScale()) {
             GUIPreferences.getInstance().setValue(GUIPreferences.GUI_SCALE, miscSettingsPanel.guiScale());
             MegaMekLab.updateGuiScaling();

@@ -120,7 +120,9 @@ public class BAMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", equipTab);
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
-        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        if (CConfig.showFluffTab()) {
+            configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        }
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
         if (CConfig.showAvailabilityTab()) {
             configPane.addTab("Availability", availabilityTab);

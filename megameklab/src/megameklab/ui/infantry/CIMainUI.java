@@ -110,7 +110,9 @@ public class CIMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
         statusbar.addRefreshedListener(this);
 
         configPane.addTab("Build", structureTab);
-        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        if (CConfig.showFluffTab()) {
+            configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        }
         if (CConfig.showAvailabilityTab()) {
             configPane.addTab("Availability", availabilityTab);
         }
