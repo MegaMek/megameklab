@@ -39,7 +39,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -82,6 +85,8 @@ public abstract class AbstractEquipmentTab extends ITab {
     protected final CriticalTableModel loadOutModel;
     private final JTable loadOutTable = new JTable();
     private final AbstractEquipmentDatabaseView equipDatabase;
+    private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Tabs");
+    private final JButton removeAllButton = new JButton();
 
     public AbstractEquipmentTab(EntitySource eSource) {
         super(eSource);
@@ -103,8 +108,16 @@ public abstract class AbstractEquipmentTab extends ITab {
 
         JButton removeButton = new JButton("Remove");
         removeButton.setMnemonic('R');
-        JButton removeAllButton = new JButton("Remove All");
+        updateRemoveAllButtonText();
+        // Ticking the Omni box on the Structure tab does not refresh this tab, so relabel when it is shown
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent event) {
+                updateRemoveAllButtonText();
+            }
+        });
         removeAllButton.setMnemonic('l');
+        removeAllButton.setToolTipText(resources.getString("EquipmentTab.RemoveAll.tooltip"));
         removeButton.addActionListener(this::removeSelectedEquipment);
         removeAllButton.addActionListener(this::removeAllEquipment);
 
@@ -225,7 +238,17 @@ public abstract class AbstractEquipmentTab extends ITab {
         fireTableRefresh();
     }
 
+    /**
+     * Labels the Remove All button for the current unit. On an Omni unit it keeps the base chassis equipment, so the
+     * label says it removes the pods.
+     */
+    private void updateRemoveAllButtonText() {
+        String textKey = getEntity().isOmni() ? "EquipmentTab.RemoveAllPods.text" : "EquipmentTab.RemoveAll.text";
+        removeAllButton.setText(resources.getString(textKey));
+    }
+
     public void refresh() {
+        updateRemoveAllButtonText();
         removeHeatSinks();
         loadOutModel.removeAllCrits();
         getLoadOut().forEach(loadOutModel::addCrit);
