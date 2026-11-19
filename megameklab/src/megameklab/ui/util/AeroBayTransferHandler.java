@@ -196,10 +196,12 @@ public class AeroBayTransferHandler extends TransferHandler {
                                 continue;
                             }
                         }
+                        // Moving the weapon unlinks its enhancements, so collect them first
+                        List<Mounted<?>> linkedEquipment = m.getLinkedEquipment();
                         UnitUtil.removeCriticalSlots(eSource.getEntity(), m);
                         UnitUtil.changeMountStatus(eSource.getEntity(), m, Entity.LOC_NONE, Entity.LOC_NONE, false);
                         if (mount.getType() instanceof WeaponType) {
-                            for (Mounted<?> linked : m.getLinkedEquipment()) {
+                            for (Mounted<?> linked : linkedEquipment) {
                                 UnitUtil.removeCriticalSlots(eSource.getEntity(), linked);
                                 UnitUtil.changeMountStatus(eSource.getEntity(), linked,
                                       Entity.LOC_NONE, Entity.LOC_NONE, false);

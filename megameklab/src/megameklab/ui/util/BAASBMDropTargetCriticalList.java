@@ -615,8 +615,8 @@ public class BAASBMDropTargetCriticalList extends JList<String> implements Mouse
 
     private void changeTurretMount(boolean turret) {
         getSelectedMounted().setMekTurretMounted(turret);
-        if (getSelectedMounted().getLinkedBy() != null) {
-            getSelectedMounted().getLinkedBy().setMekTurretMounted(turret);
+        for (Mounted<?> linked : getSelectedMounted().getLinkedEquipment()) {
+            linked.setMekTurretMounted(turret);
         }
         if (refresh != null) {
             refresh.scheduleRefresh();

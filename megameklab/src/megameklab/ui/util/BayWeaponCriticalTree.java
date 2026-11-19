@@ -411,12 +411,15 @@ public class BayWeaponCriticalTree extends JTree {
                 }
             }
             if (null == moveTo) {
+                // Moving the weapon unlinks its enhancements, so collect them first
+                List<Mounted<?>> linkedEquipment = node.getMounted().getLinkedEquipment();
                 UnitUtil.removeCriticalSlots(eSource.getEntity(), mounted);
                 UnitUtil.changeMountStatus(eSource.getEntity(), mounted, Entity.LOC_NONE, Entity.LOC_NONE, false);
                 if (node.getMounted().getType() instanceof WeaponType) {
-                    for (Mounted<?> linked : node.getMounted().getLinkedEquipment()) {
+                    for (Mounted<?> linked : linkedEquipment) {
                         UnitUtil.removeCriticalSlots(eSource.getEntity(), linked);
-                        UnitUtil.changeMountStatus(eSource.getEntity(), linked, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                        UnitUtil.changeMountStatus(eSource.getEntity(), linked,
+                              Entity.LOC_NONE, Entity.LOC_NONE, false);
                     }
                 }
             }
