@@ -518,13 +518,9 @@ public final class MekUtil {
      *
      */
     public static void updateJumpJets(Mek unit, int jjAmount, int jjType) {
-        unit.setOriginalJumpMP(jjAmount);
         int jumpType = unit.getJumpType();
         if (jjType == jumpType) {
-            int currentJJ = (int) unit.getMisc().stream()
-                  .filter(m -> m.getType()
-                        .hasFlag(MiscType.F_JUMP_JET))
-                  .count();
+            int currentJJ = unit.getJumpJetCount();
             if (jjAmount < currentJJ) {
                 removeJumpJets(unit, currentJJ - jjAmount);
                 return;

@@ -324,16 +324,22 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             maxJump = 0;
         }
         spnJump.removeChangeListener(this);
-        int jump0 = en.getOriginalJumpMP(true);
+        // A Mek's spinner sets how many jets it mounts; a FrankenMek's lighter jets give less Jump MP (CO p. 213)
+        int jump0 = (en instanceof Mek mek) ? mek.getJumpJetCount() : en.getOriginalJumpMP(true);
         int jump = en.getJumpMP();
+        // The Jump MP the jets give, which the limit applies to (TM p. 51)
+        int jumpMP0 = (en instanceof Mek) ? en.getOriginalJumpMP(true) : jump0;
         if (0 == jump0) {
             jump0 = en.getAllUMUCount();
+            jumpMP0 = jump0;
             if (jump0 > 0) {
                 jump = jump0;
             }
         }
+        // Within the limit, a FrankenMek may keep more jets than the limit's MP; over it, the jets are cut to the limit
+        boolean overLimit = (maxJump != null) && (jumpMP0 > maxJump);
         spnJumpModel.setMinimum(minJump);
-        spnJumpModel.setMaximum(maxJump);
+        spnJumpModel.setMaximum(((maxJump == null) || overLimit) ? maxJump : Integer.valueOf(Math.max(maxJump, jump0)));
         spnJump.setValue(Math.max(minJump, jump0));
         txtJumpFinal.setText(String.valueOf(jump));
         spnJump.addChangeListener(this);
@@ -367,7 +373,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         }
         spnMekMechanicalJumpMP.addChangeListener(this);
 
-        if ((maxJump != null) && (jump0 > maxJump)) {
+        if (overLimit) {
             spnJump.setValue(spnJumpModel.getMaximum());
         } else if (jump0 < minJump) {
             spnJump.setValue(spnJumpModel.getMinimum());

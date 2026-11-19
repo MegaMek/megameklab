@@ -1050,7 +1050,7 @@ public class InventoryWriter {
                 rowGroup = rootGroup;
                 if (row > 0) {
                     if (line instanceof StandardInventoryEntry stdInv) {
-                        Mounted<?> modMount = stdInv.getSecondRowMount();
+                        Mounted<?> modMount = (row == 1) ? stdInv.getSecondRowMount() : null;
                         if (modMount != null) {
                             final String name = modMount.getType().getInternalName();
                             final String location = modMount.getEntity().getLocationAbbr(modMount.getLocation());

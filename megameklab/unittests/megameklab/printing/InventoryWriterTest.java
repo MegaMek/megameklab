@@ -28,6 +28,8 @@ import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;
 import megamek.common.loaders.MekFileParser;
+import megamek.common.units.Aero;
+import megamek.common.units.AeroSpaceFighter;
 import megamek.common.units.BipedMek;
 import megamek.common.units.Mek;
 import megameklab.testing.util.InitializeTypes;
@@ -55,8 +57,26 @@ class InventoryWriterTest {
     }
 
     @Test
-    void anMmlPrintsItsArtemisInline() throws Exception {
-        assertNull(secondRowMount(rightTorso("ISMML5", "ISArtemisIV").get(0)));
+    void anMmlNamesItsArtemisOnItsSecondRow() throws Exception {
+        List<Mounted<?>> mounts = rightTorso("ISMML5", "ISArtemisIV");
+
+        assertSame(mounts.get(1), secondRowMount(mounts.get(0)));
+    }
+
+    /** An aerospace MML 5 with Artemis IV prints 4 and 8 on its LRM and SRM rows (TW p. 303), under its Artemis row */
+    @Test
+    void anAerospaceMmlPrintsItsAttackValuesUnderItsArtemisRow() throws Exception {
+        AeroSpaceFighter fighter = new AeroSpaceFighter();
+        fighter.setWeight(50);
+        Mounted<?> launcher = fighter.addEquipment(EquipmentType.get("ISMML5"), Aero.LOC_NOSE);
+        fighter.addEquipment(EquipmentType.get("ISArtemisIV"), Aero.LOC_NOSE).setLinked(launcher);
+        StandardInventoryEntry entry = new StandardInventoryEntry(launcher);
+
+        assertEquals("", entry.getShortField(1));
+        assertEquals("LRM", entry.getNameField(2));
+        assertEquals("SRM", entry.getNameField(3));
+        assertEquals("4", entry.getShortField(2));
+        assertEquals("8", entry.getShortField(3));
     }
 
     @Test
