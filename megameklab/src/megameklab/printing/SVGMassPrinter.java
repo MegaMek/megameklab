@@ -153,9 +153,10 @@ public class SVGMassPrinter {
     private static boolean SKIP_UNITS = false; // Set to true to skip units generation
     private static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
     private static boolean SKIP_UNIT_FILES = true; // Set to true to skip BLK/MTF re-save generation
-    private static boolean SKIP_DETAILED_CALCULATIONS = true; // Set to true to skip the detailed BV/Cost calculations
+    private static boolean SKIP_DETAILED_CALCULATIONS = false; // Set to true to skip the detailed BV/Cost calculations
+    private static boolean INCLUDE_BUILDINGS = false; // Set to true to export gun emplacements, buildings and mobile structures
     private static final boolean EXPORT_CALCULATION_DETAILS_TO_FILES = true; // Set to true to not embed the detailed BV/Cost calculations into the units.json but in a subfolder keyed by name
-    private static boolean EXPORT_CALCULATIONS_AS_TEXT = false;
+    private static boolean EXPORT_CALCULATIONS_AS_TEXT = true;
     private static String RULES_SYSTEM = OptionsConstants.RULES_CORE;
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
@@ -1047,7 +1048,7 @@ public class SVGMassPrinter {
     public static class UnitData {
         public String name; // Unique name of the unit, used for deduplication
         public String uuid;
-        public int id; // Unique identifier for the unit on MUL
+        public Integer mul1id; // MUL1 database reference; null when no positive ID is assigned
         public String chassis; // Name of the unit (Chassis)
         public String model; // Model of the unit
         public int year; // Year of introduction
@@ -1063,7 +1064,7 @@ public class SVGMassPrinter {
         public boolean mixed;
         public String techRating;
         public String engine;
-        public int engineRating;
+        public double engineRating;
         public String type; // Major type, "Mek", "Vehicle", etc.
         public String subtype; // Subtype, "Assault", "Light", etc.
         public int omni; // 1 if the unit is Omni
@@ -1517,16 +1518,17 @@ public class SVGMassPrinter {
         }
 
         public UnitData(MekSummary mekSummary, Entity entity, RecordSheetOptions options) {
-            this.uuid = entity.getUnitFileUUID();
-            this.id = entity.getMulId();
-            this.chassis = entity.getFullChassis();
-            this.model = entity.getModel();
-            this.year = entity.getYear();
-            this.weightClass = entity.getWeightClassName();
-            this.tons = entity.getWeight();
+            this(entity);
+            readMetadata(mekSummary, entity, options);
+        }
+
+        /** Capture gameplay calculations before construction preparation removes ammo or adds implicit equipment. */
+        UnitData(Entity entity) {
             this.loadoutTons = calculateLoadoutTonnage(entity);
             ExportCalculationReport bvReport = new ExportCalculationReport();
-            this.bv = entity.getBvCalculator().calculateBV(true, true, bvReport);
+            int calculatedBv = entity.getBvCalculator().calculateBV(true, true, bvReport);
+            // Keep the calculated breakdown, but publish the authored override when enabled.
+            this.bv = entity.getUseManualBV() ? entity.getManualBV() : calculatedBv;
             if (!SKIP_DETAILED_CALCULATIONS) {
                 this.bvDetails = formatBVDetails(bvReport.getDetails());
                 this.bvDetailText = bvReport.getText();
@@ -1537,14 +1539,33 @@ public class SVGMassPrinter {
             if (!SKIP_DETAILED_CALCULATIONS) {
                 this.costDetail = formatCostDetails(costReport.getDetails());
                 this.costDetailText = costReport.getText();
+                this.weightBreakdown = createWeightBreakdown(entity);
             }
+            this.walk = entity.getWalkMP();
+            this.walk2 = entity.getWalkMP(MPCalculationSetting.BV_CALCULATION);
+            this.run = entity.getRunMPWithoutMASC();
+            this.run2 = entity.getRunMP(MPCalculationSetting.BV_CALCULATION);
+            this.jump = entity.getJumpMP();
+            this.jump2 = entity.getAnyTypeMaxJumpMP();
+            this.umu = entity.getActiveUMUCount();
+        }
+
+        /** Read display inventory after the separate construction/printing preparation step. */
+        void readMetadata(MekSummary mekSummary, Entity entity, RecordSheetOptions options) {
+            this.uuid = entity.getUnitFileUUID();
+            this.mul1id = entity.getMulId() > 0 ? entity.getMulId() : null;
+            this.chassis = entity.getFullChassis();
+            this.model = entity.getModel();
+            this.year = entity.getYear();
+            this.weightClass = entity.getWeightClassName();
+            this.tons = entity.getWeight();
             this.techBase = formatTechBase(entity);
             this.mixed = entity.isMixedTech();
             this.techRating = entity.getFullRatingName();
             this.level = formatRulesLevel(entity, options);
             if (entity.hasEngine() && !(entity instanceof SmallCraft || entity instanceof Jumpship)) {
                 Engine unitEngine = entity.getEngine();
-                this.engineRating = unitEngine.getRating();
+                this.engineRating = unitEngine.getRating(entity);
                 this.engine = Engine.getEngineTypeName(unitEngine.getEngineType()).trim();
                 if (this.engine.equals("XL") || this.engine.equals("XXL")) {
                     this.engine+=(unitEngine.isClan() ? " (Clan)" : " (IS)");
@@ -1613,13 +1634,6 @@ public class SVGMassPrinter {
                 this.dissipation = null;
             }
             this.moveType = getMoveType(entity);
-            this.walk = entity.getWalkMP();
-            this.walk2 = entity.getWalkMP(MPCalculationSetting.BV_CALCULATION);
-            this.run = entity.getRunMPWithoutMASC();
-            this.run2 = entity.getRunMP(MPCalculationSetting.BV_CALCULATION);
-            this.jump = entity.getJumpMP();
-            this.jump2 = entity.getAnyTypeMaxJumpMP();
-            this.umu = entity.getActiveUMUCount();
             this.crewSize = entity.getCrew().getSlotCount();
             Components components = new Components(entity);
             this.comp = components.getComp();
@@ -1649,7 +1663,6 @@ public class SVGMassPrinter {
             this.sheets = new ArrayList<>();
             this.loadASUnitData(entity);
             if (!SKIP_DETAILED_CALCULATIONS) {
-                this.weightBreakdown = createWeightBreakdown(entity);
                 this.techLevelBreakdown = createTechLevelBreakdown(entity);
             }
             //            final MekView mekView = new MekView(entity, false, false, ViewFormatting.HTML);
@@ -2451,6 +2464,7 @@ public class SVGMassPrinter {
                     case "--skip-equipment" -> SKIP_EQUIPMENT = parseBool(inlineValue);
                     case "--skip-unit-files" -> SKIP_UNIT_FILES = parseBool(inlineValue);
                     case "--save-unit-files" -> SKIP_UNIT_FILES = !parseBool(inlineValue);
+                    case "--include-buildings" -> INCLUDE_BUILDINGS = parseBool(inlineValue);
                     case "--save-calculations" -> SKIP_DETAILED_CALCULATIONS = !parseBool(inlineValue);
                     case "--calculations-as-text" -> EXPORT_CALCULATIONS_AS_TEXT = parseBool(inlineValue);
                     case "--rules" -> {
@@ -2618,6 +2632,7 @@ public class SVGMassPrinter {
                 --skip-equipment[=bool]       Skip equipment generation (default: %s)
                 --skip-unit-files[=bool]      Skip BLK/MTF re-save (default: %s)
                 --save-unit-files[=bool]      Enable BLK/MTF re-save (inverse of --skip-unit-files)
+                --include-buildings[=bool]    Export gun emplacements, buildings and mobile structures (default: %s)
                 --save-calculations[=bool]    Export calculation details (default: %s)
                 --calculations-as-text[=bool] Export calculation details as .txt rather than structured .json (default: %s)
                 --rules <core|tw>              Rules used for sheets and metadata (default: core)
@@ -2628,7 +2643,7 @@ public class SVGMassPrinter {
 
               Boolean flags accept true/false/1/0/yes/no/on/off; a bare flag (e.g. --skip-svg) means true.
               """.formatted(ROOT_FOLDER, SHEETS_DIR, UNIT_FILES_DIR, TYPEFACE,
-              SKIP_SVG, SKIP_UNITS, SKIP_EQUIPMENT, SKIP_UNIT_FILES,
+              SKIP_SVG, SKIP_UNITS, SKIP_EQUIPMENT, SKIP_UNIT_FILES, INCLUDE_BUILDINGS,
               !SKIP_DETAILED_CALCULATIONS, EXPORT_CALCULATIONS_AS_TEXT);
         java.lang.System.out.println(usage);
     }
@@ -2770,12 +2785,16 @@ public class SVGMassPrinter {
               synchronized (loadEntityLock) {
                   entity = mekSummary.loadEntity();
               }
-              if ((entity == null) || (entity instanceof GunEmplacement)
-                    || (entity instanceof BattlefieldSupportAsset)) {
+              if ((entity == null) || (entity instanceof BattlefieldSupportAsset)) {
                   // BFS cards use the card-print pipeline and are intentionally omitted from this mass record-sheet
                   // export used by MekBay.
                   return null;
               }
+              if (!INCLUDE_BUILDINGS
+                    && ((entity instanceof GunEmplacement) || (entity instanceof AbstractBuildingEntity))) {
+                  return null;
+              }
+              UnitData unitData = new UnitData(entity);
               synchronized (updateUnitLock) {
                   UnitUtil.updateLoadedUnit(entity);
               }
@@ -2828,7 +2847,7 @@ public class SVGMassPrinter {
                   }
               }
 
-              UnitData unitData = new UnitData(mekSummary, entity, recordSheetOptions);
+              unitData.readMetadata(mekSummary, entity, recordSheetOptions);
               unitData.unitFile = relativeUnitFilePath;
               unitData.name = name;
               boolean isSmallUnit = entity.isBattleArmor() || entity.isProtoMek() || entity.isInfantry();

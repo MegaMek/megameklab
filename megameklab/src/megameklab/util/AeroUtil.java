@@ -35,7 +35,6 @@ package megameklab.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import megamek.common.bays.Bay;
 import megamek.common.equipment.AmmoType;
@@ -62,10 +61,14 @@ import megamek.common.weapons.missiles.MRMWeapon;
 import megamek.common.weapons.missiles.rocketLauncher.RLWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
+import org.apache.commons.collections4.map.AbstractReferenceMap.ReferenceStrength;
+import org.apache.commons.collections4.map.ReferenceIdentityMap;
 
 public final class AeroUtil {
 
-    private static final Map<SmallCraft, CrewConfiguration> AUTO_FILLED_CREW = new WeakHashMap<>();
+    // Entity equality uses mutable game IDs; separate unassigned craft all have ID -1.
+    private static final Map<SmallCraft, CrewConfiguration> AUTO_FILLED_CREW =
+          new ReferenceIdentityMap<>(ReferenceStrength.WEAK, ReferenceStrength.HARD);
 
     public static boolean isAeroWeapon(EquipmentType eq, Aero unit) {
         if (!(eq instanceof WeaponType weaponType) || (eq instanceof InfantryWeapon)) {

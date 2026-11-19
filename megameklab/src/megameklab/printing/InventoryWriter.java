@@ -39,9 +39,12 @@ import static megameklab.printing.PrintRecordSheet.FONT_SIZE_VERY_SMALL;
 import static megameklab.printing.PrintRecordSheet.svgNS;
 
 import java.text.NumberFormat;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -60,6 +63,7 @@ import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponMounted;
+import megamek.common.equipment.WeaponType;
 import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.units.Aero;
 import megamek.common.units.Entity;
@@ -94,7 +98,7 @@ public class InventoryWriter {
     /**
      * The minimum font size to use when scaling inventory text to fit into available space
      */
-    private static final float MIN_FONT_SIZE = 4.5f;
+    static final float MIN_FONT_SIZE = 4.5f;
     private static final float QUIRKS_FONT_SCALING = 0.9f;
     private static final float FOOTER_TEXT_WIDTH_RATIO = 0.95f;
 
@@ -440,12 +444,11 @@ public class InventoryWriter {
                 standardWeapons.add(m);
             }
         }
-        List<AmmoMounted> ammoMountedList = sheet.getEntity().getAmmo();
-        List<WeaponBayText> list = computeWeaponBayTexts(capitalWeapons, ammoMountedList);
+        List<WeaponBayText> list = computeWeaponBayTexts(capitalWeapons);
         for (WeaponBayText text : list) {
             capitalBays.add(new WeaponBayInventoryEntry((Aero) sheet.getEntity(), ++weaponBayIndex, text, true));
         }
-        list = computeWeaponBayTexts(standardWeapons, ammoMountedList);
+        list = computeWeaponBayTexts(standardWeapons);
         boolean artemisIV = false;
         boolean artemisV = false;
         boolean apollo = false;
@@ -476,35 +479,66 @@ public class InventoryWriter {
      *
      * @return A list of bays condensed by weapon type and symmetric location
      */
-    private List<WeaponBayText> computeWeaponBayTexts(List<WeaponMounted> weapons, List<AmmoMounted> ammoMountedList) {
+    static List<WeaponBayText> computeWeaponBayTexts(List<WeaponMounted> weapons) {
         List<WeaponBayText> weaponBayTexts = new ArrayList<>();
-        // Collection info on weapons to print
+        Map<CandidateKey, Deque<WeaponBayText>> uncombinedBays = new HashMap<>();
+        // Collect info on weapons to print.
         for (WeaponMounted bay : weapons) {
             WeaponBayText wbt = new WeaponBayText(bay.getLocation(), bay.isRearMounted());
+            Map<AmmoKey, List<AmmoMounted>> ammoByCompatibility = ammoByCompatibility(bay.getBayAmmo());
             for (WeaponMounted weaponMounted : bay.getBayWeapons()) {
-                if (!wbt.addBayWeapon(weaponMounted)) {continue;}
-                for (AmmoMounted ammo : ammoMountedList) {
-                    if (ammo.getLocation() == weaponMounted.getLocation()
-                          && weaponMounted.getType().getAmmoType() == ammo.getType().getAmmoType()) {
-                        wbt.addBayAmmo(weaponMounted.getType(), ammo);
-                    }
+                if (!wbt.addBayWeapon(weaponMounted)) {
+                    continue;
+                }
+                WeaponType weaponType = weaponMounted.getType();
+                for (AmmoMounted ammo : ammoByCompatibility.getOrDefault(
+                      new AmmoKey(weaponType.getAmmoType(), weaponType.getRackSize()), List.of())) {
+                    wbt.addBayAmmo(weaponType, ammo);
                 }
             }
-            // Combine or add
-            boolean combined = false;
-            for (WeaponBayText combine : weaponBayTexts) {
-                if (combine.canCombine(wbt)) {
-                    combine.combine(wbt);
-                    combined = true;
-                    break;
-                }
-            }
-            if (!combined) {
+            int location = bay.getLocation();
+            int opposingLocation = WeaponBayText.opposingLocation(location);
+            if (opposingLocation < 0) {
                 weaponBayTexts.add(wbt);
+                continue;
+            }
+            WeaponBayText.CombinationKey signature = wbt.combinationKey();
+            // Only front-side/wing bays distinguish rear mounts. A single FIFO for the other
+            // locations preserves the first compatible row, regardless of its rear flag.
+            boolean rear = WeaponBayText.rearMustMatch(location) && bay.isRearMounted();
+            CandidateKey opposingKey = new CandidateKey(signature, opposingLocation, rear);
+            Deque<WeaponBayText> candidates = uncombinedBays.get(opposingKey);
+            if (candidates == null) {
+                weaponBayTexts.add(wbt);
+                CandidateKey key = new CandidateKey(signature, location, rear);
+                uncombinedBays.computeIfAbsent(key, ignored -> new ArrayDeque<>())
+                      .addLast(wbt);
+            } else {
+                candidates.removeFirst().combine(wbt);
+                if (candidates.isEmpty()) {
+                    uncombinedBays.remove(opposingKey);
+                }
             }
         }
         Collections.sort(weaponBayTexts);
         return weaponBayTexts;
+    }
+
+    private record AmmoKey(AmmoType.AmmoTypeEnum type, int rackSize) { }
+
+    private record CandidateKey(WeaponBayText.CombinationKey signature, int location, boolean rear) { }
+
+    /** Same type/rack compatibility as AmmoType.isAmmoValid, preserving bin order within each bucket. */
+    private static Map<AmmoKey, List<AmmoMounted>> ammoByCompatibility(List<AmmoMounted> ammo) {
+        Map<AmmoKey, List<AmmoMounted>> result = new HashMap<>();
+        for (AmmoMounted mounted : ammo) {
+            AmmoType type = mounted.getType();
+            if (type != null) {
+                result.computeIfAbsent(new AmmoKey(type.getAmmoType(), type.getRackSize()), key -> new ArrayList<>())
+                      .add(mounted);
+            }
+        }
+        return result;
     }
 
     public double startingY() {
@@ -661,7 +695,7 @@ public class InventoryWriter {
     static private final float INITIAL_LINE_SPACING = 1.2f; // the initial line spacing factor
     static private final float LINE_SPACING_REDUCTION_STEP = 0.01f; // tiny spacing steps avoid visual jumps
     static private final float FONT_SIZE_REDUCTION_STEP = 0.05f; // small steps keep font changes visually smooth
-    static private final float MIN_LINE_HEIGHT_TO_FONT_SIZE = 0.93f;
+    static final float MIN_LINE_HEIGHT_TO_FONT_SIZE = 0.93f;
     static private final float MAX_LINE_HEIGHT_TO_FONT_SIZE = 1.35f;
 
     /**
@@ -679,10 +713,16 @@ public class InventoryWriter {
 
     private float[] scaleText(double height, Function<Float, Integer> calcLines,
           Function<Float, Double> calcLinePadding) {
+        return scaleText(height, calcLines, calcLinePadding, sheet::getFontHeight);
+    }
+
+    /** Also used to plan continuation pages before a sheet's SVG drawing context exists. */
+    static float[] scaleText(double height, Function<Float, Integer> calcLines,
+          Function<Float, Double> calcLinePadding, Function<Float, Float> fontHeights) {
         float fontSize = FONT_SIZE_MEDIUM;
         while (true) {
-            double lineCount = scaledLineCount(fontSize, calcLines, calcLinePadding);
-            float fontHeight = sheet.getFontHeight(fontSize);
+            double lineCount = calcLines.apply(fontSize) + calcLinePadding.apply(fontSize);
+            float fontHeight = fontHeights.apply(fontSize);
             float minLineSpacing = minLineSpacing(fontSize, fontHeight);
             float maxLineSpacing = maxLineSpacing(fontSize, fontHeight, minLineSpacing);
 
@@ -702,25 +742,19 @@ public class InventoryWriter {
         }
     }
 
-    private boolean fits(double height, float fontHeight, double lineCount, float lineSpacing) {
+    private static boolean fits(double height, float fontHeight, double lineCount, float lineSpacing) {
         return (lineCount <= 0) || (fontHeight * lineSpacing * lineCount <= height);
     }
 
-    private float minLineSpacing(float fontSize, float fontHeight) {
+    private static float minLineSpacing(float fontSize, float fontHeight) {
         // One font size needs at least about one font-size of baseline distance. Convert that real distance to a factor.
         return fontSize * MIN_LINE_HEIGHT_TO_FONT_SIZE / fontHeight;
     }
 
-    private float maxLineSpacing(float fontSize, float fontHeight, float minLineSpacing) {
+    private static float maxLineSpacing(float fontSize, float fontHeight, float minLineSpacing) {
         // Small fonts should not get huge airy rows, so cap max spacing by the font's own size too.
         float fontSizedMaxSpacing = (fontSize * MAX_LINE_HEIGHT_TO_FONT_SIZE) / fontHeight;
         return Math.max(minLineSpacing, Math.min(INITIAL_LINE_SPACING, fontSizedMaxSpacing));
-    }
-
-    private double scaledLineCount(float fontSize, Function<Float, Integer> calcLines,
-          Function<Float, Double> calcLinePadding) {
-        // Most callers count whole rows. Inventory can also reserve half-row visual padding.
-        return calcLines.apply(fontSize) + calcLinePadding.apply(fontSize);
     }
 
     /**
