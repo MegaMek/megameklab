@@ -50,18 +50,22 @@ class InventoryWriterTest {
     /** An ATM entry prints several rows although nothing is linked to the launcher */
     @Test
     void anAtmNamesNothingOnItsSecondRow() throws Exception {
-        assertNull(InventoryWriter.secondRowMount(rightTorso("CLATM6").get(0)));
+        assertNull(secondRowMount(rightTorso("CLATM6").get(0)));
     }
 
     @Test
     void anMmlPrintsItsArtemisInline() throws Exception {
-        assertNull(InventoryWriter.secondRowMount(rightTorso("ISMML5", "ISArtemisIV").get(0)));
+        assertNull(secondRowMount(rightTorso("ISMML5", "ISArtemisIV").get(0)));
     }
 
     @Test
     void aLaserWithAnInsulatorAndAPulseModuleNamesTheModule() throws Exception {
         List<Mounted<?>> mounts = rightTorso("Medium Laser", "ISLaserInsulator", "ISRISCLaserPulseModule");
 
-        assertSame(mounts.get(2), InventoryWriter.secondRowMount(mounts.get(0)));
+        assertSame(mounts.get(2), secondRowMount(mounts.get(0)));
+    }
+
+    private static Mounted<?> secondRowMount(Mounted<?> weapon) {
+        return new StandardInventoryEntry(weapon).getSecondRowMount();
     }
 }

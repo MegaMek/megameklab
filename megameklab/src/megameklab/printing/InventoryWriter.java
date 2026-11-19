@@ -48,7 +48,6 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import jakarta.annotation.Nullable;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.bays.BattleArmorBay;
 import megamek.common.bays.Bay;
@@ -70,7 +69,6 @@ import megamek.common.units.ProtoMek;
 import megamek.common.units.QuadVee;
 import megamek.common.units.SmallCraft;
 import megamek.common.units.SupportTank;
-import megamek.common.weapons.missiles.MMLWeapon;
 import megameklab.util.UnitUtil;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -1052,7 +1050,7 @@ public class InventoryWriter {
                 rowGroup = rootGroup;
                 if (row > 0) {
                     if (line instanceof StandardInventoryEntry stdInv) {
-                        Mounted<?> modMount = secondRowMount(stdInv.getMounted());
+                        Mounted<?> modMount = stdInv.getSecondRowMount();
                         if (modMount != null) {
                             final String name = modMount.getType().getInternalName();
                             final String location = modMount.getEntity().getLocationAbbr(modMount.getLocation());
@@ -1558,18 +1556,5 @@ public class InventoryWriter {
         } else {
             return null;
         }
-    }
-
-    /**
-     * @return The equipment that the second row of a weapon's entry names: its pulse module when a laser also carries
-     *       an insulator, otherwise the equipment linked to it. Null for an MML, which prints its module inline, and for
-     *       a weapon without linked equipment, such as an ATM.
-     */
-    static @Nullable Mounted<?> secondRowMount(Mounted<?> weapon) {
-        if (weapon.getType() instanceof MMLWeapon) {
-            return null;
-        }
-        Mounted<?> pulseModule = weapon.getEnhancement(MiscType.F_RISC_LASER_PULSE_MODULE);
-        return (pulseModule != null) ? pulseModule : weapon.getLinkedBy();
     }
 }

@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import jakarta.annotation.Nullable;
 import megamek.common.RangeType;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.enums.TechBase;
@@ -91,6 +92,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     private final boolean hasArtemisV;
     private final boolean hasApollo;
     private final boolean hasCapacitor;
+    private final @Nullable Mounted<?> secondRowMount;
+    private final String secondRowLabel;
     private final int shieldDamageModifier;
     // Saved as member fields for hash and equals
     private final String name;
@@ -100,6 +103,17 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     private final boolean isSquadSupport;
 
     private int quantity = 1;
+
+    /** An enhancement a second row can name, with the row's label; the first one the weapon carries is named */
+    private record SecondRow(EquipmentFlag flag, String label) {}
+
+    private static final List<SecondRow> SECOND_ROWS = List.of(new SecondRow(MiscType.F_ARTEMIS, "w/Artemis IV"),
+          new SecondRow(MiscType.F_ARTEMIS_PROTO, "w/Prototype Artemis IV"),
+          new SecondRow(MiscType.F_ARTEMIS_V, "w/Artemis V"),
+          new SecondRow(MiscType.F_APOLLO, "w/Apollo"),
+          new SecondRow(MiscType.F_PPC_CAPACITOR, "w/Capacitor"),
+          new SecondRow(MiscType.F_RISC_LASER_PULSE_MODULE, "w/RISC Laser Module"),
+          new SecondRow(MiscType.F_LASER_INSULATOR, "w/Laser Insulator"));
 
     private final static int MML_LRM_ROW = 1;
     private final static int MML_SRM_ROW = 2;
@@ -160,6 +174,10 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         hasArtemisV = hasLinkedEquipment(m, MiscType.F_ARTEMIS_V);
         hasApollo = hasLinkedEquipment(m, MiscType.F_APOLLO);
         hasCapacitor = hasLinkedEquipment(m, MiscType.F_PPC_CAPACITOR);
+        SecondRow secondRow = SECOND_ROWS.stream().filter(row -> hasLinkedEquipment(m, row.flag())).findFirst()
+              .orElse(null);
+        secondRowMount = (secondRow == null) ? null : m.getEnhancement(secondRow.flag());
+        secondRowLabel = (secondRow == null) ? "" : secondRow.label();
         shieldDamageModifier = intrinsicPhysicalAttacks.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.NONE)
               && m.getType().hasFlag(MiscType.F_SHIELD)
               ? Game.rulesManager.getRulesPhysical().getShieldDamageBoost(m.getEntity(), m.getLocation())
@@ -479,22 +497,12 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             }
         }
 
-        if (hasArtemis) {
-            return "w/Artemis IV";
-        } else if (hasArtemisProto) {
-            return "w/Prototype Artemis IV";
-        } else if (hasArtemisV) {
-            return "w/Artemis V";
-        } else if (hasApollo) {
-            return "w/Apollo";
-        } else if (hasCapacitor) {
-            return "w/Capacitor";
-        } else if (hasPulseModule) {
-            return "w/RISC Laser Module";
-        } else if (hasInsulator) {
-            return "w/Laser Insulator";
-        }
-        return "";
+        return secondRowLabel;
+    }
+
+    /** @return The enhancement that the second row names, or null when the rows name ammo instead (MML) */
+    public @Nullable Mounted<?> getSecondRowMount() {
+        return isMML ? null : secondRowMount;
     }
 
     @Override
@@ -729,13 +737,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return 3 + mmlArtemisRowDelta();
         } else if (isATM) {
             return 4;
-        } else if (hasArtemis
-              || hasArtemisV
-              || hasApollo
-              || hasArtemisProto
-              || hasCapacitor
-              || hasPulseModule
-              || hasInsulator) {
+        } else if (secondRowMount != null) {
             return 2;
         }
         return 1;
