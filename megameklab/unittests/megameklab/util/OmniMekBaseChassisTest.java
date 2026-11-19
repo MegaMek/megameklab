@@ -101,6 +101,16 @@ class OmniMekBaseChassisTest {
         return mek.getMisc().stream().filter(UnitUtil::isJumpJet).filter(mounted -> !mounted.isOmniPodMounted()).count();
     }
 
+    private static List<Integer> fixedJumpJetLocations(Mek mek) {
+        return mek.getMisc()
+              .stream()
+              .filter(UnitUtil::isJumpJet)
+              .filter(mounted -> !mounted.isOmniPodMounted())
+              .map(Mounted::getLocation)
+              .sorted()
+              .toList();
+    }
+
     private static Mounted<?> firstPlacedHeatSink(Mek mek, int location, boolean isPod) {
         return mek.getMisc()
               .stream()
@@ -166,7 +176,37 @@ class OmniMekBaseChassisTest {
     }
 
     @Test
-    void placingAFixedHeatSinkAgainKeepsItFixed() throws IOException, EntityLoadingException, LocationFullException {
+    void resettingTheSlotsLeavesFixedEquipmentInPlaceAndUnallocatesPods() throws IOException, EntityLoadingException {
+        Mek blackHawk = loadBlackHawk();
+        List<Integer> fixedJumpJetLocationsBefore = fixedJumpJetLocations(blackHawk);
+
+        UnitUtil.removeAllCriticalSlots(blackHawk);
+
+        assertEquals(List.of(Mek.LOC_RIGHT_TORSO, Mek.LOC_LEFT_TORSO), placedFixedHeatSinkLocations(blackHawk));
+        assertEquals(fixedJumpJetLocationsBefore, fixedJumpJetLocations(blackHawk));
+        assertFalse(fixedJumpJetLocationsBefore.contains(Entity.LOC_NONE));
+        for (Mounted<?> mounted : blackHawk.getEquipment()) {
+            if (mounted.isOmniPodMounted()) {
+                assertEquals(Entity.LOC_NONE, mounted.getLocation(), mounted.getName() + " is a pod");
+            }
+        }
+    }
+
+    @Test
+    void resettingTheSlotsOfAStandardMekUnallocatesEverything() throws IOException, EntityLoadingException {
+        Mek blackHawk = loadBlackHawk();
+        blackHawk.setOmni(false);
+        for (Mounted<?> mounted : blackHawk.getEquipment()) {
+            mounted.setOmniPodMounted(false);
+        }
+
+        UnitUtil.removeAllCriticalSlots(blackHawk);
+
+        assertEquals(List.of(), placedFixedHeatSinkLocations(blackHawk));
+    }
+
+    @Test
+    void placingAFixedHeatSinkAgainKeepsItFixed()throws IOException, EntityLoadingException, LocationFullException {
         Mek blackHawk = loadBlackHawk();
         Mounted<?> fixedHeatSink = firstPlacedHeatSink(blackHawk, Mek.LOC_LEFT_TORSO, false);
 
