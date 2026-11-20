@@ -1132,7 +1132,7 @@ public class BayWeaponCriticalTree extends JTree {
      * @param eq The equipment to add to the location of this tree
      */
     public void addToLocation(Mounted<?> eq) {
-        moveToArc(eq);
+        moveToArcWithEnhancements(eq);
         EquipmentNode node = new EquipmentNode(eq);
         model.insertNodeInto(node, (MutableTreeNode) model.getRoot(), ((TreeNode) model.getRoot()).getChildCount());
         node.setParent((MutableTreeNode) model.getRoot());
