@@ -680,7 +680,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             if (row == 0) {
                 return (mod != 0) ? "%+d".formatted(mod).replace("-", MINUS) : DASH;
             } else if (row == 1) {
-                return (mod != 0) ? "%+d".formatted(mod - 2).replace("-", MINUS) : DASH;
+                // pulse mode is -2 to-hit (IO:AE p.87)
+                return "%+d".formatted(mod - 2).replace("-", MINUS);
             } else {
                 return "";
             }

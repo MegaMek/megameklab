@@ -50,7 +50,6 @@ import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponMounted;
-import megamek.common.equipment.WeaponType;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.units.Entity;
 import megamek.common.weapons.bayWeapons.BayWeapon;
@@ -196,18 +195,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                                 continue;
                             }
                         }
-                        // Moving the weapon unlinks its enhancements, so collect them first
-                        List<Mounted<?>> linkedEquipment = m.getLinkedEquipment();
-                        UnitUtil.removeCriticalSlots(eSource.getEntity(), m);
-                        UnitUtil.changeMountStatus(eSource.getEntity(), m, Entity.LOC_NONE, Entity.LOC_NONE, false);
-                        if (mount.getType() instanceof WeaponType) {
-                            for (Mounted<?> linked : linkedEquipment) {
-                                UnitUtil.removeCriticalSlots(eSource.getEntity(), linked);
-                                UnitUtil.changeMountStatus(eSource.getEntity(), linked,
-                                      Entity.LOC_NONE, Entity.LOC_NONE, false);
-                                linked.setLinked(null);
-                            }
-                        }
+                        BayWeaponCriticalTree.unallocateWithLinkedEquipment(eSource.getEntity(), m);
                     }
                     UnitUtil.compactCriticalSlots(eSource.getEntity());
                 }

@@ -18,6 +18,7 @@
  */
 package megameklab.printing;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
@@ -61,8 +62,12 @@ class InventoryWriterTest {
     @Test
     void aLaserWithAnInsulatorAndAPulseModuleNamesTheModule() throws Exception {
         List<Mounted<?>> mounts = rightTorso("Medium Laser", "ISLaserInsulator", "ISRISCLaserPulseModule");
+        StandardInventoryEntry entry = new StandardInventoryEntry(mounts.get(0));
 
-        assertSame(mounts.get(2), secondRowMount(mounts.get(0)));
+        assertSame(mounts.get(2), entry.getSecondRowMount());
+        // the second row fires in pulse mode, -2 to-hit (IO:AE p.87)
+        assertEquals(InventoryEntry.DASH, entry.getModField(0, false));
+        assertEquals(InventoryEntry.MINUS + "2", entry.getModField(1, false));
     }
 
     private static Mounted<?> secondRowMount(Mounted<?> weapon) {

@@ -412,17 +412,7 @@ public class BayWeaponCriticalTree extends JTree {
                 }
             }
             if (null == moveTo) {
-                // Moving the weapon unlinks its enhancements, so collect them first
-                List<Mounted<?>> linkedEquipment = node.getMounted().getLinkedEquipment();
-                UnitUtil.removeCriticalSlots(eSource.getEntity(), mounted);
-                UnitUtil.changeMountStatus(eSource.getEntity(), mounted, Entity.LOC_NONE, Entity.LOC_NONE, false);
-                if (node.getMounted().getType() instanceof WeaponType) {
-                    for (Mounted<?> linked : linkedEquipment) {
-                        UnitUtil.removeCriticalSlots(eSource.getEntity(), linked);
-                        UnitUtil.changeMountStatus(eSource.getEntity(), linked,
-                              Entity.LOC_NONE, Entity.LOC_NONE, false);
-                    }
-                }
+                unallocateWithLinkedEquipment(eSource.getEntity(), mounted);
             }
             UnitUtil.compactCriticalSlots(eSource.getEntity());
         }
@@ -1075,19 +1065,13 @@ public class BayWeaponCriticalTree extends JTree {
                 }
             }
             if (null != bayNode) {
-                // Moving the weapon unlinks its enhancements, so they are taken along and linked to it again
-                List<MiscMounted> enhancements = eq.getEnhancements();
-                moveToArc(eq);
+                moveToArcWithEnhancements(eq);
                 EquipmentNode eqNode = new EquipmentNode(eq);
                 model.insertNodeInto(eqNode, bayNode, bayNode.getChildCount());
                 eqNode.setParent(bayNode);
 
                 if (eq instanceof WeaponMounted) {
                     bay.addWeaponToBay(eSource.getEntity().getEquipmentNum(eq));
-                    for (MiscMounted enhancement : enhancements) {
-                        moveToArc(enhancement);
-                        enhancement.setLinked(eq);
-                    }
                 } else if (eq instanceof AmmoMounted) {
                     bay.addAmmoToBay(eSource.getEntity().getEquipmentNum(eq));
                     updateAmmoCapacity((AmmoMounted) eq);
@@ -1254,22 +1238,38 @@ public class BayWeaponCriticalTree extends JTree {
         }
         // Now go through all the equipment in the bay
         for (WeaponMounted weapon : bay.getBayWeapons()) {
-            // Moving the weapon unlinks its enhancements, so they are taken along and linked to it again
-            List<MiscMounted> enhancements = weapon.getEnhancements();
-            moveToArc(weapon);
+            moveToArcWithEnhancements(weapon);
             EquipmentNode node = new EquipmentNode(weapon);
             model.insertNodeInto(node, bayNode, bayNode.getChildCount());
             node.setParent(bayNode);
-            for (MiscMounted enhancement : enhancements) {
-                moveToArc(enhancement);
-                enhancement.setLinked(weapon);
-            }
         }
         for (AmmoMounted ammo : bay.getBayAmmo()) {
             moveToArc(ammo);
             EquipmentNode node = new EquipmentNode(ammo);
             model.insertNodeInto(node, bayNode, bayNode.getChildCount());
             node.setParent(bayNode);
+        }
+    }
+
+    /** Moves the equipment to this arc with its enhancements, which the move unlinks, and links them to it again */
+    private void moveToArcWithEnhancements(Mounted<?> eq) {
+        List<MiscMounted> enhancements = eq.getEnhancements();
+        moveToArc(eq);
+        for (MiscMounted enhancement : enhancements) {
+            moveToArc(enhancement);
+            enhancement.setLinked(eq);
+        }
+    }
+
+    /** Unallocates the equipment and, for a weapon, everything linked to it, which the move unlinks */
+    static void unallocateWithLinkedEquipment(Entity entity, Mounted<?> mounted) {
+        List<Mounted<?>> linkedEquipment = (mounted.getType() instanceof WeaponType)
+              ? mounted.getLinkedEquipment() : List.of();
+        UnitUtil.removeCriticalSlots(entity, mounted);
+        UnitUtil.changeMountStatus(entity, mounted, Entity.LOC_NONE, Entity.LOC_NONE, false);
+        for (Mounted<?> linked : linkedEquipment) {
+            UnitUtil.removeCriticalSlots(entity, linked);
+            UnitUtil.changeMountStatus(entity, linked, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
     }
 
