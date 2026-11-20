@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -1122,11 +1121,11 @@ public final class MekUtil {
     public static List<CriticalSlot> reOrderLinkedEquipment(List<CriticalSlot> presentGear) {
         List<CriticalSlot> resortedList = new ArrayList<>();
         Set<Mounted<?>> presentMounted = presentGear.stream().map(CriticalSlot::getMount).collect(toSet());
-        // Assemble all the linked gear that is not ammo (ammo is sorted differently)
+        // Assemble all the linked gear that is not ammo (ammo is sorted differently). A laser may carry several
+        // enhancements; each stays behind its weapon so that it keeps attaching to it.
         Set<Mounted<?>> linkedMounted = presentMounted.stream()
-              .map(Mounted::getLinkedBy)
-              .filter(Objects::nonNull)
-              .filter(linked -> linked.getType() instanceof MiscType)
+              .flatMap(mounted -> mounted.getLinkedEquipment().stream())
+              .filter(linked -> MiscType.isWeaponEnhancement(linked.getType()))
               .filter(presentMounted::contains)
               .collect(toSet());
 
@@ -1136,12 +1135,10 @@ public final class MekUtil {
             Mounted<?> currentMounted = critSlot.getMount();
             // after one mounted is fully added, see if there's a linkedMounted to add below
             // it
-            if ((lastMounted != null)
-                  && (currentMounted != lastMounted)
-                  && (lastMounted.getLinkedBy() != null)
-                  && (linkedMounted.contains(lastMounted.getLinkedBy()))) {
+            if ((lastMounted != null) && (currentMounted != lastMounted)) {
+                List<Mounted<?>> linked = lastMounted.getLinkedEquipment();
                 for (CriticalSlot linkedSlot : presentGear) {
-                    if (linkedSlot.getMount() == lastMounted.getLinkedBy()) {
+                    if (linked.contains(linkedSlot.getMount()) && linkedMounted.contains(linkedSlot.getMount())) {
                         resortedList.add(linkedSlot);
                     }
                 }
@@ -1166,15 +1163,15 @@ public final class MekUtil {
             return 1;
         } else if (UnitUtil.isHeatSink(mounted)) {
             return 2;
-        } else if (UnitUtil.isJumpJet(mounted)) {
+        } else if (UnitUtil.isJumpJet(mounted) || hasMiscFlag(mounted, MiscType.F_UMU)) {
             return 3;
-        } else if (isMekWeapon(mounted.getType(), mek)) {
+        } else if (isMekWeapon(mounted.getType(), mek) || isAMS(mounted)) {
             return 4;
         } else if (mounted.getType() instanceof AmmoType) {
             return 5;
-        } else if (mounted.getType().isHittable() && !mounted.getType().hasFlag(MiscType.F_SCM)) {
+        } else if (mounted.getType().isHittable() && !hasMiscFlag(mounted, MiscType.F_SCM)) {
             return 6;
-        } else if (mounted.getType().hasFlag(MiscType.F_SCM)) {
+        } else if (hasMiscFlag(mounted, MiscType.F_SCM)) {
             return 7;
         } else if (isCASE(mounted)) {
             return 8;
@@ -1185,6 +1182,14 @@ public final class MekUtil {
         } else {
             return 11;
         }
+    }
+
+    private static boolean hasMiscFlag(Mounted<?> mounted, MiscTypeFlag flag) {
+        return (mounted.getType() instanceof MiscType) && mounted.getType().hasFlag(flag);
+    }
+
+    private static boolean isAMS(Mounted<?> mounted) {
+        return (mounted.getType() instanceof WeaponType) && mounted.getType().hasFlag(WeaponType.F_AMS);
     }
 
     public static boolean isPartialWing(Mounted<?> mounted) {
@@ -1464,11 +1469,13 @@ public final class MekUtil {
                 double dmgB = 0;
                 // Weapons that deal heat but not damage should sort last after weapons that deal damage. The only
                 // weapon I could find with positive aerospace damage but only heat damage against Meks is the plasma
-                // cannon. If others exist, this could be made to be a more comprehensive check.
-                if (mountedA.getType() instanceof WeaponType && !(mountedA.getType() instanceof CLPlasmaCannon)) {
+                // cannon. An AMS, which shoots down missiles, also sorts after the weapons.
+                if (mountedA.getType() instanceof WeaponType && !(mountedA.getType() instanceof CLPlasmaCannon)
+                      && !isAMS(mountedA)) {
                     dmgA = ((WeaponType) mountedA.getType()).getShortAV();
                 }
-                if (mountedB.getType() instanceof WeaponType && !(mountedB.getType() instanceof CLPlasmaCannon)) {
+                if (mountedB.getType() instanceof WeaponType && !(mountedB.getType() instanceof CLPlasmaCannon)
+                      && !isAMS(mountedB)) {
                     dmgB = ((WeaponType) mountedB.getType()).getShortAV();
                 }
                 if (dmgA != dmgB) {

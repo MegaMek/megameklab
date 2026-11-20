@@ -106,9 +106,9 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
             weapons.put(weaponType, 1);
             asNew = true;
         }
-        if (null != weapon.getLinkedBy()) {
+        for (Mounted<?> linked : weapon.getLinkedEquipment()) {
             augmentations.putIfAbsent(weaponType, new HashMap<>());
-            augmentations.get(weaponType).merge(weapon.getLinkedBy().getType(), 1, Integer::sum);
+            augmentations.get(weaponType).merge(linked.getType(), 1, Integer::sum);
         }
         return asNew;
     }

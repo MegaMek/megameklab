@@ -50,7 +50,6 @@ import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponMounted;
-import megamek.common.equipment.WeaponType;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.units.Entity;
 import megamek.common.weapons.bayWeapons.BayWeapon;
@@ -196,14 +195,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                                 continue;
                             }
                         }
-                        UnitUtil.removeCriticalSlots(eSource.getEntity(), m);
-                        UnitUtil.changeMountStatus(eSource.getEntity(), m, Entity.LOC_NONE, Entity.LOC_NONE, false);
-                        if ((mount.getType() instanceof WeaponType) && (m.getLinkedBy() != null)) {
-                            UnitUtil.removeCriticalSlots(eSource.getEntity(), m.getLinkedBy());
-                            UnitUtil.changeMountStatus(eSource.getEntity(), m.getLinkedBy(),
-                                  Entity.LOC_NONE, Entity.LOC_NONE, false);
-                            m.getLinkedBy().setLinked(null);
-                        }
+                        BayWeaponCriticalTree.unallocateWithLinkedEquipment(eSource.getEntity(), m);
                     }
                     UnitUtil.compactCriticalSlots(eSource.getEntity());
                 }

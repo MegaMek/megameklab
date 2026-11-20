@@ -1126,15 +1126,13 @@ public class UnitUtil {
                     return 0;
                 }
 
-                if (wm.getLinkedBy() instanceof MiscMounted linkMount) {
-                    if (linkMount.getType().hasFlag(MiscTypeFlag.F_LASER_INSULATOR)) {
-                        heat--;
-                    } else if (linkMount.getType().hasFlag(MiscTypeFlag.F_PPC_CAPACITOR)
-                          && wm.hasChargedOrChargingCapacitor() == 0) {
-                        // If the capacitor is charged it will have been counted already, only add 5 heat if it's
-                        // not charged. For Lab purposes, we always pretend that the capacitor is charged.
-                        heat += 5;
-                    }
+                if (wm.getEnhancement(MiscTypeFlag.F_LASER_INSULATOR) != null) {
+                    heat--;
+                } else if ((wm.getEnhancement(MiscTypeFlag.F_PPC_CAPACITOR) != null)
+                      && wm.hasChargedOrChargingCapacitor() == 0) {
+                    // If the capacitor is charged it will have been counted already, only add 5 heat if it's
+                    // not charged. For Lab purposes, we always pretend that the capacitor is charged.
+                    heat += 5;
                 }
 
                 // Order matters since RACWeapons are UACWeapons
@@ -1707,6 +1705,8 @@ public class UnitUtil {
          * bays, we need to create them in the new location and fill them. If the unit doesn't use bays, we will
          * iterate through the critical slots to get the equipment in the same order to be nice and tidy.
          */
+        // Copies by their source, so that each copied enhancement goes to the copy of its own weapon
+        Map<Mounted<?>, Mounted<?>> copies = new HashMap<>();
         if (entity.usesWeaponBays()) {
             List<WeaponMounted> bayList = entity.getWeaponBayList()
                   .stream()
@@ -1721,6 +1721,7 @@ public class UnitUtil {
                     entity.addEquipment(newBay, toLoc, bay.isRearMounted());
                     for (WeaponMounted bayW : bay.getBayWeapons()) {
                         WeaponMounted toAdd = (WeaponMounted) copyEquipment(entity, toLoc, bayW, removed);
+                        copies.put(bayW, toAdd);
                         newBay.addWeaponToBay(toAdd);
                     }
                     for (AmmoMounted ammo : bay.getBayAmmo()) {
@@ -1733,17 +1734,23 @@ public class UnitUtil {
             List<MiscMounted> miscList = new ArrayList<>(entity.getMisc());
             for (MiscMounted m : miscList) {
                 if ((m.getLocation() == fromLoc) && (m.isRearMounted() ? includeRear : includeForward)) {
-                    copyEquipment(entity, toLoc, m, removed);
+                    copies.put(m, copyEquipment(entity, toLoc, m, removed));
                 }
             }
         } else {
             for (int slot = 0; slot < entity.getNumberOfCriticalSlots(fromLoc); slot++) {
                 final CriticalSlot criticalSlot = entity.getCritical(fromLoc, slot);
                 if ((null != criticalSlot) && (criticalSlot.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                    copyEquipment(entity, toLoc, criticalSlot.getMount(), removed);
+                    copies.put(criticalSlot.getMount(), copyEquipment(entity, toLoc, criticalSlot.getMount(), removed));
                 }
             }
         }
+        // Reused mounts keep their place in the equipment list, so file order can't tell which weapon is whose
+        copies.forEach((source, copy) -> {
+            if (MiscType.isWeaponEnhancement(source.getType()) && copies.containsKey(source.getLinked())) {
+                copy.setLinked(copies.get(source.getLinked()));
+            }
+        });
 
         // Link up Artemis, etc.
         try {

@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import jakarta.annotation.Nullable;
 import megamek.common.RangeType;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.enums.TechBase;
@@ -91,6 +92,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     private final boolean hasArtemisV;
     private final boolean hasApollo;
     private final boolean hasCapacitor;
+    private final @Nullable Mounted<?> secondRowMount;
     private final int shieldDamageModifier;
     // Saved as member fields for hash and equals
     private final String name;
@@ -160,6 +162,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         hasArtemisV = hasLinkedEquipment(m, MiscType.F_ARTEMIS_V);
         hasApollo = hasLinkedEquipment(m, MiscType.F_APOLLO);
         hasCapacitor = hasLinkedEquipment(m, MiscType.F_PPC_CAPACITOR);
+        // Only a laser carries two kinds of enhancement; its second row is the pulse module's pulse mode
+        secondRowMount = hasPulseModule ? m.getEnhancement(MiscType.F_RISC_LASER_PULSE_MODULE)
+              : m.getEnhancements().stream().findFirst().orElse(null);
         shieldDamageModifier = intrinsicPhysicalAttacks.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.NONE)
               && m.getType().hasFlag(MiscType.F_SHIELD)
               ? Game.rulesManager.getRulesPhysical().getShieldDamageBoost(m.getEntity(), m.getLocation())
@@ -497,6 +502,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         return "";
     }
 
+    /** @return The enhancement that the second row names, or null when the rows name ammo instead (MML) */
+    public @Nullable Mounted<?> getSecondRowMount() {
+        return isMML ? null : secondRowMount;
+    }
+
     @Override
     public String getLocationField(int row) {
         if (row == 0) {
@@ -517,7 +527,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 return DASH;
             }
         } else if (row == 1) {
-            if (hasPulseModule) {
+            if (hasPulseModule && hasInsulator) {
+                return Integer.toString(mount.getType().getHeat() + 2 - 1) + '*';
+            } else if (hasPulseModule) {
                 return Integer.toString(mount.getType().getHeat() + 2);
             } else if (hasCapacitor) {
                 return Integer.toString(mount.getType().getHeat() + 5);
@@ -670,7 +682,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             if (row == 0) {
                 return (mod != 0) ? "%+d".formatted(mod).replace("-", MINUS) : DASH;
             } else if (row == 1) {
-                return (mod != 0) ? "%+d".formatted(mod - 2).replace("-", MINUS) : DASH;
+                // pulse mode is -2 to-hit (IO:AE p.87)
+                return "%+d".formatted(mod - 2).replace("-", MINUS);
             } else {
                 return "";
             }
@@ -727,13 +740,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return 3 + mmlArtemisRowDelta();
         } else if (isATM) {
             return 4;
-        } else if (hasArtemis
-              || hasArtemisV
-              || hasApollo
-              || hasArtemisProto
-              || hasCapacitor
-              || hasPulseModule
-              || hasInsulator) {
+        } else if (secondRowMount != null) {
             return 2;
         }
         return 1;
@@ -745,8 +752,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     private boolean hasLinkedEquipment(Mounted<?> eq, EquipmentFlag flag) {
-        return (eq.getLinkedBy() != null) && (eq.getLinkedBy().getType() instanceof MiscType)
-              && eq.getLinkedBy().getType().hasFlag(flag);
+        return eq.getEnhancement(flag) != null;
     }
 
     @Override

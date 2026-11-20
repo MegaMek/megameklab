@@ -172,7 +172,7 @@ public final class CConfig {
     public static final String NAG_IMPORT_SETTINGS = "nag_import_settings";
 
     public static final String MEK_AUTOFILL = "mekAutofill";
-    public static final String MEK_AUTO_SORT = "mekAutoSort";
+    public static final String MEK_AUTO_SORT = "mekAutoSortCriticalSlots";
     public static final String MEK_AUTO_COMPACT = "mekAutoCompact";
 
     public static final String PQ_SINGLE_PRINT = "pqSinglePrint";
@@ -215,7 +215,7 @@ public final class CConfig {
         defaults.setProperty(RS_DAMAGE_COLOR, PrintRecordSheet.FILL_RED);
         defaults.setProperty(NAG_EQUIPMENT_CTRL_CLICK, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOFILL, Boolean.toString(true));
-        defaults.setProperty(MEK_AUTO_SORT, Boolean.toString(true));
+        defaults.setProperty(MEK_AUTO_SORT, Boolean.toString(false));
         defaults.setProperty(MEK_AUTO_COMPACT, Boolean.toString(true));
         defaults.setProperty(FILE_LAST_DIRECTORY, Configuration.unitsDir().toString());
         defaults.setProperty(FILE_CHOOSER_WINDOW, "");

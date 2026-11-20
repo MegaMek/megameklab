@@ -578,12 +578,7 @@ public final class FrankenMekDonorUtil {
             if (linkedCopy == null) {
                 continue;
             }
-            Mounted<?> copied = equipmentCopy.getValue();
-            if (source.getLinked().getCrossLinkedBy() == source) {
-                copied.setCrossLinked(linkedCopy);
-            } else {
-                copied.setLinked(linkedCopy);
-            }
+            equipmentCopy.getValue().setLinked(linkedCopy);
         }
     }
 

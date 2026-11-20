@@ -67,6 +67,7 @@ import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.AmmoType.AmmoTypeEnum;
 import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponMounted;
@@ -411,14 +412,7 @@ public class BayWeaponCriticalTree extends JTree {
                 }
             }
             if (null == moveTo) {
-                UnitUtil.removeCriticalSlots(eSource.getEntity(), mounted);
-                UnitUtil.changeMountStatus(eSource.getEntity(), mounted, Entity.LOC_NONE, Entity.LOC_NONE, false);
-                if ((node.getMounted().getType() instanceof WeaponType)
-                      && (node.getMounted().getLinkedBy() != null)) {
-                    UnitUtil.removeCriticalSlots(eSource.getEntity(), node.getMounted().getLinkedBy());
-                    UnitUtil.changeMountStatus(eSource.getEntity(), node.getMounted().getLinkedBy(),
-                          Entity.LOC_NONE, Entity.LOC_NONE, false);
-                }
+                unallocateWithLinkedEquipment(eSource.getEntity(), mounted);
             }
             UnitUtil.compactCriticalSlots(eSource.getEntity());
         }
@@ -490,9 +484,10 @@ public class BayWeaponCriticalTree extends JTree {
             final Mounted<?> m = ((EquipmentNode) e.nextElement()).getMounted();
             UnitUtil.changeMountStatus(eSource.getEntity(), m,
                   location, Entity.LOC_NONE, rear);
-            if ((m.getType() instanceof WeaponType) && (m.getLinkedBy() != null)) {
-                UnitUtil.changeMountStatus(eSource.getEntity(), m.getLinkedBy(),
-                      location, Entity.LOC_NONE, rear);
+            if (m.getType() instanceof WeaponType) {
+                for (Mounted<?> linked : m.getLinkedEquipment()) {
+                    UnitUtil.changeMountStatus(eSource.getEntity(), linked, location, Entity.LOC_NONE, rear);
+                }
             }
         }
         UnitUtil.changeMountStatus(eSource.getEntity(), node.getMounted(),
@@ -509,9 +504,11 @@ public class BayWeaponCriticalTree extends JTree {
         setRootVisible(((TreeNode) model.getRoot()).getChildCount() == 0);
         final Mounted<?> mounted = node.getMounted();
 
+        List<Mounted<?>> linked = (mounted.getType() instanceof WeaponType)
+              ? mounted.getLinkedEquipment() : List.of();
         UnitUtil.removeMounted(eSource.getEntity(), mounted);
-        if ((mounted.getType() instanceof WeaponType) && (mounted.getLinkedBy() != null)) {
-            UnitUtil.removeMounted(eSource.getEntity(), mounted.getLinkedBy());
+        for (Mounted<?> attachment : linked) {
+            UnitUtil.removeMounted(eSource.getEntity(), attachment);
         }
         UnitUtil.compactCriticalSlots(eSource.getEntity());
         safeRefreshAll();
@@ -614,9 +611,10 @@ public class BayWeaponCriticalTree extends JTree {
         @Override
         public String toString() {
             String name = getMounted().getName();
-            if ((getMounted().getType() instanceof WeaponType)
-                  && (getMounted().getLinkedBy() != null)) {
-                name += " + " + getMounted().getLinkedBy().getName();
+            if (getMounted().getType() instanceof WeaponType) {
+                for (Mounted<?> linked : getMounted().getLinkedEquipment()) {
+                    name += " + " + linked.getName();
+                }
             } else if (getMounted().getType() instanceof AmmoType) {
                 name += " (" + getMounted().getBaseShotsLeft() + " shots)";
             }
@@ -723,8 +721,8 @@ public class BayWeaponCriticalTree extends JTree {
                 longAV += weaponType.getLongAV() + bonus;
                 heat += weaponType.getHeat();
                 weight += eq.getTonnage();
-                if (eq.getLinkedBy() != null) {
-                    weight += eq.getLinkedBy().getTonnage();
+                for (Mounted<?> linked : eq.getLinkedEquipment()) {
+                    weight += linked.getTonnage();
                 }
             }
             for (AmmoMounted eq : getMounted().getBayAmmo()) {
@@ -1067,16 +1065,13 @@ public class BayWeaponCriticalTree extends JTree {
                 }
             }
             if (null != bayNode) {
-                moveToArc(eq);
+                moveToArcWithEnhancements(eq);
                 EquipmentNode eqNode = new EquipmentNode(eq);
                 model.insertNodeInto(eqNode, bayNode, bayNode.getChildCount());
                 eqNode.setParent(bayNode);
 
                 if (eq instanceof WeaponMounted) {
                     bay.addWeaponToBay(eSource.getEntity().getEquipmentNum(eq));
-                    if (eq.getLinkedBy() != null) {
-                        moveToArc(eq.getLinkedBy());
-                    }
                 } else if (eq instanceof AmmoMounted) {
                     bay.addAmmoToBay(eSource.getEntity().getEquipmentNum(eq));
                     updateAmmoCapacity((AmmoMounted) eq);
@@ -1137,7 +1132,7 @@ public class BayWeaponCriticalTree extends JTree {
      * @param eq The equipment to add to the location of this tree
      */
     public void addToLocation(Mounted<?> eq) {
-        moveToArc(eq);
+        moveToArcWithEnhancements(eq);
         EquipmentNode node = new EquipmentNode(eq);
         model.insertNodeInto(node, (MutableTreeNode) model.getRoot(), ((TreeNode) model.getRoot()).getChildCount());
         node.setParent((MutableTreeNode) model.getRoot());
@@ -1243,19 +1238,38 @@ public class BayWeaponCriticalTree extends JTree {
         }
         // Now go through all the equipment in the bay
         for (WeaponMounted weapon : bay.getBayWeapons()) {
-            moveToArc(weapon);
+            moveToArcWithEnhancements(weapon);
             EquipmentNode node = new EquipmentNode(weapon);
             model.insertNodeInto(node, bayNode, bayNode.getChildCount());
             node.setParent(bayNode);
-            if (weapon.getLinkedBy() != null) {
-                moveToArc(weapon.getLinkedBy());
-            }
         }
         for (AmmoMounted ammo : bay.getBayAmmo()) {
             moveToArc(ammo);
             EquipmentNode node = new EquipmentNode(ammo);
             model.insertNodeInto(node, bayNode, bayNode.getChildCount());
             node.setParent(bayNode);
+        }
+    }
+
+    /** Moves the equipment to this arc with its enhancements, which the move unlinks, and links them to it again */
+    private void moveToArcWithEnhancements(Mounted<?> eq) {
+        List<MiscMounted> enhancements = eq.getEnhancements();
+        moveToArc(eq);
+        for (MiscMounted enhancement : enhancements) {
+            moveToArc(enhancement);
+            enhancement.setLinked(eq);
+        }
+    }
+
+    /** Unallocates the equipment and, for a weapon, everything linked to it, which the move unlinks */
+    static void unallocateWithLinkedEquipment(Entity entity, Mounted<?> mounted) {
+        List<Mounted<?>> linkedEquipment = (mounted.getType() instanceof WeaponType)
+              ? mounted.getLinkedEquipment() : List.of();
+        UnitUtil.removeCriticalSlots(entity, mounted);
+        UnitUtil.changeMountStatus(entity, mounted, Entity.LOC_NONE, Entity.LOC_NONE, false);
+        for (Mounted<?> linked : linkedEquipment) {
+            UnitUtil.removeCriticalSlots(entity, linked);
+            UnitUtil.changeMountStatus(entity, linked, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
     }
 

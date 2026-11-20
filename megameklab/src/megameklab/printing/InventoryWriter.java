@@ -69,7 +69,6 @@ import megamek.common.units.ProtoMek;
 import megamek.common.units.QuadVee;
 import megamek.common.units.SmallCraft;
 import megamek.common.units.SupportTank;
-import megamek.common.weapons.missiles.MMLWeapon;
 import megameklab.util.UnitUtil;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -1051,10 +1050,7 @@ public class InventoryWriter {
                 rowGroup = rootGroup;
                 if (row > 0) {
                     if (line instanceof StandardInventoryEntry stdInv) {
-                        Mounted<?> modMount = stdInv.getMounted().getLinkedBy();
-                        if (stdInv.getMounted().getType() instanceof MMLWeapon) {
-                            modMount = null; //MML print their module directly inline
-                        }
+                        Mounted<?> modMount = stdInv.getSecondRowMount();
                         if (modMount != null) {
                             final String name = modMount.getType().getInternalName();
                             final String location = modMount.getEntity().getLocationAbbr(modMount.getLocation());

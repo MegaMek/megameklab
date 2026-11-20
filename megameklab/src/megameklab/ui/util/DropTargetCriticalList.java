@@ -240,8 +240,8 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
         if (mount != null) {
             mount.setSponsonTurretMounted(turret);
-            if (mount.getLinkedBy() != null) {
-                mount.getLinkedBy().setSponsonTurretMounted(turret);
+            for (Mounted<?> linked : mount.getLinkedEquipment()) {
+                linked.setSponsonTurretMounted(turret);
             }
         }
 
@@ -255,8 +255,8 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
         if (mount != null) {
             mount.setPintleTurretMounted(turret);
-            if (mount.getLinkedBy() != null) {
-                mount.getLinkedBy().setPintleTurretMounted(turret);
+            for (Mounted<?> linked : mount.getLinkedEquipment()) {
+                linked.setPintleTurretMounted(turret);
             }
         }
 
