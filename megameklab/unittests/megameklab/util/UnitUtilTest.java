@@ -85,6 +85,34 @@ class UnitUtilTest {
         assertEquals(7, UnitUtil.getTotalHeatGeneration(mek, true));
     }
 
+    /**
+     * Auto-sort follows canon files: underwater maneuvering units go with the jump jets, an AMS after the other weapons
+     * but before its ammo, and stealth armor with the armor although it links the ECM suite
+     */
+    @Test
+    void sortingFollowsCanonForUmusAmsAndStealthArmor() throws Exception {
+        Mek mek = new BipedMek();
+        List<Mounted<?>> mounts = new ArrayList<>();
+        for (String name : List.of("IS Stealth", "IS Endo Steel", "ISGuardianECMSuite", "ISAMS Ammo",
+              "ISAntiMissileSystem", "Medium Laser", "UMU")) {
+            mounts.add(mek.addEquipment(EquipmentType.get(name), Mek.LOC_LEFT_TORSO));
+        }
+        mounts.get(0).setLinked(mounts.get(2));
+
+        MekUtil.sortCritSlots(mek, Mek.LOC_LEFT_TORSO);
+
+        List<String> sorted = new ArrayList<>();
+        for (int slot = 0; slot < mek.getNumberOfCriticalSlots(Mek.LOC_LEFT_TORSO); slot++) {
+            CriticalSlot criticalSlot = mek.getCritical(Mek.LOC_LEFT_TORSO, slot);
+            String name = (criticalSlot == null) ? null : criticalSlot.getMount().getType().getInternalName();
+            if ((name != null) && (sorted.isEmpty() || !sorted.getLast().equals(name))) {
+                sorted.add(name);
+            }
+        }
+        assertEquals(List.of("UMU", "Medium Laser", "ISAntiMissileSystem", "ISAMS Ammo", "ISGuardianECMSuite",
+              "IS Endo Steel", "IS Stealth"), sorted);
+    }
+
     @Test
     void isLegalUsesOriginalBuildYear() {
         ITechnology lostech = new TechAdvancement(TechBase.IS).setISAdvancement(2500,
