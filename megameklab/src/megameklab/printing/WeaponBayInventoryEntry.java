@@ -44,8 +44,8 @@ import java.util.stream.Stream;
 
 import jakarta.annotation.Nullable;
 import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
-import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Aero;
 import megamek.common.units.Dropship;
@@ -107,11 +107,17 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         } else {
             carried.forEach(munition -> munitionLines.add(new MunitionLine(munition, bayValues(munition))));
         }
-        // Each weapon's heat with its laser insulator (TO:AUE p. 134), and an installed PPC capacitor's 5, which a bay
-        // counts as always charged (TO:AUE p. 149), as the bay's damage counts it
-        for (WeaponMounted weapon : bay.bayWeapons) {
-            heat += (int) weapon.laserEnhancedHeat(weapon.getType().getHeat(), false)
-                  + ((weapon.getEnhancement(MiscType.F_PPC_CAPACITOR) != null) ? 5 : 0);
+        for (WeaponType weaponType : bay.weapons.keySet()) {
+            heat += weaponType.getHeat() * bay.weapons.get(weaponType);
+        }
+        // PPC capacitors in bays are considered always charged (TO:AUE p. 149). Bays print only for DropShips and larger
+        // craft, which can't mount laser insulators (TO:AUE p. 134).
+        if (!isCapital) {
+            for (Map<EquipmentType, Integer> entry : bay.augmentations.values()) {
+                heat += entry.entrySet().stream()
+                      .filter(augmentation -> augmentation.getKey().hasFlag(MiscType.F_PPC_CAPACITOR))
+                      .mapToInt(augmentation -> augmentation.getValue() * 5).sum();
+            }
         }
         artemisIV = bay.countAugmentations(MiscType.F_ARTEMIS) > 0;
         /* Per the rules, if any have artemis or apollo, all eligible launchers must have it, and the types
@@ -312,12 +318,15 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                   : bay.weapons.get(weaponType);
             double[] values = { weaponType.getShortAV(), weaponType.getMedAV(), weaponType.getLongAV(),
                                 weaponType.getExtAV() };
+            // Each launcher that fires adds its enhancement's bonus once
             int bonus = 0;
             if (!isCapital && bay.augmentations.containsKey(weaponType)) {
-                bonus = bay.augmentations.get(weaponType).entrySet().stream()
-                      .mapToInt(augmentation -> AeroAVModCalculator.calculateBonus(weaponType, augmentation.getKey(), true)
-                            * Math.min(augmentation.getValue(), numWeapons))
-                      .sum();
+                int unenhanced = numWeapons;
+                for (Map.Entry<EquipmentType, Integer> augmentation : bay.augmentations.get(weaponType).entrySet()) {
+                    int enhanced = Math.min(augmentation.getValue(), unenhanced);
+                    bonus += AeroAVModCalculator.calculateBonus(weaponType, augmentation.getKey(), true) * enhanced;
+                    unenhanced -= enhanced;
+                }
             }
             for (int range = 0; range < values.length; range++) {
                 values[range] = (values[range] > 0) ? ((values[range] * numWeapons) + bonus) : 0;

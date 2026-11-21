@@ -1542,8 +1542,11 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
         // Remove or add jump jet equipment according to jump MP (if not Mek Mechanical Jump Boosters)
         if (jumpJet != null && !jumpJet.is(EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER)) {
+            // The spinner counts every jump jet, as Mek.getJumpJetCount and MekUtil.maxJumpJets do; extra ones come off
+            // the end
+            boolean jets = jumpJet.hasFlag(MiscType.F_JUMP_JET);
             List<Mounted<?>> jjs = getMek().getMisc().stream()
-                  .filter(m -> jumpJet.equals(m.getType()))
+                  .filter(m -> jets ? m.getType().hasFlag(MiscType.F_JUMP_JET) : jumpJet.equals(m.getType()))
                   .collect(Collectors.toList());
             while (jjs.size() > jumpMP) {
                 UnitUtil.removeMounted(getMek(), jjs.removeLast());

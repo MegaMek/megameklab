@@ -27,7 +27,6 @@ import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Jumpship;
-import megamek.common.units.SmallCraft;
 import megamek.common.units.Warship;
 import megameklab.testing.util.InitializeTypes;
 import org.junit.jupiter.api.Test;
@@ -233,23 +232,5 @@ class WeaponBayInventoryEntryTest {
 
         assertEquals("*", entry.getHeatField(0));
         assertEquals("*", entry.getShortField(0));
-    }
-
-    /**
-     * A laser insulator takes 1 heat off its laser in a Small Craft's bay too: 3 + 8 - 1 (TO:AUE p. 134, which limits
-     * insulators to units of 200 tons or less)
-     */
-    @Test
-    void aBayCountsItsLaserInsulators() throws Exception {
-        SmallCraft craft = new SmallCraft();
-        craft.setWeight(200);
-        Mounted<?> medium = craft.addEquipment(EquipmentType.get("ISMediumLaser"), SmallCraft.LOC_NOSE);
-        Mounted<?> large = craft.addEquipment(EquipmentType.get("ISLargeLaser"), SmallCraft.LOC_NOSE);
-        craft.addEquipment(EquipmentType.get("ISLaserInsulator"), SmallCraft.LOC_NOSE).setLinked(large);
-        WeaponBayText bay = new WeaponBayText(SmallCraft.LOC_NOSE, false);
-        bay.addBayWeapon(medium);
-        bay.addBayWeapon(large);
-
-        assertEquals("10", new WeaponBayInventoryEntry(craft, 0, bay, false).getHeatField(0));
     }
 }

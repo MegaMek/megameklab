@@ -44,7 +44,6 @@ import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.EquipmentFlag;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;
-import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Jumpship;
 import megamek.common.units.Warship;
@@ -75,9 +74,6 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      * support illegal builds that only put Artemis on some weapons, or mix Artemis types.
      */
     final Map<WeaponType, Map<EquipmentType, Integer>> augmentations = new HashMap<>();
-
-    /** The bay's own weapons, whose heat the bay prints; a combined mirror bay keeps only the first bay's */
-    final List<WeaponMounted> bayWeapons = new ArrayList<>();
 
     final boolean rear;
     /**
@@ -110,9 +106,6 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
         } else {
             weapons.put(weaponType, 1);
             asNew = true;
-        }
-        if (weapon instanceof WeaponMounted weaponMounted) {
-            bayWeapons.add(weaponMounted);
         }
         for (Mounted<?> linked : weapon.getLinkedEquipment()) {
             augmentations.putIfAbsent(weaponType, new HashMap<>());
