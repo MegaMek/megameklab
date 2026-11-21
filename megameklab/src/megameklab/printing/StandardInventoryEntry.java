@@ -269,18 +269,20 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
      * @return The AV values for each MML munition type
      */
     private String[][] mmlAV() {
-        String[][] retVal = new String[3][];
+        int lrmRow = MML_LRM_ROW + mmlArtemisRowDelta();
+        int srmRow = MML_SRM_ROW + mmlArtemisRowDelta();
+        String[][] retVal = new String[srmRow + 1][];
         for (int i = 0; i < retVal.length; i++) {
             retVal[i] = new String[5];
-            Arrays.fill(retVal[i], i == 0 ? "" : DASH);
+            Arrays.fill(retVal[i], (i < lrmRow) ? "" : DASH);
         }
         int avMod = aeroAVMod(mount);
         // The base AV is the number of missiles.
         int av = (int) ((WeaponType) mount.getType()).getShortAV() + avMod;
-        retVal[MML_LRM_ROW][RangeType.RANGE_SHORT] = String.valueOf(av);
-        retVal[MML_SRM_ROW][RangeType.RANGE_SHORT] = String.valueOf(av * 2);
-        retVal[MML_LRM_ROW][RangeType.RANGE_MEDIUM] = String.valueOf(av);
-        retVal[MML_LRM_ROW][RangeType.RANGE_LONG] = String.valueOf(av);
+        retVal[lrmRow][RangeType.RANGE_SHORT] = String.valueOf(av);
+        retVal[srmRow][RangeType.RANGE_SHORT] = String.valueOf(av * 2);
+        retVal[lrmRow][RangeType.RANGE_MEDIUM] = String.valueOf(av);
+        retVal[lrmRow][RangeType.RANGE_LONG] = String.valueOf(av);
         return retVal;
     }
 
@@ -502,9 +504,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         return "";
     }
 
-    /** @return The enhancement that the second row names, or null when the rows name ammo instead (MML) */
+    /** @return The enhancement that the second row names, or null when that row names ammo or a mode instead */
     public @Nullable Mounted<?> getSecondRowMount() {
-        return isMML ? null : secondRowMount;
+        return secondRowMount;
     }
 
     @Override
@@ -520,17 +522,16 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     public String getHeatField(int row) {
         if (row == 0) {
             if (hasInsulator) {
-                return Integer.toString(mount.getType().getHeat() - 1) + '*';
+                return (int) ((WeaponMounted) mount).laserEnhancedHeat(mount.getType().getHeat(), false) + "*";
             } else if (mount.getType().getHeat() > 0) {
                 return Integer.toString(mount.getType().getHeat());
             } else {
                 return DASH;
             }
         } else if (row == 1) {
-            if (hasPulseModule && hasInsulator) {
-                return Integer.toString(mount.getType().getHeat() + 2 - 1) + '*';
-            } else if (hasPulseModule) {
-                return Integer.toString(mount.getType().getHeat() + 2);
+            if (hasPulseModule) {
+                return (int) ((WeaponMounted) mount).laserEnhancedHeat(mount.getType().getHeat(), true)
+                      + (hasInsulator ? "*" : "");
             } else if (hasCapacitor) {
                 return Integer.toString(mount.getType().getHeat() + 5);
             } else {

@@ -36,6 +36,7 @@ import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Aero;
 import megamek.common.units.Entity;
@@ -73,8 +74,8 @@ public final class HeatGenerationEstimate {
             }
         }
 
-        for (Mounted<?> mounted : entity.getTotalWeaponList()) {
-            WeaponType weaponType = (WeaponType) mounted.getType();
+        for (WeaponMounted mounted : entity.getTotalWeaponList()) {
+            WeaponType weaponType = mounted.getType();
             double weaponHeat = weaponType.getHeat();
 
             if (mounted.isMissing() || mounted.isHit() || mounted.isDestroyed() || mounted.isBreached()) {
@@ -99,15 +100,14 @@ public final class HeatGenerationEstimate {
                   == AmmoType.AmmoTypeEnum.LRM_STREAK)) {
                 weaponHeat *= 0.5;
             }
-            heat += weaponHeat;
+            heat += mounted.laserEnhancedHeat(weaponHeat, true);
         }
 
         for (Mounted<?> mounted : entity.getMisc()) {
-            if (mounted.getType().hasFlag(MiscType.F_LASER_INSULATOR)) {
-                heat--;
-            } else if (mounted.getType().hasFlag(MiscType.F_PPC_CAPACITOR)) {
+            if (mounted.getType().hasFlag(MiscType.F_PPC_CAPACITOR)) {
                 heat += 5;
-            } else {
+            } else if (!mounted.getType().hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE) || (mounted.getLinked() == null)) {
+                // a laser pulse module's heat is counted with its laser above
                 heat += mounted.getType().getHeat();
             }
         }

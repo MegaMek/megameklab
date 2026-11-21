@@ -931,7 +931,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             clampFrankenMekArmorToStructureLimits();
         }
         if (getMek().isSuperHeavy()) {
-            getMek().setOriginalJumpMP(0);
+            // Superheavy Meks may not mount jump jets (IO:AE p. 156)
+            MekUtil.updateJumpJets(getMek(), 0, getMek().getJumpType());
         }
         if (changedSuperHeavyStatus) {
             // Internal structure crits may change
@@ -992,7 +993,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             refreshInternalStructureMounts();
             return;
         }
-        getMek().setFrankenMekStructureTonnageForConstruction(location, tonnage);
+        getMek().setFrankenMekStructureTonnage(location, tonnage);
         refreshInternalStructureMounts();
         clampFrankenMekArmorToStructureLimits();
         panFrankenMekStructure.setFromEntity(getMek());
@@ -1530,16 +1531,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void jumpChanged(int jumpMP, @Nullable EquipmentType jumpJet) {
-        // Don't set jumpMP for UMU.
-        if (jumpJet == null) {
-            getMek().setOriginalJumpMP(0);
-            jumpMP = 0;
-        } else if (jumpJet.is(EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER)) {
+        // A Mek's Jump MP comes from its jets; mechanical jump boosters keep theirs as their size
+        if ((jumpJet != null) && jumpJet.is(EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER)) {
             addOrRemoveMekMechanicalJumpBoosters(jumpMP, jumpJet);
-        } else if (jumpJet.hasFlag(MiscType.F_JUMP_JET)) {
-            getMek().setOriginalJumpMP(jumpMP);
-        } else {
-            getMek().setOriginalJumpMP(0);
         }
 
         // Remove or add jump jet equipment according to jump MP (if not Mek Mechanical Jump Boosters)

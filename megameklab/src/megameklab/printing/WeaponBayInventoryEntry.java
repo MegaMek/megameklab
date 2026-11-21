@@ -293,7 +293,8 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             return DASH;
         }
         if (isCapital) {
-            return String.valueOf((int) av);
+            // The bay's total rounds normally, .5 up (SO p. 88, TW p. 238)
+            return String.valueOf(Math.round(av));
         }
         return ((int) av) + " (" + ((int) stdAV) + ")";
     }
