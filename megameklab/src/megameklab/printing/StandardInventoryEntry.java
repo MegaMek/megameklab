@@ -276,14 +276,27 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             retVal[i] = new String[5];
             Arrays.fill(retVal[i], (i < lrmRow) ? "" : DASH);
         }
-        int avMod = aeroAVMod(mount);
-        // The base AV is the number of missiles.
-        int av = (int) ((WeaponType) mount.getType()).getShortAV() + avMod;
-        retVal[lrmRow][RangeType.RANGE_SHORT] = String.valueOf(av);
-        retVal[srmRow][RangeType.RANGE_SHORT] = String.valueOf(av * 2);
-        retVal[lrmRow][RangeType.RANGE_MEDIUM] = String.valueOf(av);
-        retVal[lrmRow][RangeType.RANGE_LONG] = String.valueOf(av);
+        fillMunitionRow(retVal[lrmRow], "LRM");
+        fillMunitionRow(retVal[srmRow], "SRM");
         return retVal;
+    }
+
+    /** Fills a munition's row with the weapon's attack values for that munition, a dash where it has none */
+    private void fillMunitionRow(String[] row, String munition) {
+        if (!(mount.getType() instanceof WeaponType weaponType)) {
+            return;
+        }
+        int avMod = aeroAVMod(mount);
+        double[] values = { weaponType.getShortAV(), weaponType.getMedAV(), weaponType.getLongAV(),
+                            weaponType.getExtAV() };
+        for (int range = 0; range < values.length; range++) {
+            values[range] = (values[range] > 0) ? (values[range] + avMod) : 0;
+        }
+        double[] munitionValues = InventoryEntry.munitionAttackValues(values, munition);
+        for (int range = 0; range < munitionValues.length; range++) {
+            row[RangeType.RANGE_SHORT + range] = (munitionValues[range] > 0)
+                  ? String.valueOf((int) munitionValues[range]) : DASH;
+        }
     }
 
     /**
@@ -297,15 +310,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             retVal[i] = new String[5];
             Arrays.fill(retVal[i], i == 0 ? "" : DASH);
         }
-        int avMod = aeroAVMod(mount);
-        double av = ((WeaponType) mount.getType()).getShortAV() + avMod;
-        retVal[ATM_STANDARD_ROW][RangeType.RANGE_SHORT] = String.valueOf((int) av);
-        retVal[ATM_ER_ROW][RangeType.RANGE_SHORT] = String.valueOf((int) Math.ceil(av * 0.5));
-        retVal[ATM_HE_ROW][RangeType.RANGE_SHORT] = String.valueOf((int) Math.ceil(av * 1.5));
-        retVal[ATM_STANDARD_ROW][RangeType.RANGE_MEDIUM] = String.valueOf((int) av);
-        retVal[ATM_ER_ROW][RangeType.RANGE_MEDIUM] = String.valueOf((int) Math.ceil(av * 0.5));
-        retVal[ATM_ER_ROW][RangeType.RANGE_LONG] = String.valueOf((int) Math.ceil(av * 0.5));
-        retVal[ATM_ER_ROW][RangeType.RANGE_EXTREME] = String.valueOf((int) Math.ceil(av * 0.5));
+        fillMunitionRow(retVal[ATM_STANDARD_ROW], "Standard");
+        fillMunitionRow(retVal[ATM_ER_ROW], "Extended Range");
+        fillMunitionRow(retVal[ATM_HE_ROW], "High Explosive");
         return retVal;
     }
 

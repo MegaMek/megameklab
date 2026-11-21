@@ -327,8 +327,8 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         // A Mek's spinner sets how many jets it mounts; a FrankenMek's lighter jets give less Jump MP (CO p. 213)
         int jumpSpinnerValue = (en instanceof Mek mek) ? mek.getJumpJetCount() : en.getOriginalJumpMP(true);
         int finalJumpMP = en.getJumpMP();
-        // The Jump MP the jets give, which the limit applies to (TM p. 51)
-        int baseJumpMP = (en instanceof Mek) ? en.getOriginalJumpMP(true) : jumpSpinnerValue;
+        // The Jump MP the jets give, which the limit applies to (TM p. 51), before MegaMek holds a FrankenMek's to it
+        int baseJumpMP = (en instanceof Mek jetMek) ? jetMek.getInstalledJumpJetMP() : jumpSpinnerValue;
         if (0 == jumpSpinnerValue) {
             jumpSpinnerValue = en.getAllUMUCount();
             baseJumpMP = jumpSpinnerValue;

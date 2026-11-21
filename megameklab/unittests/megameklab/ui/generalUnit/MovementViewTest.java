@@ -70,6 +70,31 @@ class MovementViewTest {
         assertEquals(6, jetSpinnerMaximum(view));
     }
 
+    /**
+     * A FrankenMek may mount only as many full-weight jets as its Walking MP (TM p. 51). MegaMek holds its Jump MP to
+     * Walk 3, but four center torso jets are still over the limit, so the spinner cuts them to three.
+     */
+    @Test
+    void frankenMekJetsOverTheLimitAreCut() throws Exception {
+        Mek mek = new BipedMek();
+        mek.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+        mek.setWeight(60);
+        mek.setEngine(new Engine(180, Engine.NORMAL_ENGINE, 0));
+        mek.setFrankenMek(true);
+        mek.setFrankenMekStructureTonnage(Mek.LOC_CENTER_TORSO, 60);
+        for (int jet = 0; jet < 4; jet++) {
+            mek.addEquipment(EquipmentType.get(EquipmentTypeLookup.JUMP_JET), Mek.LOC_CENTER_TORSO);
+        }
+        ITechManager techManager = mock(ITechManager.class);
+        when(techManager.isLegal(any())).thenReturn(true);
+        MovementView view = new MovementView(techManager);
+
+        view.setFromEntity(mek);
+
+        assertEquals(3, mek.getOriginalJumpMP(true));
+        assertEquals(3, jetSpinnerMaximum(view));
+    }
+
     private static int jetSpinnerMaximum(MovementView view) {
         // The view's spinners, in layout order: walk, jump jets, mechanical jump boosters
         JSpinner jets = Arrays.stream(view.getComponents())

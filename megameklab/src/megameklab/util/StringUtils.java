@@ -322,17 +322,19 @@ public class StringUtils {
     }
 
     /**
-     * The type code of a piece of equipment. E marks electronics (TW p. 114), so magnetic clamps have no type, and a
-     * mine dispenser or the minesweeper is PE (TO:AUE p. 220).
+     * The type code of a piece of equipment. E marks electronics (TW p. 114). A mine dispenser or the minesweeper is PE
+     * (TO:AUE p. 220), as is the ProtoMek magnetic clamp system (IO:AE equipment table); battle armor magnetic clamps
+     * have no type.
      */
     private static String equipmentTypeCode(Mounted<?> mount) {
         if (mount.getType() instanceof MiscType misc) {
+            if (misc.hasFlag(MiscType.F_VEHICLE_MINE_DISPENSER) || misc.hasFlag(MiscType.F_SPACE_MINE_DISPENSER)
+                  || misc.hasFlag(MiscType.F_MINESWEEPER)
+                  || (misc.hasFlag(MiscType.F_MAGNETIC_CLAMP) && misc.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT))) {
+                return "[PE]";
+            }
             if (misc.hasFlag(MiscType.F_MAGNETIC_CLAMP)) {
                 return "";
-            }
-            if (misc.hasFlag(MiscType.F_VEHICLE_MINE_DISPENSER) || misc.hasFlag(MiscType.F_SPACE_MINE_DISPENSER)
-                  || misc.hasFlag(MiscType.F_MINESWEEPER)) {
-                return "[PE]";
             }
         }
         return "[E]";

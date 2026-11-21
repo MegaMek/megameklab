@@ -289,16 +289,8 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             if (atmProfile && ((weaponType instanceof ATMWeapon) || (weaponType instanceof CLIATMWeapon))) {
                 values = new double[] { Math.ceil(values[0] * 1.5), values[1], Math.ceil(values[1] / 2),
                                         Math.ceil(values[1] / 2) };
-            } else if ("SRM".equals(fired)) {
-                values = new double[] { values[0] * 2, 0, 0, 0 };
-            } else if ("Extended Range".equals(fired)) {
-                double value = Math.ceil(values[1] / 2);
-                values = new double[] { value, value, value, value };
-            } else if ("High Explosive".equals(fired)) {
-                values = new double[] { Math.ceil(values[0] * 1.5), 0, 0, 0 };
-            } else if ("Improved Magnetic Pulse".equals(fired)) {
-                // High explosive's range at 1 point per missile, which TW p. 304 gives ER as half (IO:AE p. 61)
-                values = new double[] { Math.ceil(values[0] / 2), 0, 0, 0 };
+            } else {
+                values = InventoryEntry.munitionAttackValues(values, fired);
             }
             for (int range = 0; range < total.length; range++) {
                 total[range] += values[range];
