@@ -693,6 +693,7 @@ public abstract class MegaMekLabMainUI extends JPanel
 
     public void setEntity(Entity entity, String currentEntityFilename) {
         this.entity = entity;
+        entity.putInLab();
         originalName = MegaMekLabFileSaver.createUnitFilename(entity);
         setFileName(currentEntityFilename);
         resetDirty();
