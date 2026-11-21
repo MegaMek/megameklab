@@ -323,14 +323,15 @@ public class StringUtils {
 
     /**
      * The type code of a piece of equipment. E marks electronics (TW p. 114), so magnetic clamps have no type, and a
-     * mine dispenser is PE (TO:AUE p. 220).
+     * mine dispenser or the minesweeper is PE (TO:AUE p. 220).
      */
     private static String equipmentTypeCode(Mounted<?> mount) {
         if (mount.getType() instanceof MiscType misc) {
             if (misc.hasFlag(MiscType.F_MAGNETIC_CLAMP)) {
                 return "";
             }
-            if (misc.hasFlag(MiscType.F_VEHICLE_MINE_DISPENSER) || misc.hasFlag(MiscType.F_SPACE_MINE_DISPENSER)) {
+            if (misc.hasFlag(MiscType.F_VEHICLE_MINE_DISPENSER) || misc.hasFlag(MiscType.F_SPACE_MINE_DISPENSER)
+                  || misc.hasFlag(MiscType.F_MINESWEEPER)) {
                 return "[PE]";
             }
         }

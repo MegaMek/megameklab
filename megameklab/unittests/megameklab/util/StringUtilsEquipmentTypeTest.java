@@ -31,7 +31,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(value = InitializeTypes.class)
 class StringUtilsEquipmentTypeTest {
 
-    /** E marks electronics only (TW p. 114): mine dispensers are PE (TO:AUE p. 220), magnetic clamps have no type. */
+    /** E marks electronics (TW p. 114): mine dispensers and the minesweeper are PE (TO:AUE p. 220), clamps have no type. */
     @Test
     void onlyElectronicsPrintTheElectronicsType() throws Exception {
         BipedMek mek = new BipedMek();
@@ -39,10 +39,12 @@ class StringUtilsEquipmentTypeTest {
         Mounted<?> probe = mek.addEquipment(EquipmentType.get("ISBeagleActiveProbe"), Mek.LOC_RIGHT_TORSO);
         Mounted<?> mines = mek.addEquipment(EquipmentType.get("ISVehicularMineDispenser"), Mek.LOC_RIGHT_TORSO);
         Mounted<?> clamps = mek.addEquipment(EquipmentType.get("ProtoMagneticClamp"), Mek.LOC_RIGHT_TORSO);
+        Mounted<?> minesweeper = mek.addEquipment(EquipmentType.get("ISMineSweeper"), Mek.LOC_RIGHT_TORSO);
 
         assertEquals("[E]", StringUtils.getEquipmentInfo(mek, probe));
         assertEquals("[PE]", StringUtils.getEquipmentInfo(mek, mines));
         assertEquals("", StringUtils.getEquipmentInfo(mek, clamps));
+        assertEquals("[PE]", StringUtils.getEquipmentInfo(mek, minesweeper));
         assertEquals("[PE]", StringUtils.getAeroEquipmentInfo(mines));
         assertEquals("", StringUtils.getAeroEquipmentInfo(clamps));
     }
