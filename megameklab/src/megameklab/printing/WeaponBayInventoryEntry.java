@@ -96,7 +96,9 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         if (isCapital || atmBayProfile() || (carried.size() <= 1)) {
             damageLines.add(new DamageLine("", bayValues(carried.isEmpty() ? null : carried.getFirst())));
         } else {
-            carried.forEach(munition -> damageLines.add(new DamageLine(munition, bayValues(munition))));
+            // Each munition's line carries its rounds: LRM (78 rounds)
+            carried.forEach(munition -> damageLines.add(new DamageLine(munition + " (" + rounds(munition) + " rounds)",
+                  bayValues(munition))));
         }
         for (WeaponType weaponType : bay.weapons.keySet()) {
             heat += weaponType.getHeat() * bay.weapons.get(weaponType);
@@ -144,7 +146,10 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             }
             location = locString.toString();
             StringBuilder nameString = new StringBuilder(weaponType.getShortName());
-            if (bay.weaponAmmo.containsKey(weaponType)) {
+            // A bay printing a line per munition carries each munition's rounds on its line
+            boolean ammoOnMunitionLines = (damageLines.size() > 1)
+                  && MUNITIONS.stream().anyMatch(munition -> canFire(weaponType, munition));
+            if (bay.weaponAmmo.containsKey(weaponType) && !ammoOnMunitionLines) {
                 List<Mounted<?>> ammoList = bay.weaponAmmo.get(weaponType);
                 Mounted<?> ammo = ammoList.getFirst();
                 if (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AR10) {
@@ -192,8 +197,21 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         }
     }
 
-    /** One printed line of attack values, named for its munition when the bay prints several */
-    private record DamageLine(String munition, double[] values) {}
+    /** One printed line of attack values, named for its munition and its rounds when the bay prints several */
+    private record DamageLine(String name, double[] values) {}
+
+    /** The rounds of a munition the bay carries */
+    private int rounds(String munition) {
+        int rounds = 0;
+        for (WeaponType weaponType : bay.weapons.keySet()) {
+            for (Mounted<?> ammo : bay.weaponAmmo.getOrDefault(weaponType, List.of())) {
+                if ((ammo.getType() instanceof AmmoType ammoType) && munition.equals(munition(weaponType, ammoType))) {
+                    rounds += ammo.getBaseShotsLeft();
+                }
+            }
+        }
+        return rounds;
+    }
 
     /** The munitions an MML or ATM bay prints a line for, in the order of TW p. 303 */
     private static final List<String> MUNITIONS = List.of("LRM", "SRM", "Standard", "Extended Range", "High Explosive");
@@ -333,7 +351,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             return quantities.get(row) + " " + weaponNames.get(row);
         }
         DamageLine line = damageLine(row);
-        return (line == null) ? "" : line.munition();
+        return (line == null) ? "" : line.name();
     }
 
     @Override

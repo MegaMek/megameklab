@@ -86,9 +86,10 @@ class WeaponBayInventoryEntryTest {
         WeaponBayInventoryEntry lines = new WeaponBayInventoryEntry(ship, 0, shortOfHighExplosive, false);
         assertEquals(3, lines.nRows());
         assertEquals(List.of("", "", "", ""), ranges(lines, 0));
-        assertEquals("Standard", lines.getNameField(1));
+        assertEquals("2 ATM 12", lines.getNameField(0));
+        assertEquals("Standard (10 rounds)", lines.getNameField(1));
         assertEquals(List.of("4 (40)", "4 (40)", "—", "—"), ranges(lines, 1));
-        assertEquals("High Explosive", lines.getNameField(2));
+        assertEquals("High Explosive (5 rounds)", lines.getNameField(2));
         assertEquals(List.of("6 (60)", "—", "—", "—"), ranges(lines, 2));
     }
 
@@ -100,9 +101,11 @@ class WeaponBayInventoryEntryTest {
         load(bay, "ISMML9", "ISMML9 SRM Ammo", 11);
         WeaponBayInventoryEntry entry = new WeaponBayInventoryEntry(ship, 0, bay, false);
 
-        assertEquals("LRM", entry.getNameField(1));
+        // Each line carries its own rounds, so the name prints none
+        assertEquals("1 MML 9", entry.getNameField(0));
+        assertEquals("LRM (13 rounds)", entry.getNameField(1));
         assertEquals(List.of("1 (5)", "1 (5)", "1 (5)", "—"), ranges(entry, 1));
-        assertEquals("SRM", entry.getNameField(2));
+        assertEquals("SRM (11 rounds)", entry.getNameField(2));
         assertEquals(List.of("1 (10)", "—", "—", "—"), ranges(entry, 2));
     }
 
