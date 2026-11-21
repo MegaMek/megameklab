@@ -64,8 +64,10 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     private final boolean isAR10;
     private String location = "";
     private int heat;
-    /** The bay's attack values: one line, or an MML or ATM bay's line for each munition it carries */
-    private final List<DamageLine> damageLines = new ArrayList<>();
+    /** The bay's attack values on its first row, unless its munition lines print them all */
+    private @Nullable double[] bayLine;
+    /** An MML or ATM bay's munitions that print their own values, each on a line under the weapon names */
+    private final List<MunitionLine> munitionLines = new ArrayList<>();
     private boolean artemisIV = false;
     private boolean artemisV = false;
     private boolean apollo = false;
@@ -91,12 +93,19 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         List<String> carried = MUNITIONS.stream()
               .filter(munition -> bay.weapons.keySet().stream().anyMatch(w -> munitions(w).contains(munition)))
               .toList();
-        if (isCapital || atmBayProfile() || (carried.size() <= 1)) {
-            damageLines.add(new DamageLine("", bayValues(carried.isEmpty() ? null : carried.getFirst())));
+        if (isCapital || (carried.size() <= 1)) {
+            bayLine = bayValues(carried.isEmpty() ? null : carried.getFirst());
+        } else if (atmBayProfile()) {
+            // Short range times 1.5, medium unchanged, long and extreme half the standard value, each rounded up
+            double[] standard = bayValues("Standard");
+            bayLine = new double[] { Math.ceil(standard[0] * 1.5), standard[1], Math.ceil(standard[1] / 2),
+                                     Math.ceil(standard[1] / 2) };
+            // Improved Magnetic Pulse missiles don't count toward the profile, so they print a line of their own
+            if (carried.contains("Improved Magnetic Pulse")) {
+                munitionLines.add(new MunitionLine("Improved Magnetic Pulse", bayValues("Improved Magnetic Pulse")));
+            }
         } else {
-            // Each munition's line carries its rounds: LRM (78 rounds)
-            carried.forEach(munition -> damageLines.add(new DamageLine(munition + " (" + rounds(munition) + " rounds)",
-                  bayValues(munition))));
+            carried.forEach(munition -> munitionLines.add(new MunitionLine(munition, bayValues(munition))));
         }
         for (WeaponType weaponType : bay.weapons.keySet()) {
             heat += weaponType.getHeat() * bay.weapons.get(weaponType);
@@ -144,11 +153,11 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             }
             location = locString.toString();
             StringBuilder nameString = new StringBuilder(weaponType.getShortName());
-            // A bay printing a line per munition carries each munition's rounds on its line
-            boolean ammoOnMunitionLines = (damageLines.size() > 1)
-                  && MUNITIONS.stream().anyMatch(munition -> canFire(weaponType, munition));
-            if (bay.weaponAmmo.containsKey(weaponType) && !ammoOnMunitionLines) {
-                nameString.append(formatAmmo(weaponType, ammoTotals(weaponType)));
+            // A munition printing a line of its own carries its rounds there
+            Map<String, Integer> totals = ammoTotals(weaponType);
+            munitionLines.forEach(line -> totals.remove(line.munition()));
+            if (!totals.isEmpty()) {
+                nameString.append(formatAmmo(weaponType, totals));
             }
             int capacitors = bay.countAugmentations(weaponType, MiscType.F_PPC_CAPACITOR);
             if (capacitors == bay.weapons.get(weaponType)) {
@@ -178,8 +187,8 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         }
     }
 
-    /** One printed line of attack values, named for its munition and its rounds when the bay prints several */
-    private record DamageLine(String name, double[] values) {}
+    /** A munition's attack values, on a line named for the munition and its rounds: LRM (78 rounds) */
+    private record MunitionLine(String munition, double[] values) {}
 
     /** The rounds of a munition the bay carries */
     private int rounds(String munition) {
@@ -201,12 +210,16 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     /**
      * A bay weapon's ammo, one total per munition: a single munition as its rounds (or missiles), several as each
      * total under the words their names don't share, so an AR10's missiles print as (200 B, 100 WS, 50 KW) and an
-     * LB-X's slugs and cluster as (10 Standard, 10 Cluster).
+     * LB-X's slugs and cluster as (10 Standard, 10 Cluster). An MML's or ATM's only munition prints by name unless it
+     * is the launcher's first (LRM, Standard): (10 Extended Range).
      */
     private static String formatAmmo(WeaponType weaponType, Map<String, Integer> shots) {
         if ((shots.size() == 1) && (weaponType.getAmmoType() != AmmoType.AmmoTypeEnum.AR10)) {
-            String unit = weaponType.isCapital() && weaponType.hasFlag(WeaponType.F_MISSILE) ? "missiles" : "rounds";
-            return " (" + shots.values().iterator().next() + " " + unit + ")";
+            String munition = shots.keySet().iterator().next();
+            String first = MUNITIONS.stream().filter(other -> canFire(weaponType, other)).findFirst().orElse(null);
+            String unit = (MUNITIONS.contains(munition) && !munition.equals(first)) ? munition
+                  : (weaponType.isCapital() && weaponType.hasFlag(WeaponType.F_MISSILE)) ? "missiles" : "rounds";
+            return " (" + shots.get(munition) + " " + unit + ")";
         }
         List<String[]> words = shots.keySet().stream().map(name -> name.split("[ /]")).toList();
         int shortest = words.stream().mapToInt(name -> name.length).min().orElse(0);
@@ -286,17 +299,17 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
 
     /**
      * The bay's combined values at each range, at standard scale for standard weapons: each weapon with its Artemis,
-     * firing the given munition where it carries it. A launcher without that munition doesn't fire; one without ammo
-     * keeps its listed values.
+     * firing the given munition where it carries it. An MML or ATM fires only a munition it can fire and carries; one
+     * without ammo keeps its listed values.
      */
     private double[] bayValues(@Nullable String munition) {
         double[] total = new double[4];
-        boolean atmProfile = !isCapital && atmBayProfile();
         for (WeaponType weaponType : bay.weapons.keySet()) {
             int numWeapons = bay.weapons.get(weaponType);
             Set<String> carried = munitions(weaponType);
             String fired = canFire(weaponType, munition) ? munition : null;
-            if ((fired != null) && !carried.isEmpty() && !carried.contains(fired)) {
+            if ((munition != null) && MUNITIONS.stream().anyMatch(other -> canFire(weaponType, other))
+                  && ((fired == null) || (!carried.isEmpty() && !carried.contains(fired)))) {
                 continue;
             }
             double[] values = { weaponType.getShortAV(), weaponType.getMedAV(), weaponType.getLongAV(),
@@ -310,12 +323,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             for (int range = 0; range < values.length; range++) {
                 values[range] = (values[range] > 0) ? ((values[range] * numWeapons) + bonus) : 0;
             }
-            if (atmProfile && ((weaponType instanceof ATMWeapon) || (weaponType instanceof CLIATMWeapon))) {
-                values = new double[] { Math.ceil(values[0] * 1.5), values[1], Math.ceil(values[1] / 2),
-                                        Math.ceil(values[1] / 2) };
-            } else {
-                values = InventoryEntry.munitionAttackValues(values, fired);
-            }
+            values = InventoryEntry.munitionAttackValues(values, fired);
             for (int range = 0; range < total.length; range++) {
                 total[range] += values[range];
             }
@@ -340,21 +348,22 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
 
     @Override
     public int nRows() {
-        return bay.weapons.size() + munitionRows();
+        return bay.weapons.size() + munitionLines.size();
     }
 
-    /** The munition lines printed under the weapon names, when the bay prints one per munition */
-    private int munitionRows() {
-        return (damageLines.size() > 1) ? damageLines.size() : 0;
-    }
-
-    /** The damage line a row prints: the bay's on its first row, or a munition's on that munition's row */
-    private @Nullable DamageLine damageLine(int row) {
-        if (munitionRows() == 0) {
-            return (row == 0) ? damageLines.getFirst() : null;
-        }
+    /** The munition line a row prints, under the weapon names */
+    private @Nullable MunitionLine munitionLine(int row) {
         int munitionRow = row - bay.weapons.size();
-        return (munitionRow >= 0) ? damageLines.get(munitionRow) : null;
+        return ((munitionRow >= 0) && (munitionRow < munitionLines.size())) ? munitionLines.get(munitionRow) : null;
+    }
+
+    /** The values a row prints: the bay's on its first row, or a munition's on that munition's line */
+    private @Nullable double[] rowValues(int row) {
+        if (row == 0) {
+            return bayLine;
+        }
+        MunitionLine line = munitionLine(row);
+        return (line == null) ? null : line.values();
     }
 
     @Override
@@ -377,8 +386,9 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         } else if (row < weaponNames.size()) {
             return quantities.get(row) + " " + weaponNames.get(row);
         }
-        DamageLine line = damageLine(row);
-        return (line == null) ? "" : line.name();
+        // Each munition's line carries its rounds: LRM (78 rounds)
+        MunitionLine line = munitionLine(row);
+        return (line == null) ? "" : line.munition() + " (" + rounds(line.munition()) + " rounds)";
     }
 
     @Override
@@ -413,13 +423,13 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
      * prints its capital value, the standard value over 10 rounded normally, then the standard value (SO p. 10)
      */
     private String formatAV(int row, int range) {
-        DamageLine line = damageLine(row);
-        if (line == null) {
+        double[] values = rowValues(row);
+        if (values == null) {
             return "";
         } else if (isAR10) {
             return "*"; // depends on missile type loaded
         }
-        double value = line.values()[range];
+        double value = values[range];
         if (value <= 0) {
             return DASH;
         } else if (isCapital) {
