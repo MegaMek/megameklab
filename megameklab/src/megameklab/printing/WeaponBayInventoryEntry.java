@@ -33,9 +33,15 @@
 package megameklab.printing;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringJoiner;
+import java.util.stream.Stream;
+
+import jakarta.annotation.Nullable;
 
 import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.AmmoType;
@@ -60,8 +66,8 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     private final boolean isAR10;
     private String location = "";
     private int heat;
-    private double baySRV, bayMRV, bayLRV, bayERV;
-    private double standardBaySRV, standardBayMRV, standardBayLRV, standardBayERV;
+    /** The bay's attack values: one line, or an MML or ATM bay's line for each munition it carries */
+    private final List<DamageLine> damageLines = new ArrayList<>();
     private boolean artemisIV = false;
     private boolean artemisV = false;
     private boolean apollo = false;
@@ -84,61 +90,16 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     }
 
     private void processBay() {
+        List<String> carried = MUNITIONS.stream()
+              .filter(munition -> bay.weapons.keySet().stream().anyMatch(w -> munitions(w).contains(munition)))
+              .toList();
+        if (isCapital || atmBayProfile() || (carried.size() <= 1)) {
+            damageLines.add(new DamageLine("", bayValues(carried.isEmpty() ? null : carried.getFirst())));
+        } else {
+            carried.forEach(munition -> damageLines.add(new DamageLine(munition, bayValues(munition))));
+        }
         for (WeaponType weaponType : bay.weapons.keySet()) {
-            int numWeapons = bay.weapons.get(weaponType);
-            heat += weaponType.getHeat() * numWeapons;
-            if (isCapital) {
-                baySRV += weaponType.getShortAV() * numWeapons;
-                bayMRV += weaponType.getMedAV() * numWeapons;
-                bayLRV += weaponType.getLongAV() * numWeapons;
-                bayERV += weaponType.getExtAV() * numWeapons;
-            } else if (weaponType instanceof ATMWeapon || weaponType instanceof CLIATMWeapon) {
-                // The default AVs assume standard ammo. Per footnote on TW, p. 304, the SRV is multiplied
-                // by 1.5 for HE and the long and extreme by 0.5 for ER, both rounded up.
-                double av;
-                if (weaponType instanceof CLIATMWeapon) {
-                    av = weaponType.getShortAV() * numWeapons;
-                } else {
-                    av = Math.ceil(weaponType.getShortAV() * numWeapons * 0.5);
-                }
-                baySRV += Math.round(Math.ceil(av * 1.5) / 10.0);
-                bayMRV += Math.round(av / 10.0);
-                long bayRV = Math.round(Math.ceil(av * 0.5) / 10.0);
-                bayLRV += bayRV;
-                bayERV += bayRV;
-                standardBaySRV += Math.ceil(av * 1.5);
-                standardBayMRV += av;
-                standardBayLRV += Math.ceil(av * 0.5);
-                standardBayERV += Math.ceil(av * 0.5);
-            } else {
-                int bonus = 0;
-                if (bay.augmentations.containsKey(weaponType)) {
-                    bonus = bay.augmentations.get(
-                                weaponType).entrySet().stream()
-                          .mapToInt(e -> AeroAVModCalculator.calculateBonus(weaponType, e.getKey(), true)
-                                * e.getValue()).sum();
-                }
-                if (weaponType.getShortAV() > 0) {
-                    double av = weaponType.getShortAV() * numWeapons + bonus;
-                    if (weaponType instanceof MMLWeapon) {
-                        av *= 2; // SRM ammo
-                    }
-                    baySRV += Math.round(av / 10.0);
-                    standardBaySRV += weaponType.getShortAV() * numWeapons + bonus;
-                }
-                if (weaponType.getMedAV() > 0) {
-                    bayMRV += Math.round((weaponType.getMedAV() * numWeapons + bonus) / 10);
-                    standardBayMRV += weaponType.getMedAV() * numWeapons + bonus;
-                }
-                if (weaponType.getLongAV() > 0) {
-                    bayLRV += Math.round((weaponType.getLongAV() * numWeapons + bonus) / 10);
-                    standardBayLRV += weaponType.getLongAV() * numWeapons + bonus;
-                }
-                if (weaponType.getExtAV() > 0) {
-                    bayERV += Math.round((weaponType.getExtAV() * numWeapons + bonus) / 10);
-                    standardBayERV += weaponType.getExtAV() * numWeapons + bonus;
-                }
-            }
+            heat += weaponType.getHeat() * bay.weapons.get(weaponType);
         }
         // PPC capacitors in bays are considered always charged
         if (!isCapital) {
@@ -231,9 +192,124 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         }
     }
 
+    /** One printed line of attack values, named for its munition when the bay prints several */
+    private record DamageLine(String munition, double[] values) {}
+
+    /** The munitions an MML or ATM bay prints a line for, in the order of TW p. 303 */
+    private static final List<String> MUNITIONS = List.of("LRM", "SRM", "Standard", "Extended Range", "High Explosive");
+
+    /** The munitions a weapon type carries in the bay */
+    private Set<String> munitions(WeaponType weaponType) {
+        Set<String> carried = new LinkedHashSet<>();
+        for (Mounted<?> ammo : bay.weaponAmmo.getOrDefault(weaponType, List.of())) {
+            String munition = (ammo.getType() instanceof AmmoType ammoType) ? munition(weaponType, ammoType) : null;
+            if (munition != null) {
+                carried.add(munition);
+            }
+        }
+        return carried;
+    }
+
+    private static @Nullable String munition(WeaponType weaponType, AmmoType ammoType) {
+        if (weaponType instanceof MMLWeapon) {
+            return ammoType.hasFlag(AmmoType.F_MML_LRM) ? "LRM" : "SRM";
+        } else if (!(weaponType instanceof ATMWeapon) && !(weaponType instanceof CLIATMWeapon)) {
+            return null;
+        }
+        EnumSet<AmmoType.Munitions> types = ammoType.getMunitionType();
+        if (types.contains(AmmoType.Munitions.M_EXTENDED_RANGE)) {
+            return "Extended Range";
+        } else if (types.contains(AmmoType.Munitions.M_HIGH_EXPLOSIVE) || types.contains(AmmoType.Munitions.M_IATM_IMP)) {
+            return "High Explosive";
+        }
+        return types.contains(AmmoType.Munitions.M_STANDARD) ? "Standard" : null;
+    }
+
+    /**
+     * Whether every ATM in the bay carries at least one ton of each munition, which gives the bay its own profile: short
+     * range times 1.5, medium unchanged, long and extreme half the standard value, each rounded up (TW p. 304)
+     */
+    private boolean atmBayProfile() {
+        List<WeaponType> atms = bay.weapons.keySet().stream()
+              .filter(w -> (w instanceof ATMWeapon) || (w instanceof CLIATMWeapon)).toList();
+        return !atms.isEmpty() && atms.stream().allMatch(weaponType -> Stream.of("Standard", "Extended Range",
+              "High Explosive").allMatch(munition -> bay.weaponAmmo.getOrDefault(weaponType, List.of()).stream()
+              .filter(ammo -> (ammo.getType() instanceof AmmoType ammoType)
+                    && munition.equals(munition(weaponType, ammoType)))
+              .mapToDouble(ammo -> ammo.getBaseShotsLeft() / (double) ((AmmoType) ammo.getType()).getShots())
+              .sum() >= bay.weapons.get(weaponType)));
+    }
+
+    /**
+     * The bay's combined values at each range, at standard scale for standard weapons: each weapon with its Artemis,
+     * firing the given munition where it carries it. A launcher without that munition doesn't fire; one without ammo
+     * keeps its listed values.
+     */
+    private double[] bayValues(@Nullable String munition) {
+        double[] total = new double[4];
+        boolean atmProfile = !isCapital && atmBayProfile();
+        for (WeaponType weaponType : bay.weapons.keySet()) {
+            int numWeapons = bay.weapons.get(weaponType);
+            Set<String> carried = munitions(weaponType);
+            String fired = canFire(weaponType, munition) ? munition : null;
+            if ((fired != null) && !carried.isEmpty() && !carried.contains(fired)) {
+                continue;
+            }
+            double[] values = { weaponType.getShortAV(), weaponType.getMedAV(), weaponType.getLongAV(),
+                                weaponType.getExtAV() };
+            int bonus = 0;
+            if (!isCapital && bay.augmentations.containsKey(weaponType)) {
+                bonus = bay.augmentations.get(weaponType).entrySet().stream()
+                      .mapToInt(e -> AeroAVModCalculator.calculateBonus(weaponType, e.getKey(), true) * e.getValue())
+                      .sum();
+            }
+            for (int range = 0; range < values.length; range++) {
+                values[range] = (values[range] > 0) ? ((values[range] * numWeapons) + bonus) : 0;
+            }
+            if (atmProfile && ((weaponType instanceof ATMWeapon) || (weaponType instanceof CLIATMWeapon))) {
+                values = new double[] { Math.ceil(values[0] * 1.5), values[1], Math.ceil(values[1] / 2),
+                                        Math.ceil(values[1] / 2) };
+            } else if ("SRM".equals(fired)) {
+                values = new double[] { values[0] * 2, 0, 0, 0 };
+            } else if ("Extended Range".equals(fired)) {
+                double value = Math.ceil(values[1] / 2);
+                values = new double[] { value, value, value, value };
+            } else if ("High Explosive".equals(fired)) {
+                values = new double[] { Math.ceil(values[0] * 1.5), 0, 0, 0 };
+            }
+            for (int range = 0; range < total.length; range++) {
+                total[range] += values[range];
+            }
+        }
+        return total;
+    }
+
+    /** Whether a weapon type fires the munition: an MML its LRM and SRM, an ATM its standard, ER and HE missiles */
+    private static boolean canFire(WeaponType weaponType, @Nullable String munition) {
+        if (weaponType instanceof MMLWeapon) {
+            return "LRM".equals(munition) || "SRM".equals(munition);
+        }
+        return ((weaponType instanceof ATMWeapon) || (weaponType instanceof CLIATMWeapon))
+              && ("Standard".equals(munition) || "Extended Range".equals(munition) || "High Explosive".equals(munition));
+    }
+
     @Override
     public int nRows() {
-        return bay.weapons.size();
+        return bay.weapons.size() + munitionRows();
+    }
+
+    /** The munition lines printed under the weapon names, when the bay prints one per munition */
+    private int munitionRows() {
+        return (damageLines.size() > 1) ? damageLines.size() : 0;
+    }
+
+    /** The damage line a row prints: the bay's on its first row, or a munition's on that munition's row */
+    private @Nullable DamageLine damageLine(int row) {
+        if (munitionRows() == 0) {
+            return (row == 0) ? damageLines.getFirst() : null;
+        }
+        int munitionRow = row - bay.weapons.size();
+        return (munitionRow >= 0) ? damageLines.get(munitionRow) : null;
     }
 
     @Override
@@ -256,7 +332,8 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         } else if (row < weaponNames.size()) {
             return quantities.get(row) + " " + weaponNames.get(row);
         }
-        return "";
+        DamageLine line = damageLine(row);
+        return (line == null) ? "" : line.munition();
     }
 
     @Override
@@ -270,7 +347,8 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     @Override
     public String getHeatField(int row) {
         if (row == 0) {
-            return String.valueOf(heat);
+            // An AR10's heat depends on the missile it fires (TW p. 304)
+            return isAR10 ? "*" : String.valueOf(heat);
         }
         return "";
     }
@@ -285,50 +363,44 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         return "";
     }
 
-    private String formatAV(double av, double stdAV) {
-        if (isAR10) {
+    /**
+     * A bay's value at one range, from its combined total: a capital bay's rounds normally (SO p. 88); a standard bay's
+     * prints its capital value, the standard value over 10 rounded normally, then the standard value (SO p. 10)
+     */
+    private String formatAV(int row, int range) {
+        DamageLine line = damageLine(row);
+        if (line == null) {
+            return "";
+        } else if (isAR10) {
             return "*"; // depends on missile type loaded
         }
-        if (av + stdAV == 0) {
+        double value = line.values()[range];
+        if (value <= 0) {
             return DASH;
+        } else if (isCapital) {
+            return String.valueOf(Math.round(value));
         }
-        if (isCapital) {
-            // The bay's total rounds normally, .5 up (SO p. 88, TW p. 238)
-            return String.valueOf(Math.round(av));
-        }
-        return ((int) av) + " (" + ((int) stdAV) + ")";
+        return Math.round(value / 10) + " (" + ((int) value) + ")";
     }
 
     @Override
     public String getShortField(int row) {
-        if (row == 0) {
-            return formatAV(baySRV, standardBaySRV);
-        }
-        return "";
+        return formatAV(row, 0);
     }
 
     @Override
     public String getMediumField(int row) {
-        if (row == 0) {
-            return formatAV(bayMRV, standardBayMRV);
-        }
-        return "";
+        return formatAV(row, 1);
     }
 
     @Override
     public String getLongField(int row) {
-        if (row == 0) {
-            return formatAV(bayLRV, standardBayLRV);
-        }
-        return "";
+        return formatAV(row, 2);
     }
 
     @Override
     public String getExtremeField(int row) {
-        if (row == 0) {
-            return formatAV(bayERV, standardBayERV);
-        }
-        return "";
+        return formatAV(row, 3);
     }
 
     @Override
