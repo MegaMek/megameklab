@@ -325,24 +325,25 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         }
         spnJump.removeChangeListener(this);
         // A Mek's spinner sets how many jets it mounts; a FrankenMek's lighter jets give less Jump MP (CO p. 213)
-        int jump0 = (en instanceof Mek mek) ? mek.getJumpJetCount() : en.getOriginalJumpMP(true);
-        int jump = en.getJumpMP();
+        int jumpSpinnerValue = (en instanceof Mek mek) ? mek.getJumpJetCount() : en.getOriginalJumpMP(true);
+        int finalJumpMP = en.getJumpMP();
         // The Jump MP the jets give, which the limit applies to (TM p. 51)
-        int jumpMP0 = (en instanceof Mek) ? en.getOriginalJumpMP(true) : jump0;
-        if (0 == jump0) {
-            jump0 = en.getAllUMUCount();
-            jumpMP0 = jump0;
-            if (jump0 > 0) {
-                jump = jump0;
+        int baseJumpMP = (en instanceof Mek) ? en.getOriginalJumpMP(true) : jumpSpinnerValue;
+        if (0 == jumpSpinnerValue) {
+            jumpSpinnerValue = en.getAllUMUCount();
+            baseJumpMP = jumpSpinnerValue;
+            if (jumpSpinnerValue > 0) {
+                finalJumpMP = jumpSpinnerValue;
             }
         }
         // A jet gives one MP, or less for a FrankenMek's lighter donor jet (CO p. 213), so one jet may be added per MP
         // still missing; six half-ton jets give a 60-ton FrankenMek Jump 3. Over the limit, the jets are cut.
-        boolean overLimit = (maxJump != null) && (jumpMP0 > maxJump);
+        boolean overLimit = (maxJump != null) && (baseJumpMP > maxJump);
         spnJumpModel.setMinimum(minJump);
-        spnJumpModel.setMaximum(((maxJump == null) || overLimit) ? maxJump : Integer.valueOf(jump0 + maxJump - jumpMP0));
-        spnJump.setValue(Math.max(minJump, jump0));
-        txtJumpFinal.setText(String.valueOf(jump));
+        spnJumpModel.setMaximum(((maxJump == null) || overLimit) ? maxJump
+              : Integer.valueOf(jumpSpinnerValue + maxJump - baseJumpMP));
+        spnJump.setValue(Math.max(minJump, jumpSpinnerValue));
+        txtJumpFinal.setText(String.valueOf(finalJumpMP));
         spnJump.addChangeListener(this);
 
         setMovementModToolTips(en);
@@ -376,7 +377,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
 
         if (overLimit) {
             spnJump.setValue(spnJumpModel.getMaximum());
-        } else if (jump0 < minJump) {
+        } else if (jumpSpinnerValue < minJump) {
             spnJump.setValue(spnJumpModel.getMinimum());
         }
 

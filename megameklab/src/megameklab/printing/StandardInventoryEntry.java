@@ -521,17 +521,16 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     @Override
     public String getHeatField(int row) {
         if (row == 0) {
-            if (hasInsulator) {
-                return (int) ((WeaponMounted) mount).laserEnhancedHeat(mount.getType().getHeat(), false) + "*";
+            if (hasInsulator && (mount instanceof WeaponMounted weapon)) {
+                return (int) weapon.laserEnhancedHeat(mount.getType().getHeat(), false) + "*";
             } else if (mount.getType().getHeat() > 0) {
                 return Integer.toString(mount.getType().getHeat());
             } else {
                 return DASH;
             }
         } else if (row == 1) {
-            if (hasPulseModule) {
-                return (int) ((WeaponMounted) mount).laserEnhancedHeat(mount.getType().getHeat(), true)
-                      + (hasInsulator ? "*" : "");
+            if (hasPulseModule && (mount instanceof WeaponMounted weapon)) {
+                return (int) weapon.laserEnhancedHeat(mount.getType().getHeat(), true) + (hasInsulator ? "*" : "");
             } else if (hasCapacitor) {
                 return Integer.toString(mount.getType().getHeat() + 5);
             } else {
