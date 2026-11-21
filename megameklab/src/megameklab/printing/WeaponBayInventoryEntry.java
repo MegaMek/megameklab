@@ -213,8 +213,9 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         return rounds;
     }
 
-    /** The munitions an MML or ATM bay prints a line for, in the order of TW p. 303 */
-    private static final List<String> MUNITIONS = List.of("LRM", "SRM", "Standard", "Extended Range", "High Explosive");
+    /** The munitions an MML or ATM bay prints a line for, in the order of TW p. 303, then the iATM's (IO:AE p. 61) */
+    private static final List<String> MUNITIONS = List.of("LRM", "SRM", "Standard", "Extended Range", "High Explosive",
+          "Improved Magnetic Pulse");
 
     /** The munitions a weapon type carries in the bay */
     private Set<String> munitions(WeaponType weaponType) {
@@ -237,8 +238,10 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         EnumSet<AmmoType.Munitions> types = ammoType.getMunitionType();
         if (types.contains(AmmoType.Munitions.M_EXTENDED_RANGE)) {
             return "Extended Range";
-        } else if (types.contains(AmmoType.Munitions.M_HIGH_EXPLOSIVE) || types.contains(AmmoType.Munitions.M_IATM_IMP)) {
+        } else if (types.contains(AmmoType.Munitions.M_HIGH_EXPLOSIVE)) {
             return "High Explosive";
+        } else if (types.contains(AmmoType.Munitions.M_IATM_IMP)) {
+            return "Improved Magnetic Pulse";
         }
         return types.contains(AmmoType.Munitions.M_STANDARD) ? "Standard" : null;
     }
@@ -294,6 +297,9 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 values = new double[] { value, value, value, value };
             } else if ("High Explosive".equals(fired)) {
                 values = new double[] { Math.ceil(values[0] * 1.5), 0, 0, 0 };
+            } else if ("Improved Magnetic Pulse".equals(fired)) {
+                // High explosive's range at 1 point per missile, which TW p. 304 gives ER as half (IO:AE p. 61)
+                values = new double[] { Math.ceil(values[0] / 2), 0, 0, 0 };
             }
             for (int range = 0; range < total.length; range++) {
                 total[range] += values[range];
@@ -302,10 +308,16 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         return total;
     }
 
-    /** Whether a weapon type fires the munition: an MML its LRM and SRM, an ATM its standard, ER and HE missiles */
+    /**
+     * Whether a weapon type fires the munition: an MML its LRM and SRM, an ATM its standard, ER and HE missiles, and an
+     * iATM also its Improved Magnetic Pulse missiles
+     */
     private static boolean canFire(WeaponType weaponType, @Nullable String munition) {
         if (weaponType instanceof MMLWeapon) {
             return "LRM".equals(munition) || "SRM".equals(munition);
+        }
+        if ((weaponType instanceof CLIATMWeapon) && "Improved Magnetic Pulse".equals(munition)) {
+            return true;
         }
         return ((weaponType instanceof ATMWeapon) || (weaponType instanceof CLIATMWeapon))
               && ("Standard".equals(munition) || "Extended Range".equals(munition) || "High Explosive".equals(munition));

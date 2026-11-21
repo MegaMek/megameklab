@@ -93,6 +93,26 @@ class WeaponBayInventoryEntryTest {
         assertEquals(List.of("6 (60)", "—", "—", "—"), ranges(lines, 2));
     }
 
+    /**
+     * Improved Magnetic Pulse missiles have high explosive's range at 1 point per missile (IO:AE p. 61), so they are
+     * neither high explosive values nor the high explosive the ATM bay profile needs (TW p. 304)
+     */
+    @Test
+    void improvedMagneticPulseIsNotHighExplosive() {
+        WeaponBayText bay = bay("CLIATM12");
+        load(bay, "CLIATM12", "Clan Ammo iATM-12", 5);
+        load(bay, "CLIATM12", "Clan Ammo iATM-12 ER", 5);
+        load(bay, "CLIATM12", "Clan Ammo iATM-12 IMP", 5);
+        WeaponBayInventoryEntry entry = new WeaponBayInventoryEntry(ship, 0, bay, false);
+
+        assertEquals(4, entry.nRows());
+        assertEquals("Standard (5 rounds)", entry.getNameField(1));
+        assertEquals(List.of("2 (24)", "2 (24)", "—", "—"), ranges(entry, 1));
+        assertEquals("Extended Range (5 rounds)", entry.getNameField(2));
+        assertEquals("Improved Magnetic Pulse (5 rounds)", entry.getNameField(3));
+        assertEquals(List.of("1 (12)", "—", "—", "—"), ranges(entry, 3));
+    }
+
     /** An MML bay's LRM and SRM values print on lines of their own (TW p. 303) */
     @Test
     void anMmlBayPrintsEachMunitionOnItsOwnLine() {
