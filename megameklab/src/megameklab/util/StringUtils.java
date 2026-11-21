@@ -306,7 +306,7 @@ public class StringUtils {
         } else if (mount.is(EquipmentTypeLookup.COOLANT_POD)) {
             info = "[PE,OS,X]";
         } else {
-            info = "  [E]";
+            info = equipmentTypeCode(mount);
         }
         return info.trim();
     }
@@ -319,6 +319,22 @@ public class StringUtils {
         return weapon.hasFlag(WeaponType.F_ONE_SHOT) && info.endsWith("]")
               ? info.substring(0, info.length() - 1) + ",OS]"
               : info;
+    }
+
+    /**
+     * The type code of a piece of equipment. E marks electronics (TW p. 114), so magnetic clamps have no type, and a
+     * mine dispenser is PE (TO:AUE p. 220).
+     */
+    private static String equipmentTypeCode(Mounted<?> mount) {
+        if (mount.getType() instanceof MiscType misc) {
+            if (misc.hasFlag(MiscType.F_MAGNETIC_CLAMP)) {
+                return "";
+            }
+            if (misc.hasFlag(MiscType.F_VEHICLE_MINE_DISPENSER) || misc.hasFlag(MiscType.F_SPACE_MINE_DISPENSER)) {
+                return "[PE]";
+            }
+        }
+        return "[E]";
     }
 
     public static String getAeroEquipmentInfo(Mounted<?> mount) {
@@ -443,7 +459,7 @@ public class StringUtils {
         } else if (mount.is(EquipmentTypeLookup.COOLANT_POD)) {
             info = "[PE,OS,X]";
         } else {
-            info = "[E]";
+            info = equipmentTypeCode(mount);
         }
         return info;
     }
