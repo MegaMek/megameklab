@@ -28,9 +28,9 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import megamek.common.TechConstants;
+import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
-import megamek.common.equipment.Engine;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.BipedMek;
 import megamek.common.units.Mek;

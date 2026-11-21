@@ -42,7 +42,6 @@ import java.util.StringJoiner;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Nullable;
-
 import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.EquipmentType;
