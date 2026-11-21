@@ -494,13 +494,13 @@ public final class MekUtil {
     }
 
     /**
-     * Removes all jump jets from the mek
-     *
+     * Removes the given number of jump jets from the front of the Mek's equipment list; mechanical jump boosters are not
+     * jets and stay.
      */
     public static void removeJumpJets(Mek unit, int number) {
         Vector<MiscMounted> toRemove = new Vector<>();
         for (MiscMounted eq : unit.getMisc()) {
-            if (UnitUtil.isJumpJet(eq)) {
+            if (eq.getType().hasFlag(MiscType.F_JUMP_JET)) {
                 toRemove.add(eq);
                 if (toRemove.size() >= number) {
                     break;
@@ -511,6 +511,30 @@ public final class MekUtil {
         for (MiscMounted eq : toRemove) {
             UnitUtil.removeMounted(unit, eq);
         }
+    }
+
+    /**
+     * The most jump jets the Mek may mount for a Jump MP limit (TM p. 51). A jet gives one MP, or a fraction of one for
+     * a FrankenMek's lighter donor jet with the fractions of the total dropped (CO p. 213), so one jet may be added per
+     * MP still missing. Over the limit, jets come off the front of the list, as {@link #removeJumpJets} takes them,
+     * until the rest stay within it: six half-ton jets give a 60-ton FrankenMek Jump 3.
+     *
+     * @param maxJump The Jump MP limit
+     *
+     * @return The jet count the jump spinner may reach
+     */
+    public static int maxJumpJets(Mek mek, int maxJump) {
+        List<MiscMounted> jets = mek.getMisc().stream().filter(jet -> jet.getType().hasFlag(MiscType.F_JUMP_JET))
+              .toList();
+        int jumpMP = mek.getInstalledJumpJetMP();
+        if (jumpMP <= maxJump) {
+            return jets.size() + maxJump - jumpMP;
+        }
+        int removed = 0;
+        while ((int) jets.subList(removed, jets.size()).stream().mapToDouble(mek::getJumpJetMovement).sum() > maxJump) {
+            removed++;
+        }
+        return jets.size() - removed;
     }
 
     /**
@@ -530,7 +554,7 @@ public final class MekUtil {
                 return; // No change, get out of here!
             }
         } else {
-            removeJumpJets(unit, unit.getJumpMP());
+            removeJumpJets(unit, unit.getJumpJetCount());
         }
         // if this is the same jump jet type, then only remove if too many
         // and add if too low

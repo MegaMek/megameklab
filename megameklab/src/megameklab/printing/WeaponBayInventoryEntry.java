@@ -44,8 +44,8 @@ import java.util.stream.Stream;
 
 import jakarta.annotation.Nullable;
 import megamek.common.equipment.AmmoType;
-import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
+import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Aero;
 import megamek.common.units.Dropship;
@@ -91,7 +91,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
 
     private void processBay() {
         List<String> carried = MUNITIONS.stream()
-              .filter(munition -> bay.weapons.keySet().stream().anyMatch(w -> munitions(w).contains(munition)))
+              .filter(munition -> bay.weapons.keySet().stream().anyMatch(weaponType -> munitions(weaponType).contains(munition)))
               .toList();
         if (isCapital || (carried.size() <= 1)) {
             bayLine = bayValues(carried.isEmpty() ? null : carried.getFirst());
@@ -107,16 +107,11 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         } else {
             carried.forEach(munition -> munitionLines.add(new MunitionLine(munition, bayValues(munition))));
         }
-        for (WeaponType weaponType : bay.weapons.keySet()) {
-            heat += weaponType.getHeat() * bay.weapons.get(weaponType);
-        }
-        // PPC capacitors in bays are considered always charged
-        if (!isCapital) {
-            for (Map<EquipmentType, Integer> entry : bay.augmentations.values()) {
-                heat += entry.entrySet().stream()
-                      .filter(e -> e.getKey().hasFlag(MiscType.F_PPC_CAPACITOR))
-                      .mapToInt(e -> e.getValue() * 5).sum();
-            }
+        // Each weapon's heat with its laser insulator (TO:AUE p. 134), and a PPC capacitor's 5, which a bay counts as
+        // always charged (TO:AUE p. 149)
+        for (WeaponMounted weapon : bay.bayWeapons) {
+            heat += (int) weapon.laserEnhancedHeat(weapon.getType().getHeat(), false)
+                  + (weapon.firesCapacitorCharge() ? 5 : 0);
         }
         artemisIV = bay.countAugmentations(MiscType.F_ARTEMIS) > 0;
         /* Per the rules, if any have artemis or apollo, all eligible launchers must have it, and the types
@@ -288,12 +283,12 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
      */
     private boolean atmBayProfile() {
         List<WeaponType> atms = bay.weapons.keySet().stream()
-              .filter(w -> (w instanceof ATMWeapon) || (w instanceof CLIATMWeapon)).toList();
+              .filter(weaponType -> (weaponType instanceof ATMWeapon) || (weaponType instanceof CLIATMWeapon)).toList();
         return !atms.isEmpty() && atms.stream().allMatch(weaponType -> Stream.of("Standard", "Extended Range",
               "High Explosive").allMatch(munition -> bay.weaponAmmo.getOrDefault(weaponType, List.of()).stream()
-              .filter(ammo -> (ammo.getType() instanceof AmmoType ammoType)
+              .mapToDouble(ammo -> ((ammo.getType() instanceof AmmoType ammoType)
                     && munition.equals(munition(weaponType, ammoType)))
-              .mapToDouble(ammo -> ammo.getBaseShotsLeft() / (double) ((AmmoType) ammo.getType()).getShots())
+                    ? (ammo.getBaseShotsLeft() / (double) ammoType.getShots()) : 0)
               .sum() >= bay.weapons.get(weaponType)));
     }
 
@@ -317,7 +312,8 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             int bonus = 0;
             if (!isCapital && bay.augmentations.containsKey(weaponType)) {
                 bonus = bay.augmentations.get(weaponType).entrySet().stream()
-                      .mapToInt(e -> AeroAVModCalculator.calculateBonus(weaponType, e.getKey(), true) * e.getValue())
+                      .mapToInt(augmentation -> AeroAVModCalculator.calculateBonus(weaponType, augmentation.getKey(), true)
+                            * augmentation.getValue())
                       .sum();
             }
             for (int range = 0; range < values.length; range++) {

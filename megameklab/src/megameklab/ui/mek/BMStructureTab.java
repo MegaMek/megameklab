@@ -931,8 +931,10 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             clampFrankenMekArmorToStructureLimits();
         }
         if (getMek().isSuperHeavy()) {
-            // Superheavy Meks may not mount jump jets (IO:AE p. 156)
+            // Superheavy Meks may mount neither jump jets nor mechanical jump boosters (IO:AE p. 156)
             MekUtil.updateJumpJets(getMek(), 0, getMek().getJumpType());
+            getMek().getMisc().stream().filter(misc -> misc.is(EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER)).toList()
+                  .forEach(booster -> UnitUtil.removeMounted(getMek(), booster));
         }
         if (changedSuperHeavyStatus) {
             // Internal structure crits may change

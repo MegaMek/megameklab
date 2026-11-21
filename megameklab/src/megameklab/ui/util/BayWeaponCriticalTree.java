@@ -1288,12 +1288,13 @@ public class BayWeaponCriticalTree extends JTree {
     }
 
     /**
-     * @return True when the weapon enhancement can be attached to the weapon, which has no enhancement yet (the same
-     *       eligibility as the unit loader's; the enhancement moves to the weapon's arc)
+     * @return {@code true} when the weapon enhancement can be attached to the weapon, which has no enhancement of its
+     *       kind yet: a laser takes an insulator and one other enhancement (the same eligibility as the unit loader's;
+     *       the enhancement moves to the weapon's arc)
      */
     private boolean canEnhance(Mounted<?> enhancement, Mounted<?> weapon) {
         return MiscType.isWeaponEnhancement(enhancement.getType()) && (weapon.getType() instanceof WeaponType type)
-              && (weapon.getLinkedBy() == null)
+              && !MekFileParser.hasEnhancementOfKind(weapon, enhancement)
               && MekFileParser.canEnhance(enhancement.getType(), type, eSource.getEntity().getYear());
     }
 

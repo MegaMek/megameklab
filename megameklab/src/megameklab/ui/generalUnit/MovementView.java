@@ -76,6 +76,7 @@ import megamek.common.verifier.TestMek;
 import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.util.TechComboBox;
+import megameklab.util.MekUtil;
 
 /**
  * Controls for setting a unit's speed
@@ -336,12 +337,16 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
                 finalJumpMP = jumpSpinnerValue;
             }
         }
-        // A jet gives one MP, or less for a FrankenMek's lighter donor jet (CO p. 213), so one jet may be added per MP
-        // still missing; six half-ton jets give a 60-ton FrankenMek Jump 3. Over the limit, the jets are cut.
+        // Over the limit, the spinner cuts the jets to what stays within it
         boolean overLimit = (maxJump != null) && (baseJumpMP > maxJump);
         spnJumpModel.setMinimum(minJump);
-        spnJumpModel.setMaximum(((maxJump == null) || overLimit) ? maxJump
-              : Integer.valueOf(jumpSpinnerValue + maxJump - baseJumpMP));
+        if (maxJump == null) {
+            spnJumpModel.setMaximum(null);
+        } else if ((en instanceof Mek jetMek) && (jetMek.getJumpJetCount() > 0)) {
+            spnJumpModel.setMaximum(MekUtil.maxJumpJets(jetMek, maxJump));
+        } else {
+            spnJumpModel.setMaximum(overLimit ? maxJump : (jumpSpinnerValue + maxJump - baseJumpMP));
+        }
         spnJump.setValue(Math.max(minJump, jumpSpinnerValue));
         txtJumpFinal.setText(String.valueOf(finalJumpMP));
         spnJump.addChangeListener(this);

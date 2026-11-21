@@ -221,4 +221,17 @@ class WeaponBayInventoryEntryTest {
         assertEquals("*", entry.getHeatField(0));
         assertEquals("*", entry.getShortField(0));
     }
+
+    /** A laser insulator takes 1 heat off its laser in a bay too: 3 + 8 - 1 (TO:AUE p. 134) */
+    @Test
+    void aBayCountsItsLaserInsulators() throws Exception {
+        Mounted<?> medium = ship.addEquipment(EquipmentType.get("ISMediumLaser"), Jumpship.LOC_NOSE);
+        Mounted<?> large = ship.addEquipment(EquipmentType.get("ISLargeLaser"), Jumpship.LOC_NOSE);
+        ship.addEquipment(EquipmentType.get("ISLaserInsulator"), Jumpship.LOC_NOSE).setLinked(large);
+        WeaponBayText bay = new WeaponBayText(Jumpship.LOC_NOSE, false);
+        bay.addBayWeapon(medium);
+        bay.addBayWeapon(large);
+
+        assertEquals("10", new WeaponBayInventoryEntry(ship, 0, bay, false).getHeatField(0));
+    }
 }
