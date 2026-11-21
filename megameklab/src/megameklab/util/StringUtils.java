@@ -207,6 +207,7 @@ public class StringUtils {
                 } else {
                     info = Integer.toString(weapon.getRackSize());
                 }
+                info = withOneShot(weapon, info);
             } else if (weapon instanceof UACWeapon) {
                 info = Integer.toString(weapon.getDamage());
                 info += "/Sht [DB,R/C]";
@@ -310,6 +311,16 @@ public class StringUtils {
         return info.trim();
     }
 
+    /**
+     * A one-shot launcher fires once per scenario (TW p. 114), so OS joins its type codes: a rocket launcher is
+     * "M, C, OS" (TW p. 303).
+     */
+    private static String withOneShot(WeaponType weapon, String info) {
+        return weapon.hasFlag(WeaponType.F_ONE_SHOT) && info.endsWith("]")
+              ? info.substring(0, info.length() - 1) + ",OS]"
+              : info;
+    }
+
     public static String getAeroEquipmentInfo(Mounted<?> mount) {
         String info;
 
@@ -346,7 +357,8 @@ public class StringUtils {
                       || (weapon instanceof MekMortarWeapon) || (weapon instanceof MMLWeapon)
                       || (weapon instanceof ATMWeapon)) {
                     info = "[M,C,S]";
-                } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)) {
+                } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)
+                      || (weapon instanceof PrototypeRLWeapon)) {
                     info = "[M,C]";
                 } else if ((weapon instanceof ISSnubNosePPC) || (weapon instanceof ISBombastLaser)) {
                     info = "[DE,V]";
@@ -375,6 +387,7 @@ public class StringUtils {
                 } else {
                     info = "";
                 }
+                info = withOneShot(weapon, info);
             } else if (weapon instanceof UACWeapon) {
                 info = "[DB,R/C]";
             } else if (weapon instanceof TAGWeapon) {
