@@ -113,6 +113,28 @@ class WeaponBayInventoryEntryTest {
         assertEquals(List.of("1 (12)", "—", "—", "—"), ranges(entry, 3));
     }
 
+    /** A bay's name carries all the ammo allocated to it (TM p. 195), one total per munition, not its first bin */
+    @Test
+    void aBayNamePrintsEveryBinsRounds() {
+        WeaponBayText twoBins = bay("CLATM12", "CLATM12");
+        load(twoBins, "CLATM12", "Clan Ammo ATM-12", 25);
+        load(twoBins, "CLATM12", "Clan Ammo ATM-12", 25);
+        assertEquals("2 ATM 12 (50 rounds)", new WeaponBayInventoryEntry(ship, 0, twoBins, false).getNameField(0));
+
+        WeaponBayText profile = bay("CLATM12", "CLATM12");
+        load(profile, "CLATM12", "Clan Ammo ATM-12", 10);
+        load(profile, "CLATM12", "Clan Ammo ATM-12 ER", 10);
+        load(profile, "CLATM12", "Clan Ammo ATM-12 HE", 10);
+        assertEquals("2 ATM 12 (10 Standard, 10 Extended Range, 10 High Explosive)",
+              new WeaponBayInventoryEntry(ship, 0, profile, false).getNameField(0));
+
+        WeaponBayText ar10 = bay("AR10");
+        load(ar10, "AR10", "Ammo AR10 Barracuda", 10);
+        load(ar10, "AR10", "Ammo AR10 Killer Whale", 5);
+        load(ar10, "AR10", "Ammo AR10 Barracuda", 10);
+        assertEquals("1 AR10 (20 B, 5 KW)", new WeaponBayInventoryEntry(ship, 0, ar10, true).getNameField(0));
+    }
+
     /** An MML bay's LRM and SRM values print on lines of their own (TW p. 303) */
     @Test
     void anMmlBayPrintsEachMunitionOnItsOwnLine() {

@@ -42,8 +42,10 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -439,12 +441,11 @@ public class InventoryWriter {
                 standardWeapons.add(m);
             }
         }
-        List<AmmoMounted> ammoMountedList = sheet.getEntity().getAmmo();
-        List<WeaponBayText> list = computeWeaponBayTexts(capitalWeapons, ammoMountedList);
+        List<WeaponBayText> list = computeWeaponBayTexts(capitalWeapons);
         for (WeaponBayText text : list) {
             capitalBays.add(new WeaponBayInventoryEntry((Aero) sheet.getEntity(), ++weaponBayIndex, text, true));
         }
-        list = computeWeaponBayTexts(standardWeapons, ammoMountedList);
+        list = computeWeaponBayTexts(standardWeapons);
         boolean artemisIV = false;
         boolean artemisV = false;
         boolean apollo = false;
@@ -475,16 +476,18 @@ public class InventoryWriter {
      *
      * @return A list of bays condensed by weapon type and symmetric location
      */
-    private List<WeaponBayText> computeWeaponBayTexts(List<WeaponMounted> weapons, List<AmmoMounted> ammoMountedList) {
+    static List<WeaponBayText> computeWeaponBayTexts(List<WeaponMounted> weapons) {
         List<WeaponBayText> weaponBayTexts = new ArrayList<>();
         // Collection info on weapons to print
         for (WeaponMounted bay : weapons) {
             WeaponBayText wbt = new WeaponBayText(bay.getLocation(), bay.isRearMounted());
+            Set<AmmoMounted> claimed = new HashSet<>();
             for (WeaponMounted weaponMounted : bay.getBayWeapons()) {
                 if (!wbt.addBayWeapon(weaponMounted)) {continue;}
-                for (AmmoMounted ammo : ammoMountedList) {
-                    if (ammo.getLocation() == weaponMounted.getLocation()
-                          && weaponMounted.getType().getAmmoType() == ammo.getType().getAmmoType()) {
+                // Ammo belongs to the bay whose weapons use it (TM p. 195): each of the bay's own bins prints once,
+                // beside the first of its weapon types that fires it
+                for (AmmoMounted ammo : bay.getBayAmmo()) {
+                    if (AmmoType.isAmmoValid(ammo.getType(), weaponMounted.getType()) && claimed.add(ammo)) {
                         wbt.addBayAmmo(weaponMounted.getType(), ammo);
                     }
                 }

@@ -33,6 +33,7 @@
 package megameklab.printing;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -42,11 +43,9 @@ import java.util.StringJoiner;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Nullable;
-import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
-import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Aero;
 import megamek.common.units.Dropship;
@@ -149,24 +148,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             boolean ammoOnMunitionLines = (damageLines.size() > 1)
                   && MUNITIONS.stream().anyMatch(munition -> canFire(weaponType, munition));
             if (bay.weaponAmmo.containsKey(weaponType) && !ammoOnMunitionLines) {
-                List<Mounted<?>> ammoList = bay.weaponAmmo.get(weaponType);
-                Mounted<?> ammo = ammoList.getFirst();
-                if (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AR10) {
-                    nameString.append(" (");
-
-                    StringJoiner ammoDetails = new StringJoiner(", ");
-                    ammoList.forEach(e -> {
-                        if (e instanceof AmmoMounted am) {
-                            ammoDetails.add(am.getBaseShotsLeft() + " " + am.getShortName());
-                        }
-                    });
-                    nameString.append(ammoDetails);
-                    nameString.append(")");
-                } else if (weaponType.isCapital() && weaponType.hasFlag(WeaponType.F_MISSILE)) {
-                    nameString.append(" (").append(ammo.getBaseShotsLeft()).append(" missiles)");
-                } else {
-                    nameString.append(" (").append(ammo.getBaseShotsLeft()).append(" rounds)");
-                }
+                nameString.append(formatAmmo(weaponType, ammoTotals(weaponType)));
             }
             int capacitors = bay.countAugmentations(weaponType, MiscType.F_PPC_CAPACITOR);
             if (capacitors == bay.weapons.get(weaponType)) {
@@ -201,15 +183,62 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
 
     /** The rounds of a munition the bay carries */
     private int rounds(String munition) {
-        int rounds = 0;
-        for (WeaponType weaponType : bay.weapons.keySet()) {
-            for (Mounted<?> ammo : bay.weaponAmmo.getOrDefault(weaponType, List.of())) {
-                if ((ammo.getType() instanceof AmmoType ammoType) && munition.equals(munition(weaponType, ammoType))) {
-                    rounds += ammo.getBaseShotsLeft();
-                }
-            }
+        return bay.weapons.keySet().stream().filter(weaponType -> canFire(weaponType, munition))
+              .mapToInt(weaponType -> ammoTotals(weaponType).getOrDefault(munition, 0)).sum();
+    }
+
+    /**
+     * A weapon type's rounds of each munition the bay carries for it, in the order the bay lists them: an MML or ATM
+     * munition by the name its line prints, any other ammo by its short name
+     */
+    private Map<String, Integer> ammoTotals(WeaponType weaponType) {
+        return bay.ammoTotals(weaponType, ammo -> {
+            String munition = (ammo.getType() instanceof AmmoType ammoType) ? munition(weaponType, ammoType) : null;
+            return (munition != null) ? munition : ammo.getType().getShortName();
+        });
+    }
+
+    /**
+     * A bay weapon's ammo, one total per munition: a single munition as its rounds (or missiles), several as each
+     * total under the words their names don't share, so an AR10's missiles print as (200 B, 100 WS, 50 KW) and an
+     * LB-X's slugs and cluster as (10 Standard, 10 Cluster).
+     */
+    private static String formatAmmo(WeaponType weaponType, Map<String, Integer> shots) {
+        if ((shots.size() == 1) && (weaponType.getAmmoType() != AmmoType.AmmoTypeEnum.AR10)) {
+            String unit = weaponType.isCapital() && weaponType.hasFlag(WeaponType.F_MISSILE) ? "missiles" : "rounds";
+            return " (" + shots.values().iterator().next() + " " + unit + ")";
         }
-        return rounds;
+        List<String[]> words = shots.keySet().stream().map(name -> name.split("[ /]")).toList();
+        int shortest = words.stream().mapToInt(name -> name.length).min().orElse(0);
+        int head = 0;
+        while ((head < shortest) && sharesWord(words, head, false)) {
+            head++;
+        }
+        int tail = 0;
+        while ((head + tail < shortest) && sharesWord(words, tail, true)) {
+            tail++;
+        }
+        StringJoiner totals = new StringJoiner(", ", " (", ")");
+        int index = 0;
+        for (int count : shots.values()) {
+            String[] name = words.get(index++);
+            String label = String.join(" ", Arrays.copyOfRange(name, head, name.length - tail));
+            totals.add(count + " " + (label.isEmpty() ? "Standard" : label));
+        }
+        return totals.toString();
+    }
+
+    /** Whether every name has the same word at the offset, counted from the end when {@code fromEnd} */
+    private static boolean sharesWord(List<String[]> names, int offset, boolean fromEnd) {
+        if (names.size() < 2) {
+            return false;
+        }
+        String first = word(names.getFirst(), offset, fromEnd);
+        return names.stream().allMatch(name -> word(name, offset, fromEnd).equals(first));
+    }
+
+    private static String word(String[] name, int offset, boolean fromEnd) {
+        return name[fromEnd ? name.length - 1 - offset : offset];
     }
 
     /** The munitions an MML or ATM bay prints a line for, in the order of TW p. 303, then the iATM's (IO:AE p. 61) */
@@ -218,13 +247,8 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
 
     /** The munitions a weapon type carries in the bay */
     private Set<String> munitions(WeaponType weaponType) {
-        Set<String> carried = new LinkedHashSet<>();
-        for (Mounted<?> ammo : bay.weaponAmmo.getOrDefault(weaponType, List.of())) {
-            String munition = (ammo.getType() instanceof AmmoType ammoType) ? munition(weaponType, ammoType) : null;
-            if (munition != null) {
-                carried.add(munition);
-            }
-        }
+        Set<String> carried = new LinkedHashSet<>(ammoTotals(weaponType).keySet());
+        carried.removeIf(munition -> !canFire(weaponType, munition));
         return carried;
     }
 
