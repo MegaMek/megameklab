@@ -516,8 +516,8 @@ public final class MekUtil {
     /**
      * The most jump jets the Mek may mount for a Jump MP limit (TM p. 51). A jet gives one MP, or a fraction of one for
      * a FrankenMek's lighter donor jet with the fractions of the total dropped (CO p. 213), so one jet may be added per
-     * MP still missing. Over the limit, jets come off the front of the list, as {@link #removeJumpJets} takes them,
-     * until the rest stay within it: six half-ton jets give a 60-ton FrankenMek Jump 3.
+     * MP still missing. Over the limit, jets come off the end of the list, as the jump spinner takes them, until the
+     * rest stay within it: six half-ton jets give a 60-ton FrankenMek Jump 3.
      *
      * @param maxJump The Jump MP limit
      *
@@ -530,11 +530,11 @@ public final class MekUtil {
         if (jumpMP <= maxJump) {
             return jets.size() + maxJump - jumpMP;
         }
-        int removed = 0;
-        while ((int) jets.subList(removed, jets.size()).stream().mapToDouble(mek::getJumpJetMovement).sum() > maxJump) {
-            removed++;
+        int kept = jets.size();
+        while ((int) jets.subList(0, kept).stream().mapToDouble(mek::getJumpJetMovement).sum() > maxJump) {
+            kept--;
         }
-        return jets.size() - removed;
+        return kept;
     }
 
     /**

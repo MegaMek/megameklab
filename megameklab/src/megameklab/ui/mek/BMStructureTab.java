@@ -1002,6 +1002,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panArmor.setFromEntity(getMek(), true);
         panArmorAllocation.setFromEntity(getMek());
         panChassis.refreshFrankenMekState(getMek());
+        // A lighter donor's jets give less Jump MP (CO p. 213)
+        panMovement.setFromEntity(getMek());
         refreshSummary();
         refresh.refreshBuild();
         refresh.refreshPreview();

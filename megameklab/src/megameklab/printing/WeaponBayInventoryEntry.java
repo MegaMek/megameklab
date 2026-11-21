@@ -107,11 +107,11 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         } else {
             carried.forEach(munition -> munitionLines.add(new MunitionLine(munition, bayValues(munition))));
         }
-        // Each weapon's heat with its laser insulator (TO:AUE p. 134), and a PPC capacitor's 5, which a bay counts as
-        // always charged (TO:AUE p. 149)
+        // Each weapon's heat with its laser insulator (TO:AUE p. 134), and an installed PPC capacitor's 5, which a bay
+        // counts as always charged (TO:AUE p. 149), as the bay's damage counts it
         for (WeaponMounted weapon : bay.bayWeapons) {
             heat += (int) weapon.laserEnhancedHeat(weapon.getType().getHeat(), false)
-                  + (weapon.firesCapacitorCharge() ? 5 : 0);
+                  + ((weapon.getEnhancement(MiscType.F_PPC_CAPACITOR) != null) ? 5 : 0);
         }
         artemisIV = bay.countAugmentations(MiscType.F_ARTEMIS) > 0;
         /* Per the rules, if any have artemis or apollo, all eligible launchers must have it, and the types
@@ -300,20 +300,23 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     private double[] bayValues(@Nullable String munition) {
         double[] total = new double[4];
         for (WeaponType weaponType : bay.weapons.keySet()) {
-            int numWeapons = bay.weapons.get(weaponType);
             Set<String> carried = munitions(weaponType);
             String fired = canFire(weaponType, munition) ? munition : null;
             if ((munition != null) && MUNITIONS.stream().anyMatch(other -> canFire(weaponType, other))
                   && ((fired == null) || (!carried.isEmpty() && !carried.contains(fired)))) {
                 continue;
             }
+            // Each launcher that fires the munition spends a round of it (TW p. 103)
+            int numWeapons = ((fired != null) && carried.contains(fired))
+                  ? Math.min(bay.weapons.get(weaponType), ammoTotals(weaponType).getOrDefault(fired, 0))
+                  : bay.weapons.get(weaponType);
             double[] values = { weaponType.getShortAV(), weaponType.getMedAV(), weaponType.getLongAV(),
                                 weaponType.getExtAV() };
             int bonus = 0;
             if (!isCapital && bay.augmentations.containsKey(weaponType)) {
                 bonus = bay.augmentations.get(weaponType).entrySet().stream()
                       .mapToInt(augmentation -> AeroAVModCalculator.calculateBonus(weaponType, augmentation.getKey(), true)
-                            * augmentation.getValue())
+                            * Math.min(augmentation.getValue(), numWeapons))
                       .sum();
             }
             for (int range = 0; range < values.length; range++) {

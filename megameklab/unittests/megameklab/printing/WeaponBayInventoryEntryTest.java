@@ -27,6 +27,7 @@ import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Jumpship;
+import megamek.common.units.SmallCraft;
 import megamek.common.units.Warship;
 import megameklab.testing.util.InitializeTypes;
 import org.junit.jupiter.api.Test;
@@ -213,6 +214,18 @@ class WeaponBayInventoryEntryTest {
         assertEquals(List.of("1 (10)", "—", "—", "—"), ranges(entry, 2));
     }
 
+    /** Each launcher that fires spends a round, so one SRM round left lets one of three MML 9s fire it (TW p. 103) */
+    @Test
+    void aMunitionLineFiresNoMoreLaunchersThanItHasRounds() {
+        WeaponBayText bay = bay("ISMML9", "ISMML9", "ISMML9");
+        load(bay, "ISMML9", "ISMML9 LRM Ammo", 13);
+        load(bay, "ISMML9", "ISMML9 SRM Ammo", 1);
+        WeaponBayInventoryEntry entry = new WeaponBayInventoryEntry(ship, 0, bay, false);
+
+        assertEquals("SRM (1 rounds)", entry.getNameField(2));
+        assertEquals(List.of("1 (10)", "—", "—", "—"), ranges(entry, 2));
+    }
+
     /** An AR10's heat, like its damage, depends on the missile it fires (TW p. 304) */
     @Test
     void anAr10BayPrintsItsHeatPerMissile() {
@@ -222,16 +235,21 @@ class WeaponBayInventoryEntryTest {
         assertEquals("*", entry.getShortField(0));
     }
 
-    /** A laser insulator takes 1 heat off its laser in a bay too: 3 + 8 - 1 (TO:AUE p. 134) */
+    /**
+     * A laser insulator takes 1 heat off its laser in a Small Craft's bay too: 3 + 8 - 1 (TO:AUE p. 134, which limits
+     * insulators to units of 200 tons or less)
+     */
     @Test
     void aBayCountsItsLaserInsulators() throws Exception {
-        Mounted<?> medium = ship.addEquipment(EquipmentType.get("ISMediumLaser"), Jumpship.LOC_NOSE);
-        Mounted<?> large = ship.addEquipment(EquipmentType.get("ISLargeLaser"), Jumpship.LOC_NOSE);
-        ship.addEquipment(EquipmentType.get("ISLaserInsulator"), Jumpship.LOC_NOSE).setLinked(large);
-        WeaponBayText bay = new WeaponBayText(Jumpship.LOC_NOSE, false);
+        SmallCraft craft = new SmallCraft();
+        craft.setWeight(200);
+        Mounted<?> medium = craft.addEquipment(EquipmentType.get("ISMediumLaser"), SmallCraft.LOC_NOSE);
+        Mounted<?> large = craft.addEquipment(EquipmentType.get("ISLargeLaser"), SmallCraft.LOC_NOSE);
+        craft.addEquipment(EquipmentType.get("ISLaserInsulator"), SmallCraft.LOC_NOSE).setLinked(large);
+        WeaponBayText bay = new WeaponBayText(SmallCraft.LOC_NOSE, false);
         bay.addBayWeapon(medium);
         bay.addBayWeapon(large);
 
-        assertEquals("10", new WeaponBayInventoryEntry(ship, 0, bay, false).getHeatField(0));
+        assertEquals("10", new WeaponBayInventoryEntry(craft, 0, bay, false).getHeatField(0));
     }
 }

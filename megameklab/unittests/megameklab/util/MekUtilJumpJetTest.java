@@ -66,8 +66,9 @@ class MekUtilJumpJetTest {
     }
 
     /**
-     * Over the limit, jets come off the front of the list until the rest stay within it: two full jets and four
-     * half-ton ones give Jump 4; at Walk 3, losing one full jet leaves five jets for Jump 3 (TM p. 51, CO p. 213)
+     * Over the limit, jets come off the end of the list, as the jump spinner removes them, until the rest stay within
+     * it: two full jets and four half-ton ones give Jump 4; at Walk 3, losing one half-ton jet leaves five jets for
+     * Jump 3 (TM p. 51, CO p. 213)
      */
     @Test
     void overTheLimitKeepsAsManyJetsAsStayWithinIt() throws Exception {
@@ -79,6 +80,20 @@ class MekUtilJumpJetTest {
         mek.setEngine(new Engine(180, Engine.NORMAL_ENGINE, 0));
 
         assertEquals(5, MekUtil.maxJumpJets(mek, 3));
+    }
+
+    /**
+     * Three half-ton jets listed before two full ones give Jump 3; at Walk 2 losing the last full jet leaves four jets,
+     * whose 2.5 MP drop to Jump 2 (CO p. 213)
+     */
+    @Test
+    void overTheLimitTheSpinnerKeepsTheJetsBeforeTheOnesItRemoves() throws Exception {
+        Mek mek = frankenMek(180);
+        addJets(mek, Mek.LOC_RIGHT_TORSO, 3);
+        addJets(mek, Mek.LOC_CENTER_TORSO, 2);
+        assertEquals(3, mek.getInstalledJumpJetMP());
+
+        assertEquals(4, MekUtil.maxJumpJets(mek, 2));
     }
 
     /** Full-weight jets each give one MP, so at Walk 3 four center torso jets are cut to three (TM p. 51) */
