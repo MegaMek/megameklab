@@ -336,10 +336,11 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
                 jump = jump0;
             }
         }
-        // Within the limit, a FrankenMek may keep more jets than the limit's MP; over it, the jets are cut to the limit
+        // A jet gives one MP, or less for a FrankenMek's lighter donor jet (CO p. 213), so one jet may be added per MP
+        // still missing; six half-ton jets give a 60-ton FrankenMek Jump 3. Over the limit, the jets are cut.
         boolean overLimit = (maxJump != null) && (jumpMP0 > maxJump);
         spnJumpModel.setMinimum(minJump);
-        spnJumpModel.setMaximum(((maxJump == null) || overLimit) ? maxJump : Integer.valueOf(Math.max(maxJump, jump0)));
+        spnJumpModel.setMaximum(((maxJump == null) || overLimit) ? maxJump : Integer.valueOf(jump0 + maxJump - jumpMP0));
         spnJump.setValue(Math.max(minJump, jump0));
         txtJumpFinal.setText(String.valueOf(jump));
         spnJump.addChangeListener(this);
