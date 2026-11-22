@@ -92,13 +92,13 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
 
     private void processBay() {
         // A bay's ATMs fire Extended Range and High Explosive missiles only as the bay profile (TW p. 304), and Improved
-        // Magnetic Pulse missiles only when built with enough of them (TM p. 194)
+        // Magnetic Pulse missiles only when the bay carries enough of them (TM p. 194)
         boolean atmSpecialMunitions = atmSpecialMunitionsUsable();
         List<String> carried = MUNITIONS.stream()
               .filter(munition -> bay.weapons.keySet().stream().anyMatch(weaponType -> munitions(weaponType).contains(munition)))
               .filter(munition -> !ATM_PROFILE_MUNITIONS.contains(munition))
               .filter(munition -> !"Improved Magnetic Pulse".equals(munition)
-                    || (atmSpecialMunitions && atmBuiltWith("Improved Magnetic Pulse")))
+                    || (atmSpecialMunitions && atmCarries("Improved Magnetic Pulse")))
               .toList();
         if (!isCapital && atmSpecialMunitions && atmBayProfile()) {
             // Short range times 1.5, medium unchanged, long and extreme half the standard value, each rounded up
@@ -114,10 +114,8 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         } else {
             carried.forEach(munition -> munitionLines.add(new MunitionLine(munition, bayValues(munition))));
         }
-        // A bay's rapid-fire weapons always fire at their maximum rate (TW p. 238), as MegaMek sets them when it loads an
-        // aerospace unit (Entity.setRapidFire), each shot making the weapon's heat (TW p. 114)
         for (WeaponType weaponType : bay.weapons.keySet()) {
-            heat += weaponType.getHeat() * Mounted.getNumShots(weaponType, null, true) * bay.weapons.get(weaponType);
+            heat += weaponType.getHeat() * aerospaceShots(weaponType) * bay.weapons.get(weaponType);
         }
         // PPC capacitors in bays are considered always charged (TO:AUE p. 149). Bays print only for DropShips and larger
         // craft, which can't mount laser insulators (TO:AUE p. 134).
@@ -271,35 +269,37 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     /** The ATM munitions a bay fires only as its profile (TW p. 304) */
     private static final Set<String> ATM_PROFILE_MUNITIONS = Set.of("Extended Range", "High Explosive");
 
+    /**
+     * @return The shots an aerospace unit fires the weapon type with: Ultra and rotary autocannons "always fire at their
+     *       maximum rate" (TW p. 238), as MegaMek sets them when it loads an aerospace unit (Entity.setRapidFire), each
+     *       shot making the weapon's heat (TW p. 114); other weapons one
+     */
+    private static int aerospaceShots(WeaponType weaponType) {
+        AmmoType.AmmoTypeEnum ammoType = weaponType.getAmmoType();
+        boolean rapidFire = (ammoType == AmmoType.AmmoTypeEnum.AC_ULTRA)
+              || (ammoType == AmmoType.AmmoTypeEnum.AC_ULTRA_THB) || (ammoType == AmmoType.AmmoTypeEnum.AC_ROTARY);
+        return rapidFire ? Mounted.getNumShots(weaponType, null, true) : 1;
+    }
+
     private static boolean isAtm(WeaponType weaponType) {
         return (weaponType instanceof ATMWeapon) || (weaponType instanceof CLIATMWeapon);
     }
 
     /**
-     * Whether the bay's ATMs may fire their special munitions: a non-fighter needs "at least 10 shots of each ammo type
-     * per ATM launcher" (TM p. 194), and bays print only for DropShips and larger craft. A bay fires only the ammo
-     * allocated to it (TM p. 195), so its own launchers and ammo count.
+     * Whether the bay's ATMs may fire their special munitions: a non-fighter may not "unless they carry at least 10
+     * shots of each ammo type per ATM launcher" (TM p. 194), and bays print only for DropShips and larger craft. A bay
+     * fires only the ammo allocated to it (TM p. 195), so its own launchers and ammo count.
      */
     private boolean atmSpecialMunitionsUsable() {
-        return Stream.of("Standard", "Extended Range", "High Explosive").allMatch(this::atmBuiltWith);
+        return Stream.of("Standard", "Extended Range", "High Explosive").allMatch(this::atmCarries);
     }
 
-    /** Whether each of the bay's ATMs that fires the munition was built with at least 10 shots of it (TM p. 194) */
-    private boolean atmBuiltWith(String munition) {
+    /** Whether each of the bay's ATMs that fires the munition carries at least 10 shots of it (TM p. 194) */
+    private boolean atmCarries(String munition) {
         return bay.weapons.keySet().stream()
               .filter(weaponType -> isAtm(weaponType) && canFire(weaponType, munition))
-              .allMatch(weaponType -> builtShots(weaponType, munition) >= 10 * bay.weapons.get(weaponType));
-    }
-
-    /**
-     * The shots of a munition the bay's weapons of a type were built with: each bin's original shots, or the shots it
-     * holds when none were recorded, so that firing some doesn't change it
-     */
-    private int builtShots(WeaponType weaponType, String munition) {
-        return bay.weaponAmmo.getOrDefault(weaponType, List.of()).stream()
-              .filter(ammo -> (ammo.getType() instanceof AmmoType ammoType)
-                    && munition.equals(munition(weaponType, ammoType)))
-              .mapToInt(ammo -> Math.max(ammo.getOriginalShots(), ammo.getBaseShotsLeft())).sum();
+              .allMatch(weaponType -> ammoTotals(weaponType).getOrDefault(munition, 0)
+                    >= 10 * bay.weapons.get(weaponType));
     }
 
     /** The munitions a weapon type carries in the bay */
@@ -337,7 +337,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
               "High Explosive").allMatch(munition -> bay.weaponAmmo.getOrDefault(weaponType, List.of()).stream()
               .mapToDouble(ammo -> ((ammo.getType() instanceof AmmoType ammoType)
                     && munition.equals(munition(weaponType, ammoType)))
-                    ? (Math.max(ammo.getOriginalShots(), ammo.getBaseShotsLeft()) / (double) ammoType.getShots()) : 0)
+                    ? (ammo.getBaseShotsLeft() / (double) ammoType.getShots()) : 0)
               .sum() >= bay.weapons.get(weaponType)));
     }
 

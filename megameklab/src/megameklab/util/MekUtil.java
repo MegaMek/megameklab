@@ -526,6 +526,10 @@ public final class MekUtil {
     public static int maxJumpJets(Mek mek, int maxJump) {
         List<MiscMounted> jets = mek.getMisc().stream().filter(jet -> jet.getType().hasFlag(MiscType.F_JUMP_JET))
               .toList();
+        // A Mek that may not jump mounts no jets, even half-ton ones whose dropped fractions give no MP
+        if (maxJump <= 0) {
+            return 0;
+        }
         int jumpMP = mek.getInstalledJumpJetMP();
         if (jumpMP <= maxJump) {
             return jets.size() + maxJump - jumpMP;

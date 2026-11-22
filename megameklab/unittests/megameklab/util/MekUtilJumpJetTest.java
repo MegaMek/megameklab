@@ -105,6 +105,16 @@ class MekUtilJumpJetTest {
         assertEquals(3, MekUtil.maxJumpJets(mek, 3));
     }
 
+    /** A Mek that may not jump mounts no jets, even a half-ton one whose half MP rounds down to 0 (CO p. 213) */
+    @Test
+    void aMekThatMayNotJumpKeepsNoJets() throws Exception {
+        Mek mek = frankenMek(180);
+        addJets(mek, Mek.LOC_RIGHT_TORSO, 1);
+        assertEquals(0, mek.getInstalledJumpJetMP());
+
+        assertEquals(0, MekUtil.maxJumpJets(mek, 0));
+    }
+
     /** Removing jump jets leaves a mechanical jump booster listed before them, which is not a jet */
     @Test
     void removingJumpJetsKeepsMechanicalJumpBoosters() throws Exception {

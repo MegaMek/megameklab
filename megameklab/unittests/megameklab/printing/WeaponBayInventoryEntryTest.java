@@ -119,18 +119,6 @@ class WeaponBayInventoryEntryTest {
               ranges(new WeaponBayInventoryEntry(ship, 0, twoTons, false), 0).subList(0, 2));
     }
 
-    /** TM p. 194 counts the ammo a unit is built with, so a bay that has fired some keeps its special munitions */
-    @Test
-    void aBayThatHasFiredKeepsItsSpecialMunitions() {
-        WeaponBayText spent = bay("CLATM12", "CLATM12");
-        load(spent, "CLATM12", "Clan Ammo ATM-12", 17);
-        load(spent, "CLATM12", "Clan Ammo ATM-12 ER", 20);
-        load(spent, "CLATM12", "Clan Ammo ATM-12 HE", 20);
-        spent.weaponAmmo.values().forEach(bins -> bins.forEach(bin -> bin.setOriginalShots(20)));
-
-        assertEquals("6 (60)", ranges(new WeaponBayInventoryEntry(ship, 0, spent, false), 0).getFirst());
-    }
-
     /** Improved Magnetic Pulse missiles need 10 shots per launcher of their own (TM p. 194) before they print a line */
     @Test
     void improvedMagneticPulseNeedsTenShotsPerLauncher() {
