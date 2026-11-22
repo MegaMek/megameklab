@@ -41,9 +41,11 @@ import java.util.Map;
 import java.util.function.Function;
 
 import megamek.common.equipment.AmmoMounted;
+import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.EquipmentFlag;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Jumpship;
 import megamek.common.units.Warship;
@@ -75,6 +77,8 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      */
     final Map<WeaponType, Map<EquipmentType, Integer>> augmentations = new HashMap<>();
 
+    int heat;
+    boolean isAR10;
     final boolean rear;
     /**
      * The location of the bay, or locations if multiple identical bays are combined.
@@ -97,9 +101,15 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      *
      * @return Whether true if the weapon was added as new, false if it was already in the bay and just incremented
      */
-    public boolean addBayWeapon(Mounted<?> weapon) {
+    public boolean addBayWeapon(WeaponMounted weapon) {
         boolean asNew;
-        WeaponType weaponType = (WeaponType) weapon.getType();
+        WeaponType weaponType = weapon.getType();
+        if (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AR10) {
+            // AR10 heat depends on the missile (TW p. 304). The sheet prints "*" even before ammo is linked.
+            isAR10 = true;
+        } else if (!weapon.isDestroyed() && !weapon.isJammed()) {
+            heat += weapon.getCurrentHeat();
+        }
         if (weapons.containsKey(weaponType)) {
             weapons.put(weaponType, weapons.get(weaponType) + 1);
             asNew = false;
@@ -152,6 +162,7 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
         return loc.size() == 1
               && checkOpposingSide(loc.getFirst(), other.loc.getFirst(), rear, other.rear)
               && weapons.equals(other.weapons)
+              && (isAR10 || heat == other.heat)
               && ammunitionMatch(other) && augmentations.equals(other.augmentations);
     }
 

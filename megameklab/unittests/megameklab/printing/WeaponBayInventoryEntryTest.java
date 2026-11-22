@@ -25,12 +25,19 @@ import java.util.List;
 import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.units.Aero;
+import megamek.common.units.Dropship;
 import megamek.common.units.Jumpship;
 import megamek.common.units.Warship;
 import megameklab.testing.util.InitializeTypes;
+import megameklab.util.UnitUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 @ExtendWith(value = InitializeTypes.class)
 class WeaponBayInventoryEntryTest {
@@ -40,9 +47,14 @@ class WeaponBayInventoryEntryTest {
     private WeaponBayText bay(String... weapons) {
         WeaponBayText bay = new WeaponBayText(Jumpship.LOC_NOSE, false);
         for (String weapon : weapons) {
-            bay.addBayWeapon(Mounted.createMounted(ship, EquipmentType.get(weapon)));
+            bay.addBayWeapon(new WeaponMounted(ship, (WeaponType) EquipmentType.get(weapon)));
         }
         return bay;
+    }
+
+    private static WeaponBayInventoryEntry printedBay(Aero ship, WeaponMounted bay) {
+        WeaponBayText text = InventoryWriter.computeWeaponBayTexts(List.of(bay)).getFirst();
+        return new WeaponBayInventoryEntry(ship, 0, text, bay.getType().isCapital());
     }
 
     private void load(WeaponBayText bay, String weapon, String ammo, int shots) {
@@ -267,24 +279,58 @@ class WeaponBayInventoryEntryTest {
         assertEquals(List.of("1 (10)", "—", "—", "—"), ranges(entry, 2));
     }
 
-    /**
-     * A bay fires its rapid-fire weapons at their maximum rate (TW p. 238), each shot making the weapon's heat (TW p.
-     * 114): two rotary AC/5s make 12, two Ultra AC/5s 4
-     */
-    @Test
-    void aBayFiresItsRapidFireWeaponsAtTheirMaximumRate() {
-        WeaponBayText rotary = bay("ISRotaryAC5", "ISRotaryAC5");
-        WeaponBayText ultra = bay("ISUltraAC5", "ISUltraAC5");
-
-        assertEquals("12", new WeaponBayInventoryEntry(ship, 0, rotary, false).getHeatField(0));
-        assertEquals("4", new WeaponBayInventoryEntry(ship, 0, ultra, false).getHeatField(0));
+    /** Aerospace rapid-fire weapons fire at maximum rate (TW p. 238), making heat per shot (TW p. 114). */
+    @ParameterizedTest
+    @CsvSource({ "ISRotaryAC5, 2, 12", "ISUltraAC5, 2, 4", "ISUltraAC20 (THB), 1, 20" })
+    void aBayFiresItsRapidFireWeaponsAtTheirMaximumRate(String weaponName, int count, int expectedHeat)
+          throws LocationFullException {
+        Dropship dropship = new Dropship();
+        WeaponType type = (WeaponType) EquipmentType.get(weaponName);
+        WeaponMounted bay = (WeaponMounted) dropship.addEquipment(type.getBayType(), Dropship.LOC_NOSE);
+        for (int i = 0; i < count; i++) {
+            WeaponMounted weapon = new WeaponMounted(dropship, type);
+            UnitUtil.addEquipmentWithModes(dropship, weapon, Dropship.LOC_NOSE, false);
+            bay.addWeaponToBay(weapon);
+        }
+        assertEquals(expectedHeat, dropship.getHeatInArc(Dropship.LOC_NOSE, false));
+        assertEquals(String.valueOf(expectedHeat), printedBay(dropship, bay).getHeatField(0));
     }
 
-    /** An AR10's heat, like its damage, depends on the missile it fires (TW p. 304) */
+    /** A working capacitor adds 5 heat to its PPC in a bay (TO:AUE p. 149). */
     @Test
-    void anAr10BayPrintsItsHeatPerMissile() {
-        WeaponBayInventoryEntry entry = new WeaponBayInventoryEntry(ship, 0, bay("AR10"), true);
+    void mirroredPpcBaysPrintSeparateRowsWhenOnlyOneCapacitorWorks() throws LocationFullException {
+        WeaponType ppc = (WeaponType) EquipmentType.get("ISPPC");
+        for (int location : List.of(Jumpship.LOC_FLS, Jumpship.LOC_FRS)) {
+            WeaponMounted bay = (WeaponMounted) ship.addEquipment(ppc.getBayType(), location);
+            WeaponMounted weapon = (WeaponMounted) ship.addEquipment(ppc, location);
+            bay.addWeaponToBay(weapon);
+            Mounted<?> capacitor = ship.addEquipment(EquipmentType.get("ISPPCCapacitor"), location);
+            capacitor.setLinked(weapon);
+            capacitor.setDestroyed(location == Jumpship.LOC_FRS);
+        }
+        List<WeaponBayText> bays = InventoryWriter.computeWeaponBayTexts(ship.getWeaponBayList());
 
+        assertEquals(2, bays.size());
+        assertEquals("15", new WeaponBayInventoryEntry(ship, 0, bays.getFirst(), false).getHeatField(0));
+        assertEquals("10", new WeaponBayInventoryEntry(ship, 1, bays.getLast(), false).getHeatField(0));
+    }
+
+    /** AR10 heat depends on the missile (TW p. 304). A Barracuda generates 10 heat (SO:AA p. 104). */
+    @Test
+    void anAr10BayPrintsItsHeatPerMissile() throws LocationFullException {
+        WeaponType type = (WeaponType) EquipmentType.get("AR10");
+        WeaponMounted bay = (WeaponMounted) ship.addEquipment(type.getBayType(), Jumpship.LOC_NOSE);
+        WeaponMounted launcher = (WeaponMounted) ship.addEquipment(type, Jumpship.LOC_NOSE);
+        bay.addWeaponToBay(launcher);
+        assertEquals("*", printedBay(ship, bay).getHeatField(0));
+
+        AmmoMounted barracuda = (AmmoMounted) ship.addEquipment(EquipmentType.get("Ammo AR10 Barracuda"),
+              Jumpship.LOC_NOSE);
+        bay.addAmmoToBay(barracuda);
+        ship.loadWeapon(launcher, barracuda);
+        WeaponBayInventoryEntry entry = printedBay(ship, bay);
+
+        assertEquals(10, ship.getHeatInArc(Jumpship.LOC_NOSE, false));
         assertEquals("*", entry.getHeatField(0));
         assertEquals("*", entry.getShortField(0));
     }

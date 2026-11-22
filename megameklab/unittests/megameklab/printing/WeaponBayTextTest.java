@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Jumpship;
 import megamek.common.units.Warship;
@@ -38,7 +39,7 @@ class WeaponBayTextTest {
 
     private WeaponBayText lrmBay(int location, int... bins) {
         WeaponBayText bay = new WeaponBayText(location, false);
-        bay.addBayWeapon(Mounted.createMounted(ship, EquipmentType.get("ISLRM20")));
+        bay.addBayWeapon(new WeaponMounted(ship, (WeaponType) EquipmentType.get("ISLRM20")));
         for (int shots : bins) {
             AmmoMounted ammo = (AmmoMounted) Mounted.createMounted(ship, EquipmentType.get("IS Ammo LRM-20"));
             ammo.setShotsLeft(shots);

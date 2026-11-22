@@ -46,7 +46,6 @@ import jakarta.annotation.Nullable;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
-import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Aero;
 import megamek.common.units.Dropship;
@@ -62,9 +61,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     private final Aero ship;
     private final WeaponBayText bay;
     private final boolean isCapital;
-    private final boolean isAR10;
     private String location = "";
-    private int heat;
     /** The bay's attack values on its first row, unless its munition lines print them all */
     private @Nullable double[] bayLine;
     /** An MML or ATM bay's munitions that print their own values, each on a line under the weapon names */
@@ -81,7 +78,6 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         this.index = index;
         this.bay = bay;
         this.isCapital = isCapital;
-        this.isAR10 = bay.weapons.keySet().stream().anyMatch(w -> w.getAmmoType() == AmmoType.AmmoTypeEnum.AR10);
         processBay();
     }
 
@@ -113,18 +109,6 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             bayLine = bayValues(carried.isEmpty() ? null : carried.getFirst());
         } else {
             carried.forEach(munition -> munitionLines.add(new MunitionLine(munition, bayValues(munition))));
-        }
-        for (WeaponType weaponType : bay.weapons.keySet()) {
-            heat += weaponType.getHeat() * aerospaceShots(weaponType) * bay.weapons.get(weaponType);
-        }
-        // PPC capacitors in bays are considered always charged (TO:AUE p. 149). Bays print only for DropShips and larger
-        // craft, which can't mount laser insulators (TO:AUE p. 134).
-        if (!isCapital) {
-            for (Map<EquipmentType, Integer> entry : bay.augmentations.values()) {
-                heat += entry.entrySet().stream()
-                      .filter(augmentation -> augmentation.getKey().hasFlag(MiscType.F_PPC_CAPACITOR))
-                      .mapToInt(augmentation -> augmentation.getValue() * 5).sum();
-            }
         }
         artemisIV = bay.countAugmentations(MiscType.F_ARTEMIS) > 0;
         /* Per the rules, if any have artemis or apollo, all eligible launchers must have it, and the types
@@ -268,18 +252,6 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
 
     /** The ATM munitions a bay fires only as its profile (TW p. 304) */
     private static final Set<String> ATM_PROFILE_MUNITIONS = Set.of("Extended Range", "High Explosive");
-
-    /**
-     * @return The shots an aerospace unit fires the weapon type with: Ultra and rotary autocannons "always fire at their
-     *       maximum rate" (TW p. 238), as MegaMek sets them when it loads an aerospace unit (Entity.setRapidFire), each
-     *       shot making the weapon's heat (TW p. 114); other weapons one
-     */
-    private static int aerospaceShots(WeaponType weaponType) {
-        AmmoType.AmmoTypeEnum ammoType = weaponType.getAmmoType();
-        boolean rapidFire = (ammoType == AmmoType.AmmoTypeEnum.AC_ULTRA)
-              || (ammoType == AmmoType.AmmoTypeEnum.AC_ULTRA_THB) || (ammoType == AmmoType.AmmoTypeEnum.AC_ROTARY);
-        return rapidFire ? Mounted.getNumShots(weaponType, null, true) : 1;
-    }
 
     private static boolean isAtm(WeaponType weaponType) {
         return (weaponType instanceof ATMWeapon) || (weaponType instanceof CLIATMWeapon);
@@ -454,7 +426,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     public String getHeatField(int row) {
         if (row == 0) {
             // An AR10's heat depends on the missile it fires (TW p. 304)
-            return isAR10 ? "*" : String.valueOf(heat);
+            return bay.isAR10 ? "*" : String.valueOf(bay.heat);
         }
         return "";
     }
@@ -477,7 +449,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         double[] values = rowValues(row);
         if (values == null) {
             return "";
-        } else if (isAR10) {
+        } else if (bay.isAR10) {
             return "*"; // depends on missile type loaded
         }
         double value = values[range];

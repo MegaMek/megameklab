@@ -391,7 +391,7 @@ public class UnitUtil {
     public static void addMounted(Entity unit, Mounted<?> mounted, int loc, boolean rearMounted)
           throws LocationFullException {
         boolean isAlreadyOnUnit = unit.getEquipmentNum(mounted) != -1;
-        unit.addEquipment(mounted, loc, rearMounted);
+        addEquipmentWithModes(unit, mounted, loc, rearMounted);
         if (isAlreadyOnUnit) {
             keepPodStatusWhereAllowed(unit, mounted);
         } else {
@@ -400,6 +400,15 @@ public class UnitUtil {
 
         if (unit instanceof Mek mek) {
             MekUtil.updateClanCasePlacement(mek);
+        }
+    }
+
+    /** Adds equipment with the same rapid-fire mode an aerospace unit gets on load (TW p. 238). */
+    public static void addEquipmentWithModes(Entity unit, Mounted<?> mounted, int loc, boolean rearMounted)
+          throws LocationFullException {
+        unit.addEquipment(mounted, loc, rearMounted);
+        if (unit instanceof Aero && mounted instanceof WeaponMounted weapon) {
+            Entity.setRapidFire(weapon);
         }
     }
 
@@ -1773,7 +1782,7 @@ public class UnitUtil {
             toAdd.setSize(toCopy.getSize());
             toAdd.setShotsLeft(toCopy.getBaseShotsLeft());
         }
-        entity.addEquipment(toAdd, toLoc, toCopy.isRearMounted());
+        addEquipmentWithModes(entity, toAdd, toLoc, toCopy.isRearMounted());
         changeMountStatus(entity, toAdd, toLoc, Entity.LOC_NONE, toCopy.isRearMounted());
         removeHiddenAmmo(toAdd);
         return toAdd;
