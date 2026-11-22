@@ -252,6 +252,20 @@ class WeaponBayInventoryEntryTest {
         assertEquals(List.of("1 (10)", "—", "—", "—"), ranges(entry, 2));
     }
 
+    /** The bay's design AV includes installed Artemis IV even when the carried SRM rounds are ordinary. */
+    @Test
+    void anMmlBayPrintsItsArtemisRatingWithOrdinarySrmAmmo() throws LocationFullException {
+        WeaponType mml = (WeaponType) EquipmentType.get("ISMML9");
+        WeaponMounted bay = (WeaponMounted) ship.addEquipment(mml.getBayType(), Jumpship.LOC_NOSE);
+        WeaponMounted launcher = (WeaponMounted) ship.addEquipment(mml, Jumpship.LOC_NOSE);
+        bay.addWeaponToBay(launcher);
+        ship.addEquipment(EquipmentType.get("ISArtemisIV"), Jumpship.LOC_NOSE).setLinked(launcher);
+        AmmoMounted ammo = (AmmoMounted) ship.addEquipment(EquipmentType.get("ISMML9 SRM Ammo"), Jumpship.LOC_NOSE);
+        bay.addAmmoToBay(ammo);
+
+        assertEquals("1 (14)", printedBay(ship, bay).getShortField(0));
+    }
+
     /** A launcher out of ammunition can't fire (TW p. 103), so it adds nothing to either munition line */
     @Test
     void aLauncherWithoutAmmoAddsNothingToAMunitionLine() {
