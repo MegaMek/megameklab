@@ -240,6 +240,21 @@ class WeaponBayInventoryEntryTest {
         assertEquals(List.of("1 (10)", "—", "—", "—"), ranges(entry, 2));
     }
 
+    /** A launcher out of ammunition can't fire (TW p. 103), so it adds nothing to either munition line */
+    @Test
+    void aLauncherWithoutAmmoAddsNothingToAMunitionLine() {
+        WeaponBayText bay = bay("ISMML9", "ISMML3");
+        load(bay, "ISMML9", "ISMML9 LRM Ammo", 13);
+        load(bay, "ISMML9", "ISMML9 SRM Ammo", 11);
+        WeaponBayInventoryEntry entry = new WeaponBayInventoryEntry(ship, 0, bay, false);
+
+        // Each launcher type names a row of its own, then each munition prints its line
+        assertEquals("LRM (13 rounds)", entry.getNameField(2));
+        assertEquals(List.of("1 (5)", "1 (5)", "1 (5)", "—"), ranges(entry, 2));
+        assertEquals("SRM (11 rounds)", entry.getNameField(3));
+        assertEquals(List.of("1 (10)", "—", "—", "—"), ranges(entry, 3));
+    }
+
     /** Each launcher that fires spends a round, so one SRM round left lets one of three MML 9s fire it (TW p. 103) */
     @Test
     void aMunitionLineFiresNoMoreLaunchersThanItHasRounds() {

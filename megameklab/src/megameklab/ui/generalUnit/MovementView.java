@@ -328,25 +328,18 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         // A Mek's spinner sets how many jets it mounts; a FrankenMek's lighter jets give less Jump MP (CO p. 213)
         int jumpSpinnerValue = (en instanceof Mek mek) ? mek.getJumpJetCount() : en.getOriginalJumpMP(true);
         int finalJumpMP = en.getJumpMP();
-        // The Jump MP the jets give, which the limit applies to (TM p. 51), before MegaMek holds a FrankenMek's to it
-        int baseJumpMP = (en instanceof Mek jetMek) ? jetMek.getInstalledJumpJetMP() : jumpSpinnerValue;
         if (0 == jumpSpinnerValue) {
             jumpSpinnerValue = en.getAllUMUCount();
-            baseJumpMP = jumpSpinnerValue;
             if (jumpSpinnerValue > 0) {
                 finalJumpMP = jumpSpinnerValue;
             }
         }
+        Integer maxSpinner = ((maxJump != null) && (en instanceof Mek jetMek) && (jetMek.getJumpJetCount() > 0))
+              ? Integer.valueOf(MekUtil.maxJumpJets(jetMek, maxJump)) : maxJump;
         // Over the limit, the spinner cuts the jets to what stays within it
-        boolean overLimit = (maxJump != null) && (baseJumpMP > maxJump);
+        boolean overLimit = (maxSpinner != null) && (jumpSpinnerValue > maxSpinner);
         spnJumpModel.setMinimum(minJump);
-        if (maxJump == null) {
-            spnJumpModel.setMaximum(null);
-        } else if ((en instanceof Mek jetMek) && (jetMek.getJumpJetCount() > 0)) {
-            spnJumpModel.setMaximum(MekUtil.maxJumpJets(jetMek, maxJump));
-        } else {
-            spnJumpModel.setMaximum(overLimit ? maxJump : (jumpSpinnerValue + maxJump - baseJumpMP));
-        }
+        spnJumpModel.setMaximum(maxSpinner);
         spnJump.setValue(Math.max(minJump, jumpSpinnerValue));
         txtJumpFinal.setText(String.valueOf(finalJumpMP));
         spnJump.addChangeListener(this);

@@ -343,8 +343,8 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
 
     /**
      * The bay's combined values at each range, at standard scale for standard weapons: each weapon with its Artemis,
-     * firing the given munition where it carries it. An MML or ATM fires only a munition it can fire and carries; one
-     * without ammo keeps its listed values.
+     * firing the given munition where it carries it. An MML or ATM fires only a munition it can fire and carries (TW
+     * p. 103); with no munition given, as in a bay that carries none, it keeps its listed values.
      */
     private double[] bayValues(@Nullable String munition) {
         double[] total = new double[4];
@@ -352,7 +352,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             Set<String> carried = munitions(weaponType);
             String fired = canFire(weaponType, munition) ? munition : null;
             if ((munition != null) && MUNITIONS.stream().anyMatch(other -> canFire(weaponType, other))
-                  && ((fired == null) || (!carried.isEmpty() && !carried.contains(fired)))) {
+                  && !carried.contains(fired)) {
                 continue;
             }
             // Each launcher that fires the munition spends a round of it (TW p. 103)
