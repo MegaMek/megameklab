@@ -99,6 +99,51 @@ class WeaponBayInventoryEntryTest {
     }
 
     /**
+     * A bay's ATMs fire Extended Range and High Explosive missiles only as the bay profile, which needs a ton of each per
+     * launcher (TW p. 304): two ATM 3s with 20 shots of each have 10 per launcher (TM p. 194) but one ton between them,
+     * so they print their standard values, and with 40 of each the profile
+     */
+    @Test
+    void anAtmBayWithoutATonOfEachPerLauncherPrintsItsStandardValues() {
+        WeaponBayText oneTon = bay("CLATM3", "CLATM3");
+        WeaponBayText twoTons = bay("CLATM3", "CLATM3");
+        for (String munition : List.of("", " ER", " HE")) {
+            load(oneTon, "CLATM3", "Clan Ammo ATM-3" + munition, 20);
+            load(twoTons, "CLATM3", "Clan Ammo ATM-3" + munition, 40);
+        }
+        WeaponBayInventoryEntry standard = new WeaponBayInventoryEntry(ship, 0, oneTon, false);
+
+        assertEquals(1, standard.nRows());
+        assertEquals(List.of("1 (8)", "1 (8)", "—", "—"), ranges(standard, 0));
+        assertEquals(List.of("1 (12)", "1 (8)"),
+              ranges(new WeaponBayInventoryEntry(ship, 0, twoTons, false), 0).subList(0, 2));
+    }
+
+    /** TM p. 194 counts the ammo a unit is built with, so a bay that has fired some keeps its special munitions */
+    @Test
+    void aBayThatHasFiredKeepsItsSpecialMunitions() {
+        WeaponBayText spent = bay("CLATM12", "CLATM12");
+        load(spent, "CLATM12", "Clan Ammo ATM-12", 17);
+        load(spent, "CLATM12", "Clan Ammo ATM-12 ER", 20);
+        load(spent, "CLATM12", "Clan Ammo ATM-12 HE", 20);
+        spent.weaponAmmo.values().forEach(bins -> bins.forEach(bin -> bin.setOriginalShots(20)));
+
+        assertEquals("6 (60)", ranges(new WeaponBayInventoryEntry(ship, 0, spent, false), 0).getFirst());
+    }
+
+    /** Improved Magnetic Pulse missiles need 10 shots per launcher of their own (TM p. 194) before they print a line */
+    @Test
+    void improvedMagneticPulseNeedsTenShotsPerLauncher() {
+        WeaponBayText bay = bay("CLIATM12");
+        for (String munition : List.of("", " ER", " HE")) {
+            load(bay, "CLIATM12", "Clan Ammo iATM-12" + munition, 10);
+        }
+        load(bay, "CLIATM12", "Clan Ammo iATM-12 IMP", 5);
+
+        assertEquals(1, new WeaponBayInventoryEntry(ship, 0, bay, false).nRows());
+    }
+
+    /**
      * Improved Magnetic Pulse missiles are not the high explosive missiles a large craft's ATMs need 10 shots of before
      * they fire special munitions (TM p. 194), so this bay fires only its standard missiles
      */
