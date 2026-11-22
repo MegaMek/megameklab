@@ -46,6 +46,7 @@ import jakarta.annotation.Nullable;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
+import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Aero;
 import megamek.common.units.Dropship;
@@ -107,8 +108,9 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         } else {
             carried.forEach(munition -> munitionLines.add(new MunitionLine(munition, bayValues(munition))));
         }
+        // A bay's rapid-fire weapons always fire at their maximum rate (TW p. 238)
         for (WeaponType weaponType : bay.weapons.keySet()) {
-            heat += weaponType.getHeat() * bay.weapons.get(weaponType);
+            heat += weaponType.getHeat() * WeaponMounted.aerospaceShots(weaponType) * bay.weapons.get(weaponType);
         }
         // PPC capacitors in bays are considered always charged (TO:AUE p. 149). Bays print only for DropShips and larger
         // craft, which can't mount laser insulators (TO:AUE p. 134).

@@ -225,6 +225,19 @@ class WeaponBayInventoryEntryTest {
         assertEquals(List.of("1 (10)", "—", "—", "—"), ranges(entry, 2));
     }
 
+    /**
+     * A bay fires its rapid-fire weapons at their maximum rate (TW p. 238), each shot making the weapon's heat (TW p.
+     * 114): two rotary AC/5s make 12, two Ultra AC/5s 4
+     */
+    @Test
+    void aBayFiresItsRapidFireWeaponsAtTheirMaximumRate() {
+        WeaponBayText rotary = bay("ISRotaryAC5", "ISRotaryAC5");
+        WeaponBayText ultra = bay("ISUltraAC5", "ISUltraAC5");
+
+        assertEquals("12", new WeaponBayInventoryEntry(ship, 0, rotary, false).getHeatField(0));
+        assertEquals("4", new WeaponBayInventoryEntry(ship, 0, ultra, false).getHeatField(0));
+    }
+
     /** An AR10's heat, like its damage, depends on the missile it fires (TW p. 304) */
     @Test
     void anAr10BayPrintsItsHeatPerMissile() {
