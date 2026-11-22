@@ -209,9 +209,12 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         if ((shots.size() == 1) && (weaponType.getAmmoType() != AmmoType.AmmoTypeEnum.AR10)) {
             String munition = shots.keySet().iterator().next();
             String first = MUNITIONS.stream().filter(other -> canFire(weaponType, other)).findFirst().orElse(null);
-            String unit = (MUNITIONS.contains(munition) && !munition.equals(first)) ? munition
-                  : (weaponType.isCapital() && weaponType.hasFlag(WeaponType.F_MISSILE)) ? "missiles" : "rounds";
-            return " (" + shots.get(munition) + " " + unit + ")";
+            int count = shots.get(munition);
+            if (MUNITIONS.contains(munition) && !munition.equals(first)) {
+                return " (" + count + " " + munition + ")";
+            }
+            return formatAmmoCount(count, weaponType.isCapital() && weaponType.hasFlag(WeaponType.F_MISSILE)
+                  ? "missile" : "round");
         }
         List<String[]> words = shots.keySet().stream().map(name -> name.split("[ /]")).toList();
         int shortest = words.stream().mapToInt(name -> name.length).min().orElse(0);
@@ -231,6 +234,10 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             totals.add(count + " " + (label.isEmpty() ? "Standard" : label));
         }
         return totals.toString();
+    }
+
+    private static String formatAmmoCount(int count, String unit) {
+        return " (" + count + " " + unit + ((count == 1) ? "" : "s") + ")";
     }
 
     /** Whether every name has the same word at the offset, counted from the end when {@code fromEnd} */
@@ -411,7 +418,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         }
         // Each munition's line carries its rounds: LRM (78 rounds)
         MunitionLine line = munitionLine(row);
-        return (line == null) ? "" : line.munition() + " (" + rounds(line.munition()) + " rounds)";
+        return (line == null) ? "" : line.munition() + formatAmmoCount(rounds(line.munition()), "round");
     }
 
     @Override

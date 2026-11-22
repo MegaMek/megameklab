@@ -214,6 +214,22 @@ class WeaponBayInventoryEntryTest {
         assertEquals(List.of("4 (40)", "4 (40)", "—", "—"), ranges(extendedRangeEntry, 0));
     }
 
+    @ParameterizedTest
+    @CsvSource({ "ISMML9, ISMML9 LRM Ammo, 1, 1 MML 9 (1 round)",
+                 "Barracuda, Ammo Barracuda, 1, 1 Barracuda (1 missile)",
+                 "Barracuda, Ammo Barracuda, 2, 1 Barracuda (2 missiles)" })
+    void aWeaponRowUsesTheAmmoCountForItsLabel(String weapon, String ammo, int count, String expectedName)
+          throws LocationFullException {
+        WeaponType type = (WeaponType) EquipmentType.get(weapon);
+        WeaponMounted bay = (WeaponMounted) ship.addEquipment(type.getBayType(), Jumpship.LOC_NOSE);
+        bay.addWeaponToBay((WeaponMounted) ship.addEquipment(type, Jumpship.LOC_NOSE));
+        AmmoMounted bin = (AmmoMounted) ship.addEquipment(EquipmentType.get(ammo), Jumpship.LOC_NOSE);
+        bin.setShotsLeft(count);
+        bay.addAmmoToBay(bin);
+
+        assertEquals(expectedName, printedBay(ship, bay).getNameField(0));
+    }
+
     /** A bay's name carries all the ammo allocated to it (TM p. 195), one total per munition, not its first bin */
     @Test
     void aBayNamePrintsEveryBinsRounds() {
@@ -289,7 +305,7 @@ class WeaponBayInventoryEntryTest {
         load(bay, "ISMML9", "ISMML9 SRM Ammo", 1);
         WeaponBayInventoryEntry entry = new WeaponBayInventoryEntry(ship, 0, bay, false);
 
-        assertEquals("SRM (1 rounds)", entry.getNameField(2));
+        assertEquals("SRM (1 round)", entry.getNameField(2));
         assertEquals(List.of("1 (10)", "—", "—", "—"), ranges(entry, 2));
     }
 
