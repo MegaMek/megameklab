@@ -91,8 +91,10 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     }
 
     private void processBay() {
+        boolean atmSpecialMunitions = atmSpecialMunitionsUsable();
         List<String> carried = MUNITIONS.stream()
               .filter(munition -> bay.weapons.keySet().stream().anyMatch(weaponType -> munitions(weaponType).contains(munition)))
+              .filter(munition -> atmSpecialMunitions || !ATM_SPECIAL_MUNITIONS.contains(munition))
               .toList();
         if (isCapital || (carried.size() <= 1)) {
             bayLine = bayValues(carried.isEmpty() ? null : carried.getFirst());
@@ -261,6 +263,25 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     private static final List<String> MUNITIONS = List.of("LRM", "SRM", "Standard", "Extended Range", "High Explosive",
           "Improved Magnetic Pulse");
 
+    /** The ATM munitions other than standard missiles (TW p. 303, IO:AE p. 61) */
+    private static final Set<String> ATM_SPECIAL_MUNITIONS = Set.of("Extended Range", "High Explosive",
+          "Improved Magnetic Pulse");
+
+    private static boolean isAtm(WeaponType weaponType) {
+        return (weaponType instanceof ATMWeapon) || (weaponType instanceof CLIATMWeapon);
+    }
+
+    /**
+     * Whether the bay's ATMs may fire their special munitions: a non-fighter needs "at least 10 shots of each ammo type
+     * per ATM launcher" (TM p. 194), and bays print only for DropShips and larger craft
+     */
+    private boolean atmSpecialMunitionsUsable() {
+        return bay.weapons.keySet().stream().filter(WeaponBayInventoryEntry::isAtm)
+              .allMatch(weaponType -> Stream.of("Standard", "Extended Range", "High Explosive")
+                    .allMatch(munition -> ammoTotals(weaponType).getOrDefault(munition, 0)
+                          >= 10 * bay.weapons.get(weaponType)));
+    }
+
     /** The munitions a weapon type carries in the bay */
     private Set<String> munitions(WeaponType weaponType) {
         Set<String> carried = new LinkedHashSet<>(ammoTotals(weaponType).keySet());
@@ -271,7 +292,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     private static @Nullable String munition(WeaponType weaponType, AmmoType ammoType) {
         if (weaponType instanceof MMLWeapon) {
             return ammoType.hasFlag(AmmoType.F_MML_LRM) ? "LRM" : "SRM";
-        } else if (!(weaponType instanceof ATMWeapon) && !(weaponType instanceof CLIATMWeapon)) {
+        } else if (!isAtm(weaponType)) {
             return null;
         }
         EnumSet<AmmoType.Munitions> types = ammoType.getMunitionType();
@@ -291,7 +312,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
      */
     private boolean atmBayProfile() {
         List<WeaponType> atms = bay.weapons.keySet().stream()
-              .filter(weaponType -> (weaponType instanceof ATMWeapon) || (weaponType instanceof CLIATMWeapon)).toList();
+              .filter(WeaponBayInventoryEntry::isAtm).toList();
         return !atms.isEmpty() && atms.stream().allMatch(weaponType -> Stream.of("Standard", "Extended Range",
               "High Explosive").allMatch(munition -> bay.weaponAmmo.getOrDefault(weaponType, List.of()).stream()
               .mapToDouble(ammo -> ((ammo.getType() instanceof AmmoType ammoType)
@@ -352,7 +373,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         if ((weaponType instanceof CLIATMWeapon) && "Improved Magnetic Pulse".equals(munition)) {
             return true;
         }
-        return ((weaponType instanceof ATMWeapon) || (weaponType instanceof CLIATMWeapon))
+        return isAtm(weaponType)
               && ("Standard".equals(munition) || "Extended Range".equals(munition) || "High Explosive".equals(munition));
     }
 

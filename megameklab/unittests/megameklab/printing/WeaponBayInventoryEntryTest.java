@@ -74,59 +74,60 @@ class WeaponBayInventoryEntryTest {
               ranges(new WeaponBayInventoryEntry(ship, 0, standardOnly, false), 0));
 
         WeaponBayText everyMunition = bay("CLATM12", "CLATM12");
-        load(everyMunition, "CLATM12", "Clan Ammo ATM-12", 10);
-        load(everyMunition, "CLATM12", "Clan Ammo ATM-12 ER", 10);
-        load(everyMunition, "CLATM12", "Clan Ammo ATM-12 HE", 10);
+        load(everyMunition, "CLATM12", "Clan Ammo ATM-12", 20);
+        load(everyMunition, "CLATM12", "Clan Ammo ATM-12 ER", 20);
+        load(everyMunition, "CLATM12", "Clan Ammo ATM-12 HE", 20);
         assertEquals(List.of("6 (60)", "4 (40)", "2 (20)", "2 (20)"),
               ranges(new WeaponBayInventoryEntry(ship, 0, everyMunition, false), 0));
-
-        WeaponBayText shortOfHighExplosive = bay("CLATM12", "CLATM12");
-        load(shortOfHighExplosive, "CLATM12", "Clan Ammo ATM-12", 10);
-        load(shortOfHighExplosive, "CLATM12", "Clan Ammo ATM-12 HE", 5);
-        WeaponBayInventoryEntry lines = new WeaponBayInventoryEntry(ship, 0, shortOfHighExplosive, false);
-        assertEquals(3, lines.nRows());
-        assertEquals(List.of("", "", "", ""), ranges(lines, 0));
-        assertEquals("2 ATM 12", lines.getNameField(0));
-        assertEquals("Standard (10 rounds)", lines.getNameField(1));
-        assertEquals(List.of("4 (40)", "4 (40)", "—", "—"), ranges(lines, 1));
-        assertEquals("High Explosive (5 rounds)", lines.getNameField(2));
-        assertEquals(List.of("6 (60)", "—", "—", "—"), ranges(lines, 2));
     }
 
     /**
-     * Improved Magnetic Pulse missiles have high explosive's range at 1 point per missile (IO:AE p. 61), so they are
-     * neither high explosive values nor the high explosive the ATM bay profile needs (TW p. 304)
+     * A large craft's ATMs fire no special munitions without "at least 10 shots of each ammo type per ATM launcher"
+     * (TM p. 194): the Arcadia's nose carries 10 of each for two ATM 12s, so it prints its standard missiles' values, as
+     * its record sheet does
+     */
+    @Test
+    void anAtmBayShortOfTenShotsPerLauncherFiresOnlyStandardMissiles() {
+        WeaponBayText nose = bay("CLATM12", "CLATM12");
+        load(nose, "CLATM12", "Clan Ammo ATM-12", 10);
+        load(nose, "CLATM12", "Clan Ammo ATM-12 ER", 10);
+        load(nose, "CLATM12", "Clan Ammo ATM-12 HE", 10);
+        WeaponBayInventoryEntry entry = new WeaponBayInventoryEntry(ship, 0, nose, false);
+
+        assertEquals(1, entry.nRows());
+        assertEquals(List.of("4 (40)", "4 (40)", "—", "—"), ranges(entry, 0));
+    }
+
+    /**
+     * Improved Magnetic Pulse missiles are not the high explosive missiles a large craft's ATMs need 10 shots of before
+     * they fire special munitions (TM p. 194), so this bay fires only its standard missiles
      */
     @Test
     void improvedMagneticPulseIsNotHighExplosive() {
         WeaponBayText bay = bay("CLIATM12");
-        load(bay, "CLIATM12", "Clan Ammo iATM-12", 5);
-        load(bay, "CLIATM12", "Clan Ammo iATM-12 ER", 5);
-        load(bay, "CLIATM12", "Clan Ammo iATM-12 IMP", 5);
+        load(bay, "CLIATM12", "Clan Ammo iATM-12", 10);
+        load(bay, "CLIATM12", "Clan Ammo iATM-12 ER", 10);
+        load(bay, "CLIATM12", "Clan Ammo iATM-12 IMP", 10);
         WeaponBayInventoryEntry entry = new WeaponBayInventoryEntry(ship, 0, bay, false);
 
-        assertEquals(4, entry.nRows());
-        assertEquals("Standard (5 rounds)", entry.getNameField(1));
-        assertEquals(List.of("2 (24)", "2 (24)", "—", "—"), ranges(entry, 1));
-        assertEquals("Extended Range (5 rounds)", entry.getNameField(2));
-        assertEquals("Improved Magnetic Pulse (5 rounds)", entry.getNameField(3));
-        assertEquals(List.of("1 (12)", "—", "—", "—"), ranges(entry, 3));
+        assertEquals(1, entry.nRows());
+        assertEquals(List.of("2 (24)", "2 (24)", "—", "—"), ranges(entry, 0));
     }
 
     /** Improved Magnetic Pulse missiles don't count toward the ATM bay profile (TW p. 304), so they print under it */
     @Test
     void aProfileBayPrintsItsImprovedMagneticPulseLineUnderTheProfile() {
         WeaponBayText bay = bay("CLIATM12");
-        load(bay, "CLIATM12", "Clan Ammo iATM-12", 5);
-        load(bay, "CLIATM12", "Clan Ammo iATM-12 ER", 5);
-        load(bay, "CLIATM12", "Clan Ammo iATM-12 HE", 5);
-        load(bay, "CLIATM12", "Clan Ammo iATM-12 IMP", 5);
+        load(bay, "CLIATM12", "Clan Ammo iATM-12", 10);
+        load(bay, "CLIATM12", "Clan Ammo iATM-12 ER", 10);
+        load(bay, "CLIATM12", "Clan Ammo iATM-12 HE", 10);
+        load(bay, "CLIATM12", "Clan Ammo iATM-12 IMP", 10);
         WeaponBayInventoryEntry entry = new WeaponBayInventoryEntry(ship, 0, bay, false);
 
         assertEquals(2, entry.nRows());
-        assertEquals("1 Improved ATM 12 (5 Standard, 5 Extended Range, 5 High Explosive)", entry.getNameField(0));
+        assertEquals("1 Improved ATM 12 (10 Standard, 10 Extended Range, 10 High Explosive)", entry.getNameField(0));
         assertEquals(List.of("4 (36)", "2 (24)", "1 (12)", "1 (12)"), ranges(entry, 0));
-        assertEquals("Improved Magnetic Pulse (5 rounds)", entry.getNameField(1));
+        assertEquals("Improved Magnetic Pulse (10 rounds)", entry.getNameField(1));
         assertEquals(List.of("1 (12)", "—", "—", "—"), ranges(entry, 1));
     }
 
@@ -134,18 +135,15 @@ class WeaponBayInventoryEntryTest {
     @Test
     void aLauncherAddsNothingToAMunitionLineItCannotFire() {
         WeaponBayText bay = bay("CLATM12", "CLIATM12");
-        load(bay, "CLATM12", "Clan Ammo ATM-12 HE", 5);
-        load(bay, "CLIATM12", "Clan Ammo iATM-12", 5);
-        load(bay, "CLIATM12", "Clan Ammo iATM-12 IMP", 5);
+        for (String munition : List.of("", " ER", " HE")) {
+            load(bay, "CLATM12", "Clan Ammo ATM-12" + munition, 10);
+            load(bay, "CLIATM12", "Clan Ammo iATM-12" + munition, 10);
+        }
+        load(bay, "CLIATM12", "Clan Ammo iATM-12 IMP", 10);
         WeaponBayInventoryEntry entry = new WeaponBayInventoryEntry(ship, 0, bay, false);
 
-        assertEquals(5, entry.nRows());
-        assertEquals("Standard (5 rounds)", entry.getNameField(2));
-        assertEquals(List.of("2 (24)", "2 (24)", "—", "—"), ranges(entry, 2));
-        assertEquals("High Explosive (5 rounds)", entry.getNameField(3));
-        assertEquals(List.of("3 (30)", "—", "—", "—"), ranges(entry, 3));
-        assertEquals("Improved Magnetic Pulse (5 rounds)", entry.getNameField(4));
-        assertEquals(List.of("1 (12)", "—", "—", "—"), ranges(entry, 4));
+        assertEquals("Improved Magnetic Pulse (10 rounds)", entry.getNameField(entry.nRows() - 1));
+        assertEquals(List.of("1 (12)", "—", "—", "—"), ranges(entry, entry.nRows() - 1));
     }
 
     /** A bay's only munition prints by name, as its values are that munition's, unless it is the launcher's first */
@@ -162,17 +160,13 @@ class WeaponBayInventoryEntryTest {
         assertEquals("1 MML 9 (11 SRM)", srmEntry.getNameField(0));
         assertEquals(List.of("1 (10)", "—", "—", "—"), ranges(srmEntry, 0));
 
+        // A large craft's ATMs need 10 shots of each type per launcher to fire special munitions (TM p. 194), so a bay
+        // carrying only those keeps its listed standard values, as a launcher without ammo does
         WeaponBayText extendedRange = bay("CLATM12", "CLATM12");
         load(extendedRange, "CLATM12", "Clan Ammo ATM-12 ER", 10);
         WeaponBayInventoryEntry extendedRangeEntry = new WeaponBayInventoryEntry(ship, 0, extendedRange, false);
         assertEquals("2 ATM 12 (10 Extended Range)", extendedRangeEntry.getNameField(0));
-        assertEquals(List.of("2 (20)", "2 (20)", "2 (20)", "2 (20)"), ranges(extendedRangeEntry, 0));
-
-        WeaponBayText pulse = bay("CLIATM12");
-        load(pulse, "CLIATM12", "Clan Ammo iATM-12 IMP", 5);
-        WeaponBayInventoryEntry pulseEntry = new WeaponBayInventoryEntry(ship, 0, pulse, false);
-        assertEquals("1 Improved ATM 12 (5 Improved Magnetic Pulse)", pulseEntry.getNameField(0));
-        assertEquals(List.of("1 (12)", "—", "—", "—"), ranges(pulseEntry, 0));
+        assertEquals(List.of("4 (40)", "4 (40)", "—", "—"), ranges(extendedRangeEntry, 0));
     }
 
     /** A bay's name carries all the ammo allocated to it (TM p. 195), one total per munition, not its first bin */
