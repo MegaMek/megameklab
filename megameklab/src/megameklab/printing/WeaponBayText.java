@@ -33,16 +33,19 @@
 package megameklab.printing;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import megamek.common.equipment.AmmoMounted;
+import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.EquipmentFlag;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Jumpship;
 import megamek.common.units.Warship;
@@ -57,14 +60,14 @@ import megamek.common.weapons.AmmoWeapon;
 public class WeaponBayText implements Comparable<WeaponBayText> {
 
     /**
-     * Keeps track of the distinct weapons in this bay, along with a count.
+     * Keeps track of the distinct weapons in this bay, along with a count, in the order the unit lists them.
      */
-    final Map<WeaponType, Integer> weapons = new HashMap<>();
+    final Map<WeaponType, Integer> weapons = new LinkedHashMap<>();
 
     /**
      * Track the ammo for each weaponType in the bay.
      */
-    final Map<WeaponType, List<Mounted<?>>> weaponAmmo = new HashMap<>();
+    final Map<WeaponType, List<Mounted<?>>> weaponAmmo = new LinkedHashMap<>();
 
     /**
      * Track any linked equipment that affects the AV or heat. By the rules, most of them are either all or none for the
@@ -74,6 +77,8 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      */
     final Map<WeaponType, Map<EquipmentType, Integer>> augmentations = new HashMap<>();
 
+    int heat;
+    boolean isAR10;
     final boolean rear;
     /**
      * The location of the bay, or locations if multiple identical bays are combined.
@@ -96,9 +101,15 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      *
      * @return Whether true if the weapon was added as new, false if it was already in the bay and just incremented
      */
-    public boolean addBayWeapon(Mounted<?> weapon) {
+    public boolean addBayWeapon(WeaponMounted weapon) {
         boolean asNew;
-        WeaponType weaponType = (WeaponType) weapon.getType();
+        WeaponType weaponType = weapon.getType();
+        if (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AR10) {
+            // AR10 heat depends on the missile (TW p. 304). The sheet prints "*" even before ammo is linked.
+            isAR10 = true;
+        } else if (!weapon.isDestroyed() && !weapon.isJammed()) {
+            heat += weapon.getCurrentHeat();
+        }
         if (weapons.containsKey(weaponType)) {
             weapons.put(weaponType, weapons.get(weaponType) + 1);
             asNew = false;
@@ -151,77 +162,37 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
         return loc.size() == 1
               && checkOpposingSide(loc.getFirst(), other.loc.getFirst(), rear, other.rear)
               && weapons.equals(other.weapons)
+              && (isAR10 || heat == other.heat)
               && ammunitionMatch(other) && augmentations.equals(other.augmentations);
     }
 
     /**
-     * Used to compare ammunition across WeaponBayTexts. Since Mounted.equals isn't implemented, we can't directly use
-     * Map.equals.
+     * Used to compare ammunition across WeaponBayTexts: the sheet prints a total for each munition, so bays whose
+     * totals match print the same, however their bins split them.
      *
      * @param other The other bay
      *
-     * @return Whether the ammo types and number of shots per type match
+     * @return Whether each weapon type carries the same total of each munition
      */
     private boolean ammunitionMatch(WeaponBayText other) {
-        // If the number is different, the ammo doesn't match
-        if ((weaponAmmo.size() != other.weaponAmmo.size())) {
-            return false;
+        Function<Mounted<?>, String> shortName = ammo -> ammo.getType().getShortName();
+        return weaponAmmo.keySet().equals(other.weaponAmmo.keySet())
+              && weaponAmmo.keySet().stream()
+              .allMatch(weaponType -> ammoTotals(weaponType, shortName).equals(other.ammoTotals(weaponType, shortName)));
+    }
+
+    /**
+     * @param weaponType A weapon type in the bay
+     * @param munition   Names the munition of a bin; bins of the same munition add up
+     *
+     * @return The shots of each munition the weapon type carries, in the order the bay lists them
+     */
+    Map<String, Integer> ammoTotals(WeaponType weaponType, Function<Mounted<?>, String> munition) {
+        Map<String, Integer> shots = new LinkedHashMap<>();
+        for (Mounted<?> ammo : weaponAmmo.getOrDefault(weaponType, List.of())) {
+            shots.merge(munition.apply(ammo), ammo.getBaseShotsLeft(), Integer::sum);
         }
-        // We then check the keys if they match
-        if (!weaponAmmo.keySet().equals(other.weaponAmmo.keySet())) {
-            return false;
-        }
-        // Now we compare the ammo sets of each weapon
-        for (WeaponType weaponType : weaponAmmo.keySet()) {
-            List<Mounted<?>> ammoListThis = weaponAmmo.get(weaponType);
-            List<Mounted<?>> ammoListOther = other.weaponAmmo.get(weaponType);
-            if (ammoListThis == null || ammoListOther == null) {
-                return false;
-            }
-            // If the number of ammo types is different, the ammo doesn't match
-            if (ammoListThis.size() != ammoListOther.size()) {
-                return false;
-            }
-            boolean[] otherMatched = new boolean[ammoListOther.size()];
-            Arrays.fill(otherMatched, false);
-
-            for (Mounted<?> mountedThis : ammoListThis) {
-                if (!(mountedThis instanceof AmmoMounted ammoThis)) {
-                    return false; // Should not happen
-                }
-                final String nameThis = ammoThis.getType().getShortName();
-                int shotsThis = ammoThis.getBaseShotsLeft();
-                boolean foundMatch = false;
-                for (int i = 0; i < ammoListOther.size(); i++) {
-                    if (otherMatched[i]) {
-                        continue; // Skip already matched items
-                    }
-
-                    Mounted<?> mountedOther = ammoListOther.get(i);
-                    if (!(mountedOther instanceof AmmoMounted ammoOther)) {
-                        // This shouldn't happen
-                        return false;
-                    }
-
-                    String nameOther = ammoOther.getType().getShortName();
-                    int shotsOther = ammoOther.getBaseShotsLeft();
-
-                    // Check if names and shots match
-                    if (nameThis.equals(nameOther) && shotsThis == shotsOther) {
-                        otherMatched[i] = true;
-                        foundMatch = true;
-                        break; // Found a match, move to the next item
-                    }
-                }
-
-                // If no match was found in the other list
-                if (!foundMatch) {
-                    return false;
-                }
-            }
-        }
-        // we matched all
-        return true;
+        return shots;
     }
 
     private boolean checkOpposingSide(int loc1, int loc2, boolean rear1, boolean rear2) {

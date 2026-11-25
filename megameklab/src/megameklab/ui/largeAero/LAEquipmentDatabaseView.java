@@ -97,7 +97,7 @@ class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                     for (int i = 0; i < count; i++) {
                         mount = Mounted.createMounted(getAero(), equip);
                         UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
-                        getAero().addEquipment(mount, Entity.LOC_NONE, false);
+                        UnitUtil.addEquipmentWithModes(getAero(), mount, Entity.LOC_NONE, false);
                         UnitUtil.removeHiddenAmmo(mount);
                     }
                 } catch (LocationFullException ignored) {

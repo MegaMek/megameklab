@@ -391,7 +391,7 @@ public class UnitUtil {
     public static void addMounted(Entity unit, Mounted<?> mounted, int loc, boolean rearMounted)
           throws LocationFullException {
         boolean isAlreadyOnUnit = unit.getEquipmentNum(mounted) != -1;
-        unit.addEquipment(mounted, loc, rearMounted);
+        addEquipmentWithModes(unit, mounted, loc, rearMounted);
         if (isAlreadyOnUnit) {
             keepPodStatusWhereAllowed(unit, mounted);
         } else {
@@ -400,6 +400,15 @@ public class UnitUtil {
 
         if (unit instanceof Mek mek) {
             MekUtil.updateClanCasePlacement(mek);
+        }
+    }
+
+    /** Adds equipment with the same rapid-fire mode an aerospace unit gets on load (TW p. 238). */
+    public static void addEquipmentWithModes(Entity unit, Mounted<?> mounted, int loc, boolean rearMounted)
+          throws LocationFullException {
+        unit.addEquipment(mounted, loc, rearMounted);
+        if (unit instanceof Aero && mounted instanceof WeaponMounted weapon) {
+            Entity.setRapidFire(weapon);
         }
     }
 
@@ -559,23 +568,6 @@ public class UnitUtil {
             return EquipmentTypeLookup.PROTOTYPE_IMPROVED_JJ;
         }
         return EquipmentTypeLookup.JUMP_JET;
-    }
-
-    /**
-     * Checks whether equipment can be linked to a weapon to enhance it (e.g. Artemis, PPC Capacitor, etc.).
-     *
-     * @param type The equipment to check
-     *
-     * @return true if the equipment is a MiscType that can be linked to a weapon.
-     */
-    public static boolean isWeaponEnhancement(EquipmentType type) {
-        return (type instanceof MiscType) &&
-              (type.hasFlag(MiscType.F_ARTEMIS) ||
-                    type.hasFlag(MiscType.F_ARTEMIS_V) ||
-                    type.hasFlag(MiscType.F_ARTEMIS_PROTO) ||
-                    type.hasFlag(MiscType.F_APOLLO) ||
-                    type.hasFlag(MiscType.F_PPC_CAPACITOR) ||
-                    type.hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE));
     }
 
     /**
@@ -1120,15 +1112,19 @@ public class UnitUtil {
      */
     public static int getTotalHeatGeneration(Entity entity, boolean countOneShots) {
         int total = entity.getEquipment().stream().mapToInt(m -> {
+            if ((m.getType() instanceof MiscType) && m.getType().hasFlag(MiscTypeFlag.F_RISC_LASER_PULSE_MODULE)
+                  && (m.getLinked() != null)) {
+                // counted with its laser below
+                return 0;
+            }
             var heat = m.getType().getHeat();
             if (m instanceof WeaponMounted wm) {
                 if (!countOneShots && wm.getType().hasFlag(WeaponType.F_ONE_SHOT)) {
                     return 0;
                 }
 
-                if (wm.getEnhancement(MiscTypeFlag.F_LASER_INSULATOR) != null) {
-                    heat--;
-                } else if ((wm.getEnhancement(MiscTypeFlag.F_PPC_CAPACITOR) != null)
+                heat = (int) wm.laserEnhancedHeat(heat, true);
+                if ((wm.getEnhancement(MiscTypeFlag.F_PPC_CAPACITOR) != null)
                       && wm.hasChargedOrChargingCapacitor() == 0) {
                     // If the capacitor is charged it will have been counted already, only add 5 heat if it's
                     // not charged. For Lab purposes, we always pretend that the capacitor is charged.
@@ -1786,7 +1782,7 @@ public class UnitUtil {
             toAdd.setSize(toCopy.getSize());
             toAdd.setShotsLeft(toCopy.getBaseShotsLeft());
         }
-        entity.addEquipment(toAdd, toLoc, toCopy.isRearMounted());
+        addEquipmentWithModes(entity, toAdd, toLoc, toCopy.isRearMounted());
         changeMountStatus(entity, toAdd, toLoc, Entity.LOC_NONE, toCopy.isRearMounted());
         removeHiddenAmmo(toAdd);
         return toAdd;

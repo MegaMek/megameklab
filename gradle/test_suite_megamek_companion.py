@@ -20,6 +20,11 @@ class CompanionPackagingTests(unittest.TestCase):
         self.fixture = fixtures.SuiteArchiveTests()
         self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)
+        # A suite build stamps its release channel into the MegaMek jar, and verification checks it
+        self.fixture.jar["MegaMek"] = fixtures.zipped({
+            "Version.properties": b"major=0\nminor=51\npatch=01\nrevision=\nchannel=experimental\n"})
+        for product in verifier.PRODUCTS:
+            self.fixture.write(product)
         self.base = self.fixture.base
         self.root = self.base / "megameklab"
         self.root.mkdir()
@@ -115,6 +120,7 @@ tasks.register('verifyExternal') {
                    f"-PsuitePythonExecutable={sys.executable}"]
         if suite:
             command += ["-PsuiteReleaseVersion=0.51.03",
+                        "-PsuiteReleaseChannel=experimental",
                         "-PsuiteMegaMekVersion=0.51.01",
                         "-PsuiteMegaMekLabVersion=0.51.02",
                         "-PsuiteMekHQVersion=0.51.03"]

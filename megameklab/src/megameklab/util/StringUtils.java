@@ -207,6 +207,7 @@ public class StringUtils {
                 } else {
                     info = Integer.toString(weapon.getRackSize());
                 }
+                info = withOneShot(weapon, info);
             } else if (weapon instanceof UACWeapon) {
                 info = Integer.toString(weapon.getDamage());
                 info += "/Sht [DB,R/C]";
@@ -305,9 +306,38 @@ public class StringUtils {
         } else if (mount.is(EquipmentTypeLookup.COOLANT_POD)) {
             info = "[PE,OS,X]";
         } else {
-            info = "  [E]";
+            info = equipmentTypeCode(mount);
         }
         return info.trim();
+    }
+
+    /**
+     * A one-shot launcher fires once per scenario (TW p. 114), so OS joins its type codes: a rocket launcher is
+     * "M, C, OS" (TW p. 303).
+     */
+    private static String withOneShot(WeaponType weapon, String info) {
+        return weapon.hasFlag(WeaponType.F_ONE_SHOT) && info.endsWith("]")
+              ? info.substring(0, info.length() - 1) + ",OS]"
+              : info;
+    }
+
+    /**
+     * The type code of a piece of equipment. E marks electronics (TW p. 114). A mine dispenser or the minesweeper is PE
+     * (TO:AUE p. 220), as is the ProtoMek magnetic clamp system (IO:AE equipment table); battle armor magnetic clamps
+     * have no type.
+     */
+    private static String equipmentTypeCode(Mounted<?> mount) {
+        if (mount.getType() instanceof MiscType misc) {
+            if (misc.hasFlag(MiscType.F_VEHICLE_MINE_DISPENSER) || misc.hasFlag(MiscType.F_SPACE_MINE_DISPENSER)
+                  || misc.hasFlag(MiscType.F_MINESWEEPER)
+                  || (misc.hasFlag(MiscType.F_MAGNETIC_CLAMP) && misc.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT))) {
+                return "[PE]";
+            }
+            if (misc.hasFlag(MiscType.F_MAGNETIC_CLAMP)) {
+                return "";
+            }
+        }
+        return "[E]";
     }
 
     public static String getAeroEquipmentInfo(Mounted<?> mount) {
@@ -346,7 +376,8 @@ public class StringUtils {
                       || (weapon instanceof MekMortarWeapon) || (weapon instanceof MMLWeapon)
                       || (weapon instanceof ATMWeapon)) {
                     info = "[M,C,S]";
-                } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)) {
+                } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)
+                      || (weapon instanceof PrototypeRLWeapon)) {
                     info = "[M,C]";
                 } else if ((weapon instanceof ISSnubNosePPC) || (weapon instanceof ISBombastLaser)) {
                     info = "[DE,V]";
@@ -375,6 +406,7 @@ public class StringUtils {
                 } else {
                     info = "";
                 }
+                info = withOneShot(weapon, info);
             } else if (weapon instanceof UACWeapon) {
                 info = "[DB,R/C]";
             } else if (weapon instanceof TAGWeapon) {
@@ -430,7 +462,7 @@ public class StringUtils {
         } else if (mount.is(EquipmentTypeLookup.COOLANT_POD)) {
             info = "[PE,OS,X]";
         } else {
-            info = "[E]";
+            info = equipmentTypeCode(mount);
         }
         return info;
     }

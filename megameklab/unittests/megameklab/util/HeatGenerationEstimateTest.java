@@ -36,8 +36,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 
+import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.Mounted;
 import megamek.common.loaders.MekFileParser;
+import megamek.common.units.BipedMek;
 import megamek.common.units.Entity;
+import megamek.common.units.Mek;
 import megameklab.testing.util.InitializeTypes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -74,5 +79,44 @@ class HeatGenerationEstimateTest {
     @Test
     void vehicleHasNoHeatEstimate() throws Exception {
         assertEquals(0, HeatGenerationEstimate.estimate(load("Sleipnir APC.blk")));
+    }
+
+    /**
+     * TO:AUE p. 134: an insulator lowers only its own laser's heat by 1, to a minimum of 1, and an unlinked insulator
+     * changes nothing.
+     */
+    @Test
+    void laserInsulatorReducesOnlyItsLaserToAMinimumOfOne() throws Exception {
+        Mek mek = new BipedMek();
+        mek.setWeight(50);
+        mek.setEngine(new Engine(200, Engine.NORMAL_ENGINE, 0));
+        EquipmentType insulator = EquipmentType.get("ISLaserInsulator");
+        Mounted<?> smallLaser = mek.addEquipment(EquipmentType.get("Small Laser"), Mek.LOC_RIGHT_ARM);
+        Mounted<?> mediumLaser = mek.addEquipment(EquipmentType.get("Medium Laser"), Mek.LOC_LEFT_ARM);
+        mek.addEquipment(insulator, Mek.LOC_RIGHT_ARM).setLinked(smallLaser);
+        mek.addEquipment(insulator, Mek.LOC_LEFT_ARM).setLinked(mediumLaser);
+        mek.addEquipment(insulator, Mek.LOC_RIGHT_TORSO);
+
+        // 2 running heat + small laser 1 (already at the minimum) + medium laser 3 - 1
+        assertEquals(5, HeatGenerationEstimate.estimate(mek));
+        assertEquals(3, UnitUtil.getTotalHeatGeneration(mek));
+    }
+
+    /**
+     * A laser pulse module adds 2 heat in pulse mode (IO:AE p. 87), and the insulator then lowers that total by 1
+     * (TO:AUE p. 134): a small laser with both generates 1 + 2 - 1 = 2.
+     */
+    @Test
+    void insulatorLowersAPulseModuleLaserOnce() throws Exception {
+        Mek mek = new BipedMek();
+        mek.setWeight(50);
+        mek.setEngine(new Engine(200, Engine.NORMAL_ENGINE, 0));
+        Mounted<?> smallLaser = mek.addEquipment(EquipmentType.get("Small Laser"), Mek.LOC_RIGHT_ARM);
+        mek.addEquipment(EquipmentType.get("ISLaserInsulator"), Mek.LOC_RIGHT_ARM).setLinked(smallLaser);
+        mek.addEquipment(EquipmentType.get("ISRISCLaserPulseModule"), Mek.LOC_RIGHT_ARM).setLinked(smallLaser);
+
+        // 2 running heat + small laser 2
+        assertEquals(4, HeatGenerationEstimate.estimate(mek));
+        assertEquals(2, UnitUtil.getTotalHeatGeneration(mek));
     }
 }

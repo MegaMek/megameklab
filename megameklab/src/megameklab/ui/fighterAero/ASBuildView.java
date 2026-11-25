@@ -314,7 +314,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
                     validLocs.add(loc);
                 }
 
-                if (!UnitUtil.isWeaponEnhancement(eq.getType())) {
+                if (!MiscType.isWeaponEnhancement(eq.getType())) {
                     validLocs.add(Aero.LOC_FUSELAGE);
                 }
             }

@@ -133,7 +133,7 @@ public class UnitMemento {
                             if (parts.length > 1) {
                                 mounted.setSize(Double.parseDouble(parts[1]));
                             }
-                            entity.addEquipment(mounted, Entity.LOC_NONE, false);
+                            UnitUtil.addEquipmentWithModes(entity, mounted, Entity.LOC_NONE, false);
                         } catch (Exception e) {
                             LOGGER.warn("Could not restore unallocated equipment item", e);
                         }
