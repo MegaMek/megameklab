@@ -703,7 +703,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 ArmorPipLayout.addPips(this,
                       element,
                       getEntity().getOInternal(loc),
-                      structurePipType(),
+                      PipType.CIRCLE,
                       DEFAULT_PIP_STROKE,
                       FILL_WHITE,
                       getStructureDamage(loc),
@@ -749,10 +749,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
             totalHits += getEntity().getHitCriticalSlots(CriticalSlot.TYPE_SYSTEM, index, loc);
         }
         return totalHits;
-    }
-
-    PipType structurePipType() {
-        return PipType.CIRCLE;
     }
 
     /**

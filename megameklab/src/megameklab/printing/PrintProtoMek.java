@@ -50,6 +50,7 @@ public class PrintProtoMek extends PrintEntity {
     // Keep movement labels clear of the Pilot Data border on Letter sheets.
     private static final float STATS_SPACING_SCALE = 0.95f;
     private static final double HEAD_PIP_SCALE = 0.85;
+    private static final double STRUCTURE_PIP_SCALE = 0.85;
 
     private final ProtoMek proto;
     private final int unitIndex;
@@ -217,16 +218,15 @@ public class PrintProtoMek extends PrintEntity {
     }
 
     @Override
-    PipType structurePipType() {
-        return PipType.SQUARE;
-    }
-
-    @Override
     protected Element createPip(double x, double y, double radius, double strokeWidth, PipType type, String fill,
           String className, String loc, boolean rear) {
+        double scale = "structure".equals(className) ? STRUCTURE_PIP_SCALE : 1;
         if (proto.getLocationAbbr(ProtoMek.LOC_HEAD).equals(loc)) {
+            scale *= HEAD_PIP_SCALE;
+        }
+        if (scale < 1) {
             // Shrink the pip without changing its center or the layout's row spacing.
-            double scaledRadius = radius * HEAD_PIP_SCALE;
+            double scaledRadius = radius * scale;
             x += radius - scaledRadius;
             y += radius - scaledRadius;
             radius = scaledRadius;

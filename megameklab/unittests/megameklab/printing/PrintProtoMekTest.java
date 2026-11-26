@@ -177,10 +177,11 @@ class PrintProtoMekTest {
             assertEquals(Math.max(0, proto.getOArmor(loc)), armor.size(), abbr + " armor");
             assertEquals(Math.max(0, proto.getOInternal(loc)), structure.size(), abbr + " structure");
             assertTrue(armor.stream().allMatch(pip -> SVGConstants.SVG_CIRCLE_TAG.equals(pip.getLocalName())));
-            assertTrue(structure.stream().allMatch(pip -> SVGConstants.SVG_PATH_TAG.equals(pip.getLocalName())
+            assertTrue(structure.stream().allMatch(pip -> SVGConstants.SVG_CIRCLE_TAG.equals(pip.getLocalName())
                   && "#ffffff".equals(pip.getAttribute(SVGConstants.SVG_FILL_ATTRIBUTE))));
             if (!structure.isEmpty()) {
                 assertStructurePipClearances(structure, armor, loc == ProtoMek.LOC_TORSO ? 1.8 : 2);
+                assertShadedStructureRegion(doc.getElementById("structureRegion" + abbr), structure, armor);
             }
             if (loc == ProtoMek.LOC_HEAD) {
                 Element armorRegion = doc.getElementById(ARMOR_PIPS + abbr);
@@ -199,9 +200,16 @@ class PrintProtoMekTest {
                 assertMatchingPipStroke(findPips(doc, "structure", torso).getFirst(), structure);
                 Element outline = doc.getElementById(quad ? "path2762" : "path2580");
                 assertPipsClearOutline(outline, structure);
-                if (quad) {
-                    assertPipsClearOutline(outline, armor);
-                }
+                assertPipsClearOutline(outline, armor);
+                Element panel = doc.getElementById("structureRegion" + abbr);
+                var panelShape = (SVGLocatable) panel;
+                double dividerBottom = sheetBounds(panelShape).getMinY()
+                      + pipCoordinate(panel, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE)
+                      * Math.abs(sheetTransform(panelShape).getScaleY()) / 2;
+                double structureInkTop = structure.stream().mapToDouble(pip -> pipInk(pip).getBounds2D().getMinY())
+                      .min().orElseThrow();
+                assertTrue(structureInkTop - dividerBottom >= 0.45,
+                      () -> "Head structure pip clearance from the divider: " + (structureInkTop - dividerBottom));
                 assertArmorPipGap(armor);
                 for (Element pip : armor) {
                     Rectangle2D armorBounds = sheetBounds((SVGLocatable) pip);
@@ -240,6 +248,8 @@ class PrintProtoMekTest {
                   List<Element> armor = findPips(doc, "armor", leg);
                   assertEquals(count, armor.size());
                   assertPipsClearOutline(doc.getElementById(quad ? "path2742" : "path2536"), armor);
+                  assertShadedStructureRegion(doc.getElementById("structureRegion" + leg),
+                        findPips(doc, "structure", leg), armor);
                   if (count % 2 == 0) {
                       assertMirroredPips(armor);
                   }
@@ -381,19 +391,47 @@ class PrintProtoMekTest {
         interior.transform(sheetTransform((SVGLocatable) outline));
 
         for (Element pip : pips) {
-            SVGLocatable locatable = (SVGLocatable) pip;
-            var bounds = locatable.getBBox();
-            Shape shape = SVGConstants.SVG_CIRCLE_TAG.equals(pip.getLocalName())
-                  ? new Ellipse2D.Float(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight())
-                  : svgPath(pip);
-            var ink = new Area(shape);
-            ink.add(new Area(new BasicStroke((float) pipCoordinate(pip, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE))
-                  .createStrokedShape(shape)));
-            ink.transform(sheetTransform(locatable));
+            Area ink = pipInk(pip);
             ink.subtract(interior);
             assertTrue(ink.isEmpty(), () -> pip.getAttribute("loc") + " " + pip.getAttribute("class")
-                  + " at " + sheetBounds(locatable) + " must clear the outline");
+                  + " at " + sheetBounds((SVGLocatable) pip) + " must clear the outline");
         }
+    }
+
+    private static void assertShadedStructureRegion(Element panel, List<Element> structure, List<Element> armor) {
+        assertEquals("#c7c7c7", panel.getAttribute(SVGConstants.SVG_FILL_ATTRIBUTE));
+        assertEquals("#000000", panel.getAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE));
+        Shape contour = svgPath(panel);
+        float width = Float.parseFloat(panel.getAttribute(SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE));
+        var transform = sheetTransform((SVGLocatable) panel);
+        var divider = new Area(transform.createTransformedShape(new BasicStroke(width).createStrokedShape(contour)));
+        var interior = new Area(transform.createTransformedShape(contour));
+        var shadedArea = new Area(interior);
+        shadedArea.add(divider);
+        interior.subtract(divider);
+        for (Element pip : structure) {
+            Area ink = pipInk(pip);
+            ink.subtract(interior);
+            assertTrue(ink.isEmpty(), () -> panel.getAttribute("id") + " structure pip touches the panel edge");
+        }
+        for (Element pip : armor) {
+            Area ink = pipInk(pip);
+            ink.intersect(shadedArea);
+            assertTrue(ink.isEmpty(), () -> panel.getAttribute("id") + " shading touches an armor pip");
+        }
+    }
+
+    private static Area pipInk(Element pip) {
+        SVGLocatable locatable = (SVGLocatable) pip;
+        var bounds = locatable.getBBox();
+        Shape shape = SVGConstants.SVG_CIRCLE_TAG.equals(pip.getLocalName())
+              ? new Ellipse2D.Float(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight())
+              : svgPath(pip);
+        var ink = new Area(shape);
+        ink.add(new Area(new BasicStroke((float) pipCoordinate(pip, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE))
+              .createStrokedShape(shape)));
+        ink.transform(sheetTransform(locatable));
+        return ink;
     }
 
     private static void assertMirroredPips(List<Element> pips) {

@@ -39,7 +39,7 @@ import java.util.List;
 import megamek.common.equipment.ArmorType;
 
 public enum PipType {
-    CIRCLE, DIAMOND, CIRCLE_DASHED, PENTAGON, SQUARE;
+    CIRCLE, DIAMOND, CIRCLE_DASHED, PENTAGON;
 
     private static final List<Integer> buffArmors = List.of(
           T_ARMOR_REACTIVE, T_ARMOR_REFLECTIVE, T_ARMOR_FERRO_LAMELLOR, T_ARMOR_ANTI_PENETRATIVE_ABLATION,
