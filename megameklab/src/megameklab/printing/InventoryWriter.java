@@ -140,6 +140,17 @@ public class InventoryWriter {
         }
 
         double xFor(Entity en, boolean offsetForMod) {
+            if (en.isProtoMek()) {
+                return switch (this) {
+                    case QUANTITY -> 0.04;
+                    case NAME -> 0.06;
+                    case MOD -> 0.68;
+                    case MIN -> 0.76;
+                    case SHORT -> 0.83;
+                    case MEDIUM -> 0.90;
+                    default -> groundX;
+                };
+            }
             double x;
             if (en.isAero()) {
                 x = aeroX;
@@ -811,16 +822,28 @@ public class InventoryWriter {
 
     private double printColumnHeaders(double currY, Column[] columnTypes, double[] colX) {
         for (int i = 0; i < columnTypes.length; i++) {
+            Column column = columnTypes[i];
+            boolean fitHeading = sheet.getEntity().isProtoMek() && switch (column) {
+                case MOD, MIN, SHORT, MEDIUM, LONG -> true;
+                default -> false;
+            };
+            if (fitHeading) {
+                double spacing = colX[i] - colX[i - 1];
+                if (i + 1 < colX.length) {
+                    spacing = Math.min(spacing, colX[i + 1] - colX[i]);
+                }
+                sheet.addTextElementToFit(canvas, colX[i], currY, spacing - 1, column.header, FONT_SIZE_MEDIUM,
+                      SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
+                continue;
+            }
             String anchor;
-            if (Column.NAME.equals(columnTypes[i])
-                  || Column.NAME_NO_QTY.equals(columnTypes[i])
-                  || Column.BAY.equals(columnTypes[i])
-                  || Column.DAMAGE.equals(columnTypes[i])) {
+            if (column == Column.NAME || column == Column.NAME_NO_QTY || column == Column.BAY
+                  || column == Column.DAMAGE) {
                 anchor = SVGConstants.SVG_START_VALUE;
             } else {
                 anchor = SVGConstants.SVG_MIDDLE_VALUE;
             }
-            sheet.addTextElement(canvas, colX[i], currY, columnTypes[i].header, FONT_SIZE_MEDIUM,
+            sheet.addTextElement(canvas, colX[i], currY, column.header, FONT_SIZE_MEDIUM,
                   anchor, SVGConstants.SVG_BOLD_VALUE);
         }
         return currY + sheet.getFontHeight(FONT_SIZE_MEDIUM) * 1.1;

@@ -17,6 +17,8 @@
  */
 package megameklab.printing;
 
+import static megameklab.printing.IdConstants.ERA_ICON;
+import static megameklab.printing.IdConstants.INVENTORY;
 import static megameklab.printing.IdConstants.LBL_JUMP;
 import static megameklab.printing.IdConstants.LBL_ROLE;
 import static megameklab.printing.IdConstants.MP_GROUND;
@@ -32,7 +34,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.print.PageFormat;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+import megamek.common.equipment.EquipmentType;
+import megamek.common.exceptions.LocationFullException;
 import megamek.common.units.ProtoMek;
 import megamek.common.units.UnitRole;
 import megameklab.testing.util.InitializeTypes;
@@ -41,7 +48,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.svg.SVGTextElement;
 
 @ExtendWith(InitializeTypes.class)
@@ -97,20 +108,83 @@ class PrintProtoMekTest {
         assertCondensedMovementSpacing(doc);
     }
 
-    @Test
-    void longNameWithoutSpacesStillFitsOnOneRow() {
+    @ParameterizedTest
+    @EnumSource(PaperSize.class)
+    void longNameWithoutSpacesStillFitsOnOneRow(PaperSize size) {
         String name = "Unbroken".repeat(4);
-        Document doc = render(name, "", PaperSize.US_LETTER, false, false, true);
+        Document doc = render(name, "", size, false, false, true);
 
-        assertEquals(name, doc.getElementById(TYPE).getTextContent());
-        assertTrue(doc.getElementById(TYPE).hasAttribute(SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE));
+        SVGTextElement nameField = (SVGTextElement) doc.getElementById(TYPE);
+        assertEquals(name, nameField.getTextContent());
+        assertTrue(nameField.hasAttribute(SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE));
         assertTrue(doc.getElementById(TYPE2).getTextContent().isEmpty());
         assertEquals(baseline(doc, TYPE2), baseline(doc, TONNAGE), TOLERANCE);
         assertCondensedMovementSpacing(doc);
+
+        var nameBounds = nameField.getBBox();
+        double nameRight = nameBounds.getX() + nameBounds.getWidth() + nameField.getCTM().getE();
+        double inventoryBorder = ((SVGRectElement) doc.getElementById(INVENTORY)).getCTM().getE();
+        assertTrue(nameRight + 0.5 < inventoryBorder, "Name must clear the inventory border");
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+          "US_LETTER, false, false, EDGE",
+          "US_LETTER, true, false, EDGE",
+          "US_LETTER, false, true, EDGE",
+          "ISO_A4, false, false, EDGE",
+          "ISO_A4, true, false, EDGE",
+          "ISO_A4, false, true, EDGE",
+          "ISO_A4, false, false, COLUMN"
+    })
+    void inventoryColumnsLeaveRoomForHeadingsAndHitModifiers(PaperSize size, boolean quad, boolean glider,
+          RecordSheetOptions.HitModStyle hitModStyle) throws LocationFullException {
+        ProtoMek proto = createProtoMek("Sprite Ultraheavy ProtoMech", "2", quad, glider);
+        proto.addEquipment(EquipmentType.get("ISSmallPulseLaser"), ProtoMek.LOC_TORSO);
+
+        RecordSheetOptions options = createOptions(size, true);
+        options.setIncludeHitMod(hitModStyle);
+        Document doc = render(proto, options);
+        Element inventory = (Element) doc.getElementById(INVENTORY).getParentNode();
+
+        List<String> headings = hitModStyle == RecordSheetOptions.HitModStyle.COLUMN
+              ? List.of("Tn", "Min", "Sht", "Med", "Lng") : List.of("Min", "Sht", "Med", "Lng");
+        for (int i = 1; i < headings.size(); i++) {
+            assertHorizontalGap(findText(inventory, headings.get(i - 1)), findText(inventory, headings.get(i)));
+        }
+        assertHorizontalGap(findText(inventory, "#"), findText(inventory, "Type"));
+
+        SVGTextElement quantity = descendantsByTag(inventory, "text")
+              .filter(text -> "quantity".equals(text.getAttribute("class")))
+              .map(SVGTextElement.class::cast)
+              .findFirst().orElseThrow();
+        assertEquals("1", quantity.getTextContent());
+        Element row = (Element) quantity.getParentNode();
+        SVGTextElement name = descendantsByTag(row, "text")
+              .filter(text -> "name".equals(((Element) text.getParentNode()).getAttribute("class")))
+              .map(SVGTextElement.class::cast)
+              .findFirst().orElseThrow();
+        assertHorizontalGap(quantity, name);
+        if (hitModStyle == RecordSheetOptions.HitModStyle.EDGE) {
+            SVGRectElement badge = descendantsByTag(row, "rect").map(SVGRectElement.class::cast)
+                  .findFirst().orElseThrow();
+            double badgeLeft = badge.getX().getBaseVal().getValue();
+            double badgeRight = badgeLeft + badge.getWidth().getBaseVal().getValue();
+            assertTrue(badgeRight + 0.5 < quantity.getBBox().getX(), "Quantity must clear the hit modifier");
+
+            var eraIcon = (SVGRectElement) doc.getElementById(ERA_ICON);
+            double iconRight = eraIcon.getX().getBaseVal().getValue() + eraIcon.getWidth().getBaseVal().getValue();
+            assertTrue(iconRight + eraIcon.getCTM().getE() + 0.5 < badgeLeft + badge.getCTM().getE(),
+                  "Hit modifier must clear the era icon");
+        }
     }
 
     private static Document render(String chassis, String model, PaperSize size, boolean quad, boolean glider,
           boolean bold) {
+        return render(createProtoMek(chassis, model, quad, glider), createOptions(size, bold));
+    }
+
+    private static ProtoMek createProtoMek(String chassis, String model, boolean quad, boolean glider) {
         ProtoMek proto = new ProtoMek();
         proto.setChassis(chassis);
         proto.setModel(model);
@@ -118,16 +192,22 @@ class PrintProtoMekTest {
         proto.setIsQuad(quad);
         proto.setIsGlider(glider);
         proto.setUnitRole(UnitRole.SNIPER);
+        return proto;
+    }
 
+    private static RecordSheetOptions createOptions(PaperSize size, boolean bold) {
         RecordSheetOptions options = new RecordSheetOptions();
         options.setPaperSize(size);
         options.setBoldType(bold);
         options.setRole(true);
         options.setEraIcon(false);
         options.setReferenceCharts(false);
+        return options;
+    }
 
+    private static Document render(ProtoMek proto, RecordSheetOptions options) {
         PageFormat page = new PageFormat();
-        page.setPaper(size.createPaper());
+        page.setPaper(options.getPaperSize().createPaper());
         PrintProtoMek sheet = new PrintProtoMek(proto, 0, 0, options) {
             @Override
             String getSVGDirectoryName(boolean useUnitTestTemplateDirectory) {
@@ -138,6 +218,22 @@ class PrintProtoMekTest {
         assertTrue(sheet.createDocument(0, page, false));
         sheet.build();
         return sheet.getSVGDocument();
+    }
+
+    private static Stream<Element> descendantsByTag(Element parent, String tag) {
+        NodeList matches = parent.getElementsByTagNameNS(PrintRecordSheet.svgNS, tag);
+        return IntStream.range(0, matches.getLength()).mapToObj(index -> (Element) matches.item(index));
+    }
+
+    private static SVGTextElement findText(Element parent, String label) {
+        return descendantsByTag(parent, "text").filter(text -> label.equals(text.getTextContent()))
+              .map(SVGTextElement.class::cast).findFirst().orElseThrow(() -> new AssertionError("Missing " + label));
+    }
+
+    private static void assertHorizontalGap(SVGTextElement left, SVGTextElement right) {
+        var leftBounds = left.getBBox();
+        double gap = right.getBBox().getX() - leftBounds.getX() - leftBounds.getWidth();
+        assertTrue(gap > 0.5, () -> left.getTextContent() + " / " + right.getTextContent() + " gap: " + gap);
     }
 
     private static float baseline(Document doc, String id) {
