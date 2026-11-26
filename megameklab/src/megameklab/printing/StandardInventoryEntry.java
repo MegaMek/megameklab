@@ -238,11 +238,13 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     private String ewMaxRange() {
-        if (mount.getType().hasFlag(MiscType.F_ANGEL_ECM) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT)) {
+        if (mount.getType().hasFlag(MiscType.F_WATCHDOG)) {
+            return CConfig.formatScale(Game.rulesManager.getRulesEquipment().getWatchdogProbeRange(), false);
+        } else if (mount.getType().hasFlag(MiscType.F_NOVA)) {
+            return CConfig.formatScale(5, false);
+        } else if (mount.getType().hasFlag(MiscType.F_ANGEL_ECM) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT)) {
             return "2";
-        } else if (mount.getType().hasFlag(MiscType.F_EW_EQUIPMENT)
-              || mount.getType().hasFlag(MiscType.F_WATCHDOG)
-              || mount.getType().hasFlag(MiscType.F_NOVA)) {
+        } else if (mount.getType().hasFlag(MiscType.F_EW_EQUIPMENT)) {
             return CConfig.formatScale(3, false);
         } else if (mount.getType().hasFlag(MiscType.F_SINGLE_HEX_ECM)) {
             return "0";
@@ -593,6 +595,15 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return "";
         }
         return ranges[row][RangeType.RANGE_MINIMUM];
+    }
+
+    @Override
+    public String getRangeLabel(int row) {
+        if (row == 0 && !mount.getEntity().isAero()
+              && mount.getType().hasAnyFlag(MiscType.F_WATCHDOG, MiscType.F_NOVA)) {
+            return String.format("%s (PRB) %s (ECM)", ewMaxRange(), CConfig.formatScale(6, false));
+        }
+        return "";
     }
 
     @Override

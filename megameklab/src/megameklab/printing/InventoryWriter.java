@@ -1085,7 +1085,19 @@ public class InventoryWriter {
                           yPosition - (fontSize * 0.3),
                           viewWidth - DAMAGE_LINE_THROUGH_MARGIN);
                 }
+                String rangeLabel = line.getRangeLabel(row);
                 for (int i = 0; i < columnTypes.length; i++) {
+                    if (!rangeLabel.isEmpty() && (columnTypes[i] == Column.MIN || columnTypes[i] == Column.SHORT
+                          || columnTypes[i] == Column.MEDIUM || columnTypes[i] == Column.LONG)) {
+                        if (columnTypes[i] == Column.MIN) {
+                            double left = colX[i] - (colX[i + 1] - colX[i]) / 2;
+                            double right = viewX + viewWidth;
+                            sheet.addTextElementToFit(rowGroup, (left + right) / 2, yPosition,
+                                  right - left - 1, rangeLabel, fontSize, SVGConstants.SVG_MIDDLE_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, null, "range_combined");
+                        }
+                        continue;
+                    }
                     switch (columnTypes[i]) {
                         case QUANTITY:
                             if (row == 0) {
