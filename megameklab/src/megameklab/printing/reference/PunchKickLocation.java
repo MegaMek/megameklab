@@ -32,6 +32,10 @@
  */
 package megameklab.printing.reference;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import megamek.common.units.Entity;
 import megamek.common.units.QuadMek;
 import megamek.common.units.TripodMek;
 import megameklab.printing.PrintEntity;
@@ -41,8 +45,11 @@ import megameklab.printing.PrintEntity;
  */
 public class PunchKickLocation extends ReferenceTable {
 
+    private final Entity entity;
+
     public PunchKickLocation(PrintEntity sheet) {
         super(sheet, 0.08, 0.18, 0.32, 0.47, 0.61, 0.76, 0.9);
+        entity = sheet.getEntity();
         setHeaders(bundle.getString("dieRoll1d6"),
               bundle.getString("leftSide"),
               bundle.getString("punchFrontRear"),
@@ -51,9 +58,9 @@ public class PunchKickLocation extends ReferenceTable {
               bundle.getString("kickFrontRear"),
               bundle.getString("rightSide")
         );
-        if (sheet.getEntity() instanceof TripodMek) {
+        if (entity instanceof TripodMek) {
             addTripodRows();
-        } else if (sheet.getEntity() instanceof QuadMek) {
+        } else if (entity instanceof QuadMek) {
             addQuadRows();
         } else {
             addBipedRows();
@@ -61,30 +68,33 @@ public class PunchKickLocation extends ReferenceTable {
     }
 
     private void addBipedRows() {
-        addRow("1", "LT", "LA", "RT", "LL", "RL", "RL");
-        addRow("2", "LT", "LT", "RT", "LL", "RL", "RL");
-        addRow("3", "CT", "CT", "CT", "LL", "RL", "RL");
-        addRow("4", "LA", "RT", "RA", "LL", "LL", "RL");
-        addRow("5", "LA", "RA", "RA", "LL", "LL", "RL");
-        addRow("6", "HD", "HD", "HD", "LL", "LL", "RL");
+        for (int roll = 1; roll <= 6; roll++) {
+            addPunchKickRow(roll, "LL", (roll <= 3) ? "RL" : "LL", "RL");
+        }
     }
 
     private void addQuadRows() {
-        addRow("1", "LT", "LFL/LRL", "RT", "LFL", "RFL/RRL", "RFL");
-        addRow("2", "LT", "LT", "RT", "LFL", "RFL/RRL", "RFL");
-        addRow("3", "CT", "CT", "CT", "LFL", "RFL/RRL", "RFL");
-        addRow("4", "LFL", "RT", "RFL", "LRL", "LFL/LRL", "RRL");
-        addRow("5", "LRL", "RFL/RRL", "RRL", "LRL", "LFL/LRL", "RRL");
-        addRow("6", "HD", "HD", "HD", "LRL", "LFL/LRL", "RRL");
+        for (int roll = 1; roll <= 6; roll++) {
+            if (roll <= 3) {
+                addPunchKickRow(roll, "LFL", "RFL/RRL", "RFL");
+            } else {
+                addPunchKickRow(roll, "LRL", "LFL/LRL", "RRL");
+            }
+        }
     }
 
     private void addTripodRows() {
-        addRow("1", "LT", "LA", "RT", "LL", "LL", "LL");
-        addRow("2", "LT", "LT", "RT", "LL", "LL", "CL");
-        addRow("3", "CT", "CT", "CT", "LL", "CL", "CL");
-        addRow("4", "LA", "RT", "RA", "CL", "CL", "RL");
-        addRow("5", "LA", "RA", "RA", "CL", "RL", "RL");
-        addRow("6", "HD", "HD", "HD", "RL", "RL", "RL");
+        addPunchKickRow(1, "LL", "LL", "LL");
+        addPunchKickRow(2, "LL", "LL", "CL");
+        addPunchKickRow(3, "LL", "CL", "CL");
+        addPunchKickRow(4, "CL", "CL", "RL");
+        addPunchKickRow(5, "CL", "RL", "RL");
+        addPunchKickRow(6, "RL", "RL", "RL");
     }
 
+    private void addPunchKickRow(int roll, String kickLeft, String kickFrontRear, String kickRight) {
+        var row = new ArrayList<>(PunchLocation.punchRow(entity, roll));
+        row.addAll(List.of(kickLeft, kickFrontRear, kickRight));
+        addRow(row);
+    }
 }
