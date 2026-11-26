@@ -1,5 +1,6 @@
 """Material Gradle companion and launch-script packaging regressions."""
 
+import io
 import os
 from pathlib import Path
 import shutil
@@ -7,12 +8,27 @@ import subprocess
 import sys
 import tarfile
 import unittest
+import zipfile
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 SHARED = REPOSITORY.parent / "megamek" / "gradle"
 sys.path.insert(0, str(SHARED))
 import test_suite_archive_verifier as fixtures
 import suite_archive_verifier as verifier
+
+# Suite verification requires a release channel and checks that the packaged
+# MegaMek JAR is stamped with the same one.
+RELEASE_CHANNEL = "experimental"
+
+
+def channel_stamped_jar(jar_bytes):
+    """Return the shared fixture JAR with the release channel added to its version."""
+    with zipfile.ZipFile(io.BytesIO(jar_bytes)) as archive:
+        version_properties = archive.read("Version.properties")
+    return fixtures.zipped({
+        "Version.properties":
+            version_properties + f"channel={RELEASE_CHANNEL}\n".encode(),
+    })
 
 
 class CompanionPackagingTests(unittest.TestCase):
@@ -23,6 +39,8 @@ class CompanionPackagingTests(unittest.TestCase):
         self.base = self.fixture.base
         self.root = self.base / "megameklab"
         self.root.mkdir()
+        self.fixture.jar["MegaMek"] = channel_stamped_jar(self.fixture.jar["MegaMek"])
+        self.fixture.write("MegaMekLab")
         self.mm = self.base / "megamek"
         (self.mm / "gradle").mkdir(parents=True)
         for name in ("suite_archive_adapter.gradle", "suite_archive_verifier.py",
@@ -115,6 +133,7 @@ tasks.register('verifyExternal') {
                    f"-PsuitePythonExecutable={sys.executable}"]
         if suite:
             command += ["-PsuiteReleaseVersion=0.51.03",
+                        f"-PsuiteReleaseChannel={RELEASE_CHANNEL}",
                         "-PsuiteMegaMekVersion=0.51.01",
                         "-PsuiteMegaMekLabVersion=0.51.02",
                         "-PsuiteMekHQVersion=0.51.03"]
