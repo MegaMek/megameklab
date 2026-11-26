@@ -124,6 +124,15 @@ public interface InventoryEntry {
     String getLongField(int row);
 
     /**
+     * @param row The row index within the entry
+     *
+     * @return A label spanning the ground range columns, or an empty string to print the individual range fields
+     */
+    default String getRangeLabel(int row) {
+        return "";
+    }
+
+    /**
      * @param row The row index within the entry. Should be &lt; nRows()
      *
      * @return The ERV (aero units)
