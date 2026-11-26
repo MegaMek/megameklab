@@ -703,9 +703,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 ArmorPipLayout.addPips(this,
                       element,
                       getEntity().getOInternal(loc),
-                      PipType.CIRCLE,
+                      structurePipType(),
                       DEFAULT_PIP_STROKE,
-                      structurePipFill(),
+                      FILL_WHITE,
                       getStructureDamage(loc),
                       useAlternateArmorGrouping(),
                       "structure",
@@ -751,11 +751,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
         return totalHits;
     }
 
-    /**
-     * @return The color to use in the inside of structure pips
-     */
-    String structurePipFill() {
-        return FILL_WHITE;
+    PipType structurePipType() {
+        return PipType.CIRCLE;
     }
 
     /**

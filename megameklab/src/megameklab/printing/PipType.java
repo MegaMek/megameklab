@@ -32,14 +32,14 @@
  */
 package megameklab.printing;
 
-import megamek.common.equipment.ArmorType;
+import static megamek.common.equipment.EquipmentType.*;
 
 import java.util.List;
 
-import static megamek.common.equipment.EquipmentType.*;
+import megamek.common.equipment.ArmorType;
 
 public enum PipType {
-    CIRCLE, DIAMOND, CIRCLE_DASHED, PENTAGON;
+    CIRCLE, DIAMOND, CIRCLE_DASHED, PENTAGON, SQUARE;
 
     private static final List<Integer> buffArmors = List.of(
           T_ARMOR_REACTIVE, T_ARMOR_REFLECTIVE, T_ARMOR_FERRO_LAMELLOR, T_ARMOR_ANTI_PENETRATIVE_ABLATION,

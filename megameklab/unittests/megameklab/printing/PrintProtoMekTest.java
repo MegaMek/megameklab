@@ -17,21 +17,34 @@
  */
 package megameklab.printing;
 
+import static megameklab.printing.IdConstants.ARMOR_PIPS;
 import static megameklab.printing.IdConstants.ERA_ICON;
 import static megameklab.printing.IdConstants.INVENTORY;
 import static megameklab.printing.IdConstants.LBL_JUMP;
 import static megameklab.printing.IdConstants.LBL_ROLE;
+import static megameklab.printing.IdConstants.MAIN_GUN_ARMOR;
+import static megameklab.printing.IdConstants.MAIN_GUN_SHADOW;
+import static megameklab.printing.IdConstants.MAIN_GUN_TEXT;
 import static megameklab.printing.IdConstants.MP_GROUND;
 import static megameklab.printing.IdConstants.MP_JUMP;
 import static megameklab.printing.IdConstants.MP_RUN;
 import static megameklab.printing.IdConstants.MP_WALK;
 import static megameklab.printing.IdConstants.ROLE;
+import static megameklab.printing.IdConstants.STRUCTURE_PIPS;
 import static megameklab.printing.IdConstants.TONNAGE;
 import static megameklab.printing.IdConstants.TYPE;
 import static megameklab.printing.IdConstants.TYPE2;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.awt.BasicStroke;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.nio.file.Path;
 import java.util.List;
@@ -42,16 +55,21 @@ import megamek.common.equipment.EquipmentType;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.units.ProtoMek;
 import megamek.common.units.UnitRole;
+import megamek.common.verifier.TestProtoMek;
 import megameklab.testing.util.InitializeTypes;
+import org.apache.batik.parser.AWTPathProducer;
+import org.apache.batik.parser.PathParser;
 import org.apache.batik.util.SVGConstants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGLocatable;
 import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.svg.SVGTextElement;
 
@@ -106,6 +124,10 @@ class PrintProtoMekTest {
         assertTrue(doc.getElementById(TYPE2).getTextContent().isEmpty());
         assertEquals(baseline(doc, TYPE2), baseline(doc, TONNAGE), TOLERANCE);
         assertCondensedMovementSpacing(doc);
+        for (String id : List.of(MAIN_GUN_ARMOR, MAIN_GUN_SHADOW, MAIN_GUN_TEXT)) {
+            assertEquals(SVGConstants.CSS_HIDDEN_VALUE,
+                  doc.getElementById(id).getAttribute(SVGConstants.CSS_VISIBILITY_PROPERTY));
+        }
     }
 
     @ParameterizedTest
@@ -125,6 +147,103 @@ class PrintProtoMekTest {
         double nameRight = nameBounds.getX() + nameBounds.getWidth() + nameField.getCTM().getE();
         double inventoryBorder = ((SVGRectElement) doc.getElementById(INVENTORY)).getCTM().getE();
         assertTrue(nameRight + 0.5 < inventoryBorder, "Name must clear the inventory border");
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+          "US_LETTER, false, false",
+          "US_LETTER, true, false",
+          "US_LETTER, false, true",
+          "ISO_A4, false, false",
+          "ISO_A4, true, false",
+          "ISO_A4, false, true"
+    })
+    void armorDiagramSeparatesArmorAndStructurePips(PaperSize size, boolean quad, boolean glider) {
+        ProtoMek proto = createProtoMek("Sprite Ultraheavy ProtoMech", "2", quad, glider);
+        proto.setHasMainGun(true);
+        proto.autoSetInternal();
+        for (int loc = 0; loc < proto.locations(); loc++) {
+            proto.initializeArmor(TestProtoMek.maxArmorFactor(proto, loc), loc);
+        }
+        RecordSheetOptions options = createOptions(size, true);
+        options.setFancyPips(false);
+        Document doc = render(proto, options);
+        SVGTextElement headLabel = (SVGTextElement) doc.getElementById("text3040");
+        Rectangle2D headLabelBounds = sheetBounds(headLabel);
+        for (int loc = 0; loc < proto.locations(); loc++) {
+            String abbr = proto.getLocationAbbr(loc);
+            List<Element> armor = findPips(doc, "armor", abbr);
+            List<Element> structure = findPips(doc, "structure", abbr);
+            assertEquals(Math.max(0, proto.getOArmor(loc)), armor.size(), abbr + " armor");
+            assertEquals(Math.max(0, proto.getOInternal(loc)), structure.size(), abbr + " structure");
+            assertTrue(armor.stream().allMatch(pip -> SVGConstants.SVG_CIRCLE_TAG.equals(pip.getLocalName())));
+            assertTrue(structure.stream().allMatch(pip -> SVGConstants.SVG_PATH_TAG.equals(pip.getLocalName())
+                  && "#ffffff".equals(pip.getAttribute(SVGConstants.SVG_FILL_ATTRIBUTE))));
+            if (!structure.isEmpty()) {
+                assertStructurePipClearances(structure, armor, loc == ProtoMek.LOC_TORSO ? 1.8 : 2);
+            }
+            if (loc == ProtoMek.LOC_HEAD) {
+                Element armorRegion = doc.getElementById(ARMOR_PIPS + abbr);
+                Element structureRegion = doc.getElementById(STRUCTURE_PIPS + abbr);
+                assertTrue(armor.stream().allMatch(pip -> pip.getParentNode() == armorRegion),
+                      "Head armor pips must share a single region");
+                assertTrue(structure.stream().allMatch(pip -> pip.getParentNode() == structureRegion),
+                      "Head structure pips must share a single region");
+                double armorBottom = armor.stream().mapToDouble(pip -> sheetBounds((SVGLocatable) pip).getMaxY())
+                      .max().orElseThrow();
+                double structureTop = structure.stream().mapToDouble(pip -> sheetBounds((SVGLocatable) pip).getMinY())
+                      .min().orElseThrow();
+                assertTrue(armorBottom + 0.5 < structureTop, "Head structure pips must sit below all armor pips");
+                String torso = proto.getLocationAbbr(ProtoMek.LOC_TORSO);
+                assertMatchingPipStroke(findPips(doc, "armor", torso).getFirst(), armor);
+                assertMatchingPipStroke(findPips(doc, "structure", torso).getFirst(), structure);
+                Element outline = doc.getElementById(quad ? "path2762" : "path2580");
+                assertPipsClearOutline(outline, structure);
+                if (quad) {
+                    assertPipsClearOutline(outline, armor);
+                }
+                assertArmorPipGap(armor);
+                for (Element pip : armor) {
+                    Rectangle2D armorBounds = sheetBounds((SVGLocatable) pip);
+                    assertTrue(armorBounds.getWidth() > 2, "Head armor pips should be large enough to mark");
+                    assertTrue(!armorBounds.intersects(headLabelBounds), "Head label must clear the armor pips");
+                }
+            } else if (loc == ProtoMek.LOC_TORSO) {
+                assertArmorSpansAtLeast(armor, quad ? 11 : 15);
+            } else if (loc == ProtoMek.LOC_LEG) {
+                assertArmorSpansAtLeast(armor, quad ? 16 : 17);
+                assertMirroredPips(armor);
+                assertMirroredPips(structure);
+                if (quad) {
+                    assertPipsClearOutline(doc.getElementById("path2742"), armor);
+                }
+            } else if (loc == ProtoMek.LOC_MAIN_GUN) {
+                assertMainGunClearances(doc, armor, structure, quad);
+            } else if (!quad && (loc == ProtoMek.LOC_LEFT_ARM || loc == ProtoMek.LOC_RIGHT_ARM)) {
+                assertArmorSpansAtLeast(armor, 15);
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = { false, true })
+    void legArmorStaysInsideTheOutlineAndMirrorsEvenCounts(boolean quad) {
+        ProtoMek proto = createProtoMek("ProtoMek", "", quad, false);
+        proto.autoSetInternal();
+        RecordSheetOptions options = createOptions(PaperSize.ISO_A4, true);
+        options.setFancyPips(false);
+        String leg = proto.getLocationAbbr(ProtoMek.LOC_LEG);
+        assertAll(IntStream.rangeClosed(1, TestProtoMek.maxArmorFactor(proto, ProtoMek.LOC_LEG))
+              .mapToObj(count -> () -> {
+                  proto.initializeArmor(count, ProtoMek.LOC_LEG);
+                  Document doc = render(proto, options);
+                  List<Element> armor = findPips(doc, "armor", leg);
+                  assertEquals(count, armor.size());
+                  assertPipsClearOutline(doc.getElementById(quad ? "path2742" : "path2536"), armor);
+                  if (count % 2 == 0) {
+                      assertMirroredPips(armor);
+                  }
+              }));
     }
 
     @ParameterizedTest
@@ -223,6 +342,159 @@ class PrintProtoMekTest {
     private static Stream<Element> descendantsByTag(Element parent, String tag) {
         NodeList matches = parent.getElementsByTagNameNS(PrintRecordSheet.svgNS, tag);
         return IntStream.range(0, matches.getLength()).mapToObj(index -> (Element) matches.item(index));
+    }
+
+    private static List<Element> findPips(Document doc, String kind, String location) {
+        return descendantsByTag(doc.getDocumentElement(), "*")
+              .filter(element -> ("pip " + kind).equals(element.getAttribute("class"))
+                    && location.equals(element.getAttribute("loc")))
+              .toList();
+    }
+
+    private static Rectangle2D sheetBounds(SVGLocatable element) {
+        var bounds = element.getBBox();
+        return sheetTransform(element).createTransformedShape(new Rectangle2D.Double(bounds.getX(), bounds.getY(),
+              bounds.getWidth(), bounds.getHeight())).getBounds2D();
+    }
+
+    private static AffineTransform sheetTransform(SVGLocatable element) {
+        var transform = element.getCTM();
+        return new AffineTransform(transform.getA(), transform.getB(), transform.getC(), transform.getD(),
+              transform.getE(), transform.getF());
+    }
+
+    private static Shape svgPath(Element element) {
+        var producer = new AWTPathProducer();
+        producer.setWindingRule(Path2D.WIND_NON_ZERO);
+        var parser = new PathParser();
+        parser.setPathHandler(producer);
+        parser.parse(element.getAttribute(SVGConstants.SVG_D_ATTRIBUTE));
+        return producer.getShape();
+    }
+
+    private static void assertPipsClearOutline(Element outline, List<Element> pips) {
+        Shape contour = svgPath(outline);
+        float width = Float.parseFloat(PrintRecordSheet.parseStyle(outline, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE));
+        var interior = new Area(contour);
+        // Leave a margin beyond the outline stroke, not just beyond the path centerline.
+        interior.subtract(new Area(new BasicStroke(width + 0.3f).createStrokedShape(contour)));
+        interior.transform(sheetTransform((SVGLocatable) outline));
+
+        for (Element pip : pips) {
+            SVGLocatable locatable = (SVGLocatable) pip;
+            var bounds = locatable.getBBox();
+            Shape shape = SVGConstants.SVG_CIRCLE_TAG.equals(pip.getLocalName())
+                  ? new Ellipse2D.Float(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight())
+                  : svgPath(pip);
+            var ink = new Area(shape);
+            ink.add(new Area(new BasicStroke((float) pipCoordinate(pip, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE))
+                  .createStrokedShape(shape)));
+            ink.transform(sheetTransform(locatable));
+            ink.subtract(interior);
+            assertTrue(ink.isEmpty(), () -> pip.getAttribute("loc") + " " + pip.getAttribute("class")
+                  + " at " + sheetBounds(locatable) + " must clear the outline");
+        }
+    }
+
+    private static void assertMirroredPips(List<Element> pips) {
+        var bounds = pips.stream().map(pip -> ((SVGLocatable) pip).getBBox()).toList();
+        var left = bounds.stream().filter(pip -> pip.getX() + pip.getWidth() / 2 < -TOLERANCE).toList();
+        var right = bounds.stream().filter(pip -> pip.getX() + pip.getWidth() / 2 > TOLERANCE).toList();
+        assertEquals(pips.size(), left.size() + right.size(), "Even counts should not place a pip on the centerline");
+        assertEquals(left.size(), right.size(), "Both legs should have the same pip count");
+        for (var pip : left) {
+            double reflectedX = -pip.getX() - pip.getWidth();
+            assertTrue(right.stream().anyMatch(other -> Math.abs(reflectedX - other.getX()) < TOLERANCE
+                  && Math.abs(pip.getY() - other.getY()) < TOLERANCE
+                  && Math.abs(pip.getWidth() - other.getWidth()) < TOLERANCE),
+                  () -> "No matching pip across the centerline for x=" + pip.getX() + ", y=" + pip.getY());
+        }
+    }
+
+    private static void assertMainGunClearances(Document doc, List<Element> armor, List<Element> structure,
+          boolean quad) {
+        Rectangle2D outline = sheetBounds((SVGLocatable) doc.getElementById(MAIN_GUN_ARMOR));
+        Rectangle2D head = sheetBounds((SVGLocatable) doc.getElementById(quad ? "path2758" : "path2576"));
+        assertTrue(outline.getWidth() < head.getWidth() && outline.getHeight() < head.getHeight() * 0.75,
+              "The Main Gun should be noticeably smaller than the head");
+        Rectangle2D label = sheetBounds((SVGLocatable) doc.getElementById(MAIN_GUN_TEXT));
+        assertTrue(label.getMaxX() + 0.5 < outline.getMinX(), "Main Gun label must clear the outline");
+
+        double clearance = 0.6;
+        var interior = new Ellipse2D.Double(outline.getX() + clearance, outline.getY() + clearance,
+              outline.getWidth() - 2 * clearance, outline.getHeight() - 2 * clearance);
+        Stream.concat(armor.stream(), structure.stream()).forEach(pip -> {
+            Rectangle2D bounds = sheetBounds((SVGLocatable) pip);
+            assertTrue(interior.contains(bounds),
+                  () -> "Main Gun " + pip.getAttribute("class") + " at " + bounds + " must clear " + outline);
+        });
+        assertArmorPipGap(armor);
+    }
+
+    private static void assertArmorPipGap(List<Element> pips) {
+        for (int i = 0; i < pips.size(); i++) {
+            Element first = pips.get(i);
+            double x = pipCoordinate(first, SVGConstants.SVG_CX_ATTRIBUTE);
+            double y = pipCoordinate(first, SVGConstants.SVG_CY_ATTRIBUTE);
+            for (Element second : pips.subList(i + 1, pips.size())) {
+                double distance = Math.hypot(x - pipCoordinate(second, SVGConstants.SVG_CX_ATTRIBUTE),
+                      y - pipCoordinate(second, SVGConstants.SVG_CY_ATTRIBUTE));
+                double gap = distance - pipOuterRadius(first) - pipOuterRadius(second);
+                assertTrue(gap > 0.2, () -> "Armor pip outlines need a visible gap; found " + gap);
+            }
+        }
+    }
+
+    private static void assertStructurePipClearances(List<Element> structure, List<Element> armor, double minSide) {
+        List<Rectangle2D> armorBounds = armor.stream().map(pip -> sheetBounds((SVGLocatable) pip)).toList();
+        for (int i = 0; i < structure.size(); i++) {
+            Element pip = structure.get(i);
+            var bounds = ((SVGLocatable) pip).getBBox();
+            assertTrue(bounds.getWidth() >= minSide, "Structure pips must be large enough to mark");
+            Rectangle2D printedBounds = sheetBounds((SVGLocatable) pip);
+            assertTrue(armorBounds.stream().noneMatch(printedBounds::intersects),
+                  "Armor and structure pips must not overlap");
+            for (Element neighbor : structure.subList(i + 1, structure.size())) {
+                // Structure squares at one location share a coordinate system, even on rotated arms.
+                var other = ((SVGLocatable) neighbor).getBBox();
+                double gapX = Math.max(other.getX() - bounds.getX() - bounds.getWidth(),
+                      bounds.getX() - other.getX() - other.getWidth());
+                double gapY = Math.max(other.getY() - bounds.getY() - bounds.getHeight(),
+                      bounds.getY() - other.getY() - other.getHeight());
+                double stroke = (pipCoordinate(pip, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE)
+                      + pipCoordinate(neighbor, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE)) / 2;
+                assertTrue(Math.hypot(Math.max(0, gapX), Math.max(0, gapY)) - stroke > 0.3,
+                      "Structure pip outlines need a visible gap");
+            }
+        }
+    }
+
+    private static void assertMatchingPipStroke(Element reference, List<Element> pips) {
+        var transform = ((SVGLocatable) reference).getCTM();
+        double stroke = pipCoordinate(reference, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE);
+        for (Element pip : pips) {
+            var pipTransform = ((SVGLocatable) pip).getCTM();
+            double pipStroke = pipCoordinate(pip, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE);
+            assertEquals(stroke * Math.hypot(transform.getA(), transform.getB()),
+                  pipStroke * Math.hypot(pipTransform.getA(), pipTransform.getB()), TOLERANCE, "Horizontal stroke");
+            assertEquals(stroke * Math.hypot(transform.getC(), transform.getD()),
+                  pipStroke * Math.hypot(pipTransform.getC(), pipTransform.getD()), TOLERANCE, "Vertical stroke");
+        }
+    }
+
+    private static double pipOuterRadius(Element pip) {
+        return pipCoordinate(pip, SVGConstants.SVG_R_ATTRIBUTE)
+              + pipCoordinate(pip, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE) / 2;
+    }
+
+    private static double pipCoordinate(Element pip, String attribute) {
+        return Double.parseDouble(pip.getAttribute(attribute));
+    }
+
+    private static void assertArmorSpansAtLeast(List<Element> pips, int height) {
+        Rectangle2D bounds = pips.stream().map(pip -> sheetBounds((SVGLocatable) pip))
+              .reduce(Rectangle2D::createUnion).orElseThrow();
+        assertTrue(bounds.getHeight() >= height, () -> "Armor cluster should use more of the location: " + bounds);
     }
 
     private static SVGTextElement findText(Element parent, String label) {

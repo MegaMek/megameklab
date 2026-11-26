@@ -1193,6 +1193,14 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             classAttr += " " + className;
         }
         switch (type) {
+            case SQUARE -> {
+                Element path = preparePolygonalPip(strokeWidth, fill, loc, rear, classAttr);
+                double inset = radius * 0.15;
+                double side = 2 * (radius - inset);
+                String d = "M" + (x + inset) + "," + (y + inset) + "h" + side + "v" + side + "h-" + side + "z";
+                path.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE, d);
+                return path;
+            }
             case DIAMOND -> {
                 // Use diamond shape for hardened armor pips
                 Element path = preparePolygonalPip(strokeWidth, fill, loc, rear, classAttr);

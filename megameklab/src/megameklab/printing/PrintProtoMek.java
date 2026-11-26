@@ -39,6 +39,7 @@ import megamek.common.equipment.Mounted;
 import megamek.common.units.Entity;
 import megamek.common.units.ProtoMek;
 import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGTextElement;
 
@@ -48,6 +49,7 @@ import org.w3c.dom.svg.SVGTextElement;
 public class PrintProtoMek extends PrintEntity {
     // Keep movement labels clear of the Pilot Data border on Letter sheets.
     private static final float STATS_SPACING_SCALE = 0.95f;
+    private static final double HEAD_PIP_SCALE = 0.85;
 
     private final ProtoMek proto;
     private final int unitIndex;
@@ -215,8 +217,21 @@ public class PrintProtoMek extends PrintEntity {
     }
 
     @Override
-    String structurePipFill() {
-        return FILL_SHADOW;
+    PipType structurePipType() {
+        return PipType.SQUARE;
+    }
+
+    @Override
+    protected Element createPip(double x, double y, double radius, double strokeWidth, PipType type, String fill,
+          String className, String loc, boolean rear) {
+        if (proto.getLocationAbbr(ProtoMek.LOC_HEAD).equals(loc)) {
+            // Shrink the pip without changing its center or the layout's row spacing.
+            double scaledRadius = radius * HEAD_PIP_SCALE;
+            x += radius - scaledRadius;
+            y += radius - scaledRadius;
+            radius = scaledRadius;
+        }
+        return super.createPip(x, y, radius, strokeWidth, type, fill, className, loc, rear);
     }
 
     static final String GUN_HIT = "gun_hit_";
