@@ -54,15 +54,18 @@ public final class PrintUtil {
     }
 
     /**
-     * simple method to let us know if eq should be printed on the weapons and equipment section of the Record sheet.
+     * Determines whether mounted equipment should appear in the record sheet's equipment inventory.
      *
-     * @param eq     The equipment to test The equipment
-     * @param entity The Entity it's mounted on
+     * @param eq      The equipment to test
+     * @param entity  The unit it's mounted on
+     * @param options The record sheet options
      *
      * @return Whether the equipment should be shown on the record sheet
      */
     public static boolean isPrintableEquipment(EquipmentType eq, Entity entity, RecordSheetOptions options) {
-        if (eq instanceof AmmoType) {
+        if (eq.hasFlag(F_EI_INTERFACE)) {
+            return !entity.isProtoMek();
+        } else if (eq instanceof AmmoType) {
             return ((AmmoType) eq).getAmmoType() == AmmoType.AmmoTypeEnum.COOLANT_POD;
         } else if (entity instanceof BattleArmor) {
             return isPrintableBAEquipment(eq);
