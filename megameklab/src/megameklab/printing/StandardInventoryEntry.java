@@ -238,11 +238,13 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     private String ewMaxRange() {
-        if (mount.getType().hasFlag(MiscType.F_ANGEL_ECM) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT)) {
+        if (mount.getType().hasFlag(MiscType.F_WATCHDOG)) {
+            return CConfig.formatScale(Game.rulesManager.getRulesEquipment().getWatchdogProbeRange(), false);
+        } else if (mount.getType().hasFlag(MiscType.F_NOVA)) {
+            return CConfig.formatScale(5, false);
+        } else if (mount.getType().hasFlag(MiscType.F_ANGEL_ECM) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT)) {
             return "2";
-        } else if (mount.getType().hasFlag(MiscType.F_EW_EQUIPMENT)
-              || mount.getType().hasFlag(MiscType.F_WATCHDOG)
-              || mount.getType().hasFlag(MiscType.F_NOVA)) {
+        } else if (mount.getType().hasFlag(MiscType.F_EW_EQUIPMENT)) {
             return CConfig.formatScale(3, false);
         } else if (mount.getType().hasFlag(MiscType.F_SINGLE_HEX_ECM)) {
             return "0";
@@ -269,19 +271,34 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
      * @return The AV values for each MML munition type
      */
     private String[][] mmlAV() {
-        String[][] retVal = new String[3][];
+        int lrmRow = MML_LRM_ROW + mmlArtemisRowDelta();
+        int srmRow = MML_SRM_ROW + mmlArtemisRowDelta();
+        String[][] retVal = new String[srmRow + 1][];
         for (int i = 0; i < retVal.length; i++) {
             retVal[i] = new String[5];
-            Arrays.fill(retVal[i], i == 0 ? "" : DASH);
+            Arrays.fill(retVal[i], (i < lrmRow) ? "" : DASH);
+        }
+        fillMunitionRow(retVal[lrmRow], "LRM");
+        fillMunitionRow(retVal[srmRow], "SRM");
+        return retVal;
+    }
+
+    /** Fills a munition's row with the weapon's attack values for that munition, a dash where it has none */
+    private void fillMunitionRow(String[] row, String munition) {
+        if (!(mount.getType() instanceof WeaponType weaponType)) {
+            return;
         }
         int avMod = aeroAVMod(mount);
-        // The base AV is the number of missiles.
-        int av = (int) ((WeaponType) mount.getType()).getShortAV() + avMod;
-        retVal[MML_LRM_ROW][RangeType.RANGE_SHORT] = String.valueOf(av);
-        retVal[MML_SRM_ROW][RangeType.RANGE_SHORT] = String.valueOf(av * 2);
-        retVal[MML_LRM_ROW][RangeType.RANGE_MEDIUM] = String.valueOf(av);
-        retVal[MML_LRM_ROW][RangeType.RANGE_LONG] = String.valueOf(av);
-        return retVal;
+        double[] values = { weaponType.getShortAV(), weaponType.getMedAV(), weaponType.getLongAV(),
+                            weaponType.getExtAV() };
+        for (int range = 0; range < values.length; range++) {
+            values[range] = (values[range] > 0) ? (values[range] + avMod) : 0;
+        }
+        double[] munitionValues = InventoryEntry.munitionAttackValues(values, munition);
+        for (int range = 0; range < munitionValues.length; range++) {
+            row[RangeType.RANGE_SHORT + range] = (munitionValues[range] > 0)
+                  ? String.valueOf((int) munitionValues[range]) : DASH;
+        }
     }
 
     /**
@@ -295,15 +312,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             retVal[i] = new String[5];
             Arrays.fill(retVal[i], i == 0 ? "" : DASH);
         }
-        int avMod = aeroAVMod(mount);
-        double av = ((WeaponType) mount.getType()).getShortAV() + avMod;
-        retVal[ATM_STANDARD_ROW][RangeType.RANGE_SHORT] = String.valueOf((int) av);
-        retVal[ATM_ER_ROW][RangeType.RANGE_SHORT] = String.valueOf((int) Math.ceil(av * 0.5));
-        retVal[ATM_HE_ROW][RangeType.RANGE_SHORT] = String.valueOf((int) Math.ceil(av * 1.5));
-        retVal[ATM_STANDARD_ROW][RangeType.RANGE_MEDIUM] = String.valueOf((int) av);
-        retVal[ATM_ER_ROW][RangeType.RANGE_MEDIUM] = String.valueOf((int) Math.ceil(av * 0.5));
-        retVal[ATM_ER_ROW][RangeType.RANGE_LONG] = String.valueOf((int) Math.ceil(av * 0.5));
-        retVal[ATM_ER_ROW][RangeType.RANGE_EXTREME] = String.valueOf((int) Math.ceil(av * 0.5));
+        fillMunitionRow(retVal[ATM_STANDARD_ROW], "Standard");
+        fillMunitionRow(retVal[ATM_ER_ROW], "Extended Range");
+        fillMunitionRow(retVal[ATM_HE_ROW], "High Explosive");
         return retVal;
     }
 
@@ -502,9 +513,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         return "";
     }
 
-    /** @return The enhancement that the second row names, or null when the rows name ammo instead (MML) */
+    /** @return The enhancement that the second row names, or null when that row names ammo or a mode instead */
     public @Nullable Mounted<?> getSecondRowMount() {
-        return isMML ? null : secondRowMount;
+        return secondRowMount;
     }
 
     @Override
@@ -519,18 +530,16 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     @Override
     public String getHeatField(int row) {
         if (row == 0) {
-            if (hasInsulator) {
-                return Integer.toString(mount.getType().getHeat() - 1) + '*';
+            if (hasInsulator && (mount instanceof WeaponMounted weapon)) {
+                return (int) weapon.laserEnhancedHeat(mount.getType().getHeat(), false) + "*";
             } else if (mount.getType().getHeat() > 0) {
                 return Integer.toString(mount.getType().getHeat());
             } else {
                 return DASH;
             }
         } else if (row == 1) {
-            if (hasPulseModule && hasInsulator) {
-                return Integer.toString(mount.getType().getHeat() + 2 - 1) + '*';
-            } else if (hasPulseModule) {
-                return Integer.toString(mount.getType().getHeat() + 2);
+            if (hasPulseModule && (mount instanceof WeaponMounted weapon)) {
+                return (int) weapon.laserEnhancedHeat(mount.getType().getHeat(), true) + (hasInsulator ? "*" : "");
             } else if (hasCapacitor) {
                 return Integer.toString(mount.getType().getHeat() + 5);
             } else {
@@ -586,6 +595,15 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return "";
         }
         return ranges[row][RangeType.RANGE_MINIMUM];
+    }
+
+    @Override
+    public String getRangeLabel(int row) {
+        if (row == 0 && !mount.getEntity().isAero()
+              && mount.getType().hasAnyFlag(MiscType.F_WATCHDOG, MiscType.F_NOVA)) {
+            return String.format("%s (PRB) %s (ECM)", ewMaxRange(), CConfig.formatScale(6, false));
+        }
+        return "";
     }
 
     @Override
@@ -665,7 +683,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             if (row != 0) {
                 return "";
             }
-            var mod = mount.getType().getToHitModifier(mount);
+            var mod = baseHitModifier();
             return (mod != 0) ? "%+d".formatted(mod).replace("-", MINUS) : "0";
         }
         var hasTargComp = mount.getEntity().hasTargComp();
@@ -699,7 +717,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
 
         boolean explicitZero = false;
 
-        var mod = mount.getType().getToHitModifier(mount);
+        var mod = baseHitModifier();
 
         var linked = mount.getLinkedBy();
         if (linked != null) {
@@ -732,6 +750,13 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         }
 
         return (mod != 0) ? "%+d".formatted(mod).replace("-", MINUS) : (explicitZero ? DASH : "");
+    }
+
+    private int baseHitModifier() {
+        if (mount.getType().hasFlag(MiscTypeFlag.S_CLAW)) {
+            return Game.rulesManager.getRulesPhysical().getClawToHitModifier();
+        }
+        return mount.getType().getToHitModifier(mount);
     }
 
     @Override

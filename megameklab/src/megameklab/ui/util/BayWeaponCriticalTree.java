@@ -72,16 +72,14 @@ import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
+import megamek.common.loaders.MekFileParser;
 import megamek.common.units.Aero;
 import megamek.common.units.Entity;
 import megamek.common.units.SmallCraft;
+import megamek.common.util.AeroAVModCalculator;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.bayWeapons.BayWeapon;
-import megamek.common.weapons.bayWeapons.PPCBayWeapon;
-import megamek.common.weapons.lrms.LRMWeapon;
-import megamek.common.weapons.ppc.PPCWeapon;
-import megamek.common.weapons.srms.SRMWeapon;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.dialog.AmountDialog;
@@ -746,31 +744,7 @@ public class BayWeaponCriticalTree extends JTree {
 
     private int avMod(WeaponType weapon, EquipmentType linkedBy) {
         // Check that linkedBy is a MiscType before calling hasFlag with MiscType flags
-        if (!(linkedBy instanceof MiscType)) {
-            return 0;
-        }
-        if (linkedBy.hasFlag(MiscType.F_ARTEMIS)
-              || linkedBy.hasFlag(MiscType.F_ARTEMIS_V)) {
-            // The 9 and 10 rows of the cluster hits table is only different in the 3 column
-            if (weapon.getAtClass() == WeaponType.CLASS_MML) {
-                if (weapon.getRackSize() >= 7) {
-                    return 2;
-                } else if ((weapon.getRackSize() >= 5) || linkedBy.hasFlag(MiscType.F_ARTEMIS_V)) {
-                    return 1;
-                }
-            } else if (weapon instanceof LRMWeapon) {
-                return weapon.getRackSize() / 5;
-            } else if (weapon instanceof SRMWeapon) {
-                return 2;
-            }
-        } else if (linkedBy.hasFlag(MiscType.F_ARTEMIS_PROTO) && weapon.getRackSize() == 2) {
-            // The +1 cluster hit bonus only adds a missile hit for SRM2
-            return 2;
-        } else if (linkedBy.hasFlag(MiscType.F_PPC_CAPACITOR)) {
-            // PPC capacitors in weapon bays are treated as if always charged
-            return 5;
-        }
-        return 0;
+        return (linkedBy instanceof MiscType) ? AeroAVModCalculator.calculateBonus(weapon, linkedBy, true) : 0;
     }
 
     @Override
@@ -961,7 +935,7 @@ public class BayWeaponCriticalTree extends JTree {
     public boolean canAdd(Mounted<?> eq) {
         if (eSource.getEntity().usesWeaponBays()
               && ((eq.getType() instanceof AmmoType)
-              || UnitUtil.isWeaponEnhancement(eq.getType()))) {
+              || MiscType.isWeaponEnhancement(eq.getType()))) {
             return !baysFor(eq).isEmpty();
         }
         if (TestEntity.eqRequiresLocation(eSource.getEntity(), eq.getType())) {
@@ -1013,33 +987,11 @@ public class BayWeaponCriticalTree extends JTree {
             }
             return;
         } else if (eq.getType() instanceof MiscType) {
-            if (eq.getType().hasFlag(MiscType.F_ARTEMIS)
-                  || eq.getType().hasFlag(MiscType.F_ARTEMIS_PROTO)
-                  || eq.getType().hasFlag(MiscType.F_ARTEMIS_V)) {
-                for (WeaponMounted weapon : bay.getBayWeapons()) {
-                    final WeaponType weaponType = weapon.getType();
-                    if ((weapon.getLinkedBy() == null)
-                          && ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.LRM)
-                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM)
-                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.MML)
-                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.LRM_IMP)
-                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_IMP)
-                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.NLRM))) {
-                        moveToArc(eq);
-                        eq.setLinked(weapon);
-                        break;
-                    }
-                }
-            } else if (eq.getType().hasFlag(MiscType.F_APOLLO)
-                  || eq.getType().hasFlag(MiscType.F_PPC_CAPACITOR)) {
-                for (WeaponMounted weapon : bay.getBayWeapons()) {
-                    if (weapon.getLinkedBy() == null) {
-                        moveToArc(eq);
-                        eq.setLinked(weapon);
-                        break;
-                    }
-                }
-            }
+            // The bay can take the enhancement, so it has a weapon for it
+            WeaponMounted weapon = bay.getBayWeapons().stream().filter(member -> canEnhance(eq, member)).findFirst()
+                  .orElseThrow();
+            moveToArc(eq);
+            eq.setLinked(weapon);
         } else {
             // If adding ammo, check for an existing mount for this ammo type first. If
             // found, add
@@ -1158,7 +1110,7 @@ public class BayWeaponCriticalTree extends JTree {
         for (Mounted<?> eq : eqList) {
             if (eSource.getEntity().usesWeaponBays() && ((eq.getType() instanceof WeaponType)
                   || (eq.getType() instanceof AmmoType)
-                  || (UnitUtil.isWeaponEnhancement(eq.getType())))) {
+                  || (MiscType.isWeaponEnhancement(eq.getType())))) {
                 for (Enumeration<?> e = ((MutableTreeNode) model.getRoot()).children(); e.hasMoreElements(); ) {
                     final Mounted<?> bay = ((EquipmentNode) e.nextElement()).getMounted();
                     if ((bay.getType() instanceof BayWeapon) && (canTakeEquipment((WeaponMounted) bay, eq))) {
@@ -1189,10 +1141,7 @@ public class BayWeaponCriticalTree extends JTree {
         }
         if (node instanceof BayNode) {
             addToBay(((BayNode) node).getMounted(), eq);
-        } else if ((eq.getType() instanceof MiscType)
-              && eq.getType().hasFlag(MiscType.F_PPC_CAPACITOR)
-              && (node.getMounted().getType() instanceof PPCWeapon)
-              && (node.getMounted().getLinkedBy() == null)) {
+        } else if (canEnhance(eq, node.getMounted())) {
             moveToArc(eq);
             eq.setLinked(node.getMounted());
             safeRefreshAll();
@@ -1332,40 +1281,21 @@ public class BayWeaponCriticalTree extends JTree {
                     return true;
                 }
             }
-        } else if ((eq.getType() instanceof MiscType)
-              && ((eq.getType().hasFlag(MiscType.F_ARTEMIS)
-              || eq.getType().hasFlag(MiscType.F_ARTEMIS_V))
-              || eq.getType().hasFlag(MiscType.F_ARTEMIS_PROTO))) {
-            for (WeaponMounted weapon : bay.getBayWeapons()) {
-                final AmmoTypeEnum ammoType = weapon.getType().getAmmoType();
-                if ((weapon.getLinkedBy() == null)
-                      && ((ammoType == AmmoType.AmmoTypeEnum.LRM)
-                      || (ammoType == AmmoType.AmmoTypeEnum.SRM)
-                      || (ammoType == AmmoType.AmmoTypeEnum.MML)
-                      || (ammoType == AmmoType.AmmoTypeEnum.LRM_IMP)
-                      || (ammoType == AmmoType.AmmoTypeEnum.SRM_IMP)
-                      || (ammoType == AmmoType.AmmoTypeEnum.NLRM))) {
-                    return true;
-                }
-            }
-        } else if ((eq.getType() instanceof MiscType)
-              && eq.getType().hasFlag(MiscType.F_APOLLO)) {
-            for (WeaponMounted weapon : bay.getBayWeapons()) {
-                if ((weapon.getLinkedBy() == null)
-                      && (weapon.getType().getAmmoType() == AmmoType.AmmoTypeEnum.MRM)) {
-                    return true;
-                }
-            }
-        } else if ((eq.getType() instanceof MiscType)
-              && eq.getType().hasFlag(MiscType.F_PPC_CAPACITOR)
-              && (bay.getType() instanceof PPCBayWeapon)) {
-            for (WeaponMounted weapon : bay.getBayWeapons()) {
-                if (weapon.getLinkedBy() == null) {
-                    return true;
-                }
-            }
+        } else if (MiscType.isWeaponEnhancement(eq.getType())) {
+            return bay.getBayWeapons().stream().anyMatch(weapon -> canEnhance(eq, weapon));
         }
         return false;
+    }
+
+    /**
+     * @return {@code true} when the weapon enhancement can be attached to the weapon, which has no enhancement of its
+     *       kind yet: a laser takes an insulator and one other enhancement (the same eligibility as the unit loader's;
+     *       the enhancement moves to the weapon's arc)
+     */
+    private boolean canEnhance(Mounted<?> enhancement, Mounted<?> weapon) {
+        return MiscType.isWeaponEnhancement(enhancement.getType()) && (weapon.getType() instanceof WeaponType type)
+              && !MekFileParser.hasEnhancementOfKind(weapon, enhancement)
+              && MekFileParser.canEnhance(enhancement.getType(), type, eSource.getEntity().getYear());
     }
 
     /**
@@ -1386,20 +1316,11 @@ public class BayWeaponCriticalTree extends JTree {
         WeaponMounted bay = null;
         TreePath path = loc.getPath();
         if (null != path) {
-            // If we're dropping a PPC capacitor on a PPC we need to check that it doesn't already have one. If on a
-            // PPC bay, we need to check that there is a PPC in the bay without a capacitor.
-            if ((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_PPC_CAPACITOR)
-                  && (path.getLastPathComponent() instanceof EquipmentNode node)) {
-                if (node.getMounted().getType() instanceof PPCWeapon) {
-                    return node.getMounted().getLinkedBy() == null;
-                } else if (node.getMounted().getType() instanceof PPCBayWeapon) {
-                    for (WeaponMounted weapon : ((BayNode) node).getMounted().getBayWeapons()) {
-                        if (weapon.getLinkedBy() == null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
+            // A weapon enhancement dropped on a weapon goes to that weapon or nowhere
+            if (MiscType.isWeaponEnhancement(eq.getType())
+                  && (path.getLastPathComponent() instanceof EquipmentNode node) && !(node instanceof BayNode)
+                  && (node.getMounted().getType() instanceof WeaponType)) {
+                return canEnhance(eq, node.getMounted());
             }
             bay = getBayFromPath(path);
         }
@@ -1415,7 +1336,7 @@ public class BayWeaponCriticalTree extends JTree {
             return (null != bay) && canTakeEquipment(bay, eq);
         }
 
-        if (UnitUtil.isWeaponEnhancement(eq.getType())) {
+        if (MiscType.isWeaponEnhancement(eq.getType())) {
             if ((null != bay) && canTakeEquipment(bay, eq)) {
                 for (WeaponMounted weapon : bay.getBayWeapons()) {
                     if (weapon == eq.getLinked()) {

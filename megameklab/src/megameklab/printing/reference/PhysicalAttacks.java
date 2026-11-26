@@ -41,6 +41,7 @@ import megamek.common.units.Entity;
 import megamek.common.units.Mek;
 import megamek.common.units.QuadMek;
 import megamek.logging.MMLogger;
+import megameklab.printing.IntrinsicPhysicalInventoryEntry;
 import megameklab.printing.PrintMek;
 import megameklab.util.CConfig;
 import megameklab.util.RSScale;
@@ -77,7 +78,8 @@ public class PhysicalAttacks extends ReferenceTable {
             }
         }
         addPunchAttacks(sheet.getEntity());
-        addRow(bundle.getString("kick"), "-2", kickDamageString);
+        addRow(bundle.getString("kick"), "%+d".formatted(Game.rulesManager.getRulesPhysical().getKickModifier()),
+              kickDamageString);
         if (!(sheet.getEntity() instanceof QuadMek)) {
             addRow(bundle.getString("push"), "-1", "\u2014");
         }
@@ -87,12 +89,12 @@ public class PhysicalAttacks extends ReferenceTable {
                   "-1",
                   String.format("%.0f", Math.floor(sheet.getEntity().getWeight() / 5.0)));
         }
-        addRow(bundle.getString("charge"), "+0*", String.format(hasTorsoSpikes ?
-                    "%.0f/%s\u2020" : "%.0f/%s",
-              Math.floor(sheet.getEntity().getWeight() / 10.0),
-              CConfig.scaleUnits().equals(RSScale.HEXES) ?
-                    bundle.getString("hex") :
-                    CConfig.getIntParam(CConfig.RS_SCALE_FACTOR) + CConfig.scaleUnits().abbreviation));
+        String chargeDamage = CConfig.usesTotalWarfareRules()
+              ? String.format("%.0f/%s", Math.floor(sheet.getEntity().getWeight() / 10.0),
+                    CConfig.scaleUnits().equals(RSScale.HEXES) ? bundle.getString("hex")
+                          : CConfig.getIntParam(CConfig.RS_SCALE_FACTOR) + CConfig.scaleUnits().abbreviation)
+              : IntrinsicPhysicalInventoryEntry.formatChargeDamage(sheet.getEntity(), 0);
+        addRow(bundle.getString("charge"), "+0*", chargeDamage + (hasTorsoSpikes ? "\u2020" : ""));
         if (sheet.getEntity().getOriginalJumpMP() > 0) {
             addRow(bundle.getString("dfa"), "+0*", String.valueOf(dfaDamage));
         }
@@ -135,18 +137,15 @@ public class PhysicalAttacks extends ReferenceTable {
     }
 
     private void addPunchAttack(String name, int actuators, int baseDamage, boolean hasTSM) {
-        String modifier = "+3";
-        if (actuators == 4) {
-            modifier = "+0";
-        } else if (actuators == 3) {
-            modifier = "+1";
-        } else if (actuators == 2) {
+        int actuatorMod = (actuators == 4) ? 0 : (actuators == 3) ? 1 : 3;
+        int modifier = Game.rulesManager.getRulesPhysical().getPunchModifier() + actuatorMod;
+        if (actuators == 2) {
             baseDamage = Math.max(baseDamage / 2, 1);
         } else if (actuators == 1) {
             baseDamage = Math.max(baseDamage / 4, 1);
         }
         String tsmDamage = hasTSM ? " [" + baseDamage * 2 + "]" : "";
-        addRow(name, modifier, baseDamage + tsmDamage);
+        addRow(name, "%+d".formatted(modifier), baseDamage + tsmDamage);
     }
 
     private void addPhysicalWeapon(Entity entity) {
@@ -157,7 +156,8 @@ public class PhysicalAttacks extends ReferenceTable {
                       StringUtils.getEquipmentInfo(entity, mounted));
             } else if (mounted.getType().hasFlag(MiscType.F_HAND_WEAPON)) {
                 if (mounted.getType().hasFlag(MiscTypeFlag.S_CLAW)) {
-                    addRow(mounted.getName(), "+1", StringUtils.getEquipmentInfo(entity, mounted));
+                    addRow(mounted.getName(), "%+d".formatted(Game.rulesManager.getRulesPhysical().getClawToHitModifier()),
+                          StringUtils.getEquipmentInfo(entity, mounted));
                 } else {
                     logger.error("Unknown hand weapon {}!", mounted.getName());
                     addRow(mounted.getName(), "???", StringUtils.getEquipmentInfo(entity, mounted));

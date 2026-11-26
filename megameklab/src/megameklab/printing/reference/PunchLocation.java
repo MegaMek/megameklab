@@ -32,6 +32,12 @@
  */
 package megameklab.printing.reference;
 
+import java.util.List;
+
+import megamek.common.ToHitData;
+import megamek.common.game.Game;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
 import megamek.common.units.QuadMek;
 import megameklab.printing.PrintMek;
 
@@ -44,28 +50,36 @@ public class PunchLocation extends ReferenceTable {
         super(sheet, 0.1, 0.35, 0.6, 0.85);
         setHeaders(bundle.getString("dieRoll1d6"), bundle.getString("leftSide"),
               bundle.getString("frontRear"), bundle.getString("rightSide"));
-        if (sheet.getEntity() instanceof QuadMek) {
-            addQuadRows();
-        } else {
-            addBipedRows();
+        for (int roll = 1; roll <= 6; roll++) {
+            addRow(punchRow(sheet.getEntity(), roll));
         }
     }
 
-    private void addBipedRows() {
-        addRow("1", "LT", "LA", "RT");
-        addRow("2", "LT", "LT", "RT");
-        addRow("3", "CT", "CT", "CT");
-        addRow("4", "LA", "RT", "RA");
-        addRow("5", "LA", "RA", "RA");
-        addRow("6", "HD", "HD", "HD");
+    static List<String> punchRow(Entity entity, int roll) {
+        boolean quad = entity instanceof QuadMek;
+        var charts = Game.rulesManager.getRulesCharts();
+        int left = charts.getPunchHitLocation(roll, ToHitData.SIDE_LEFT, quad);
+        int right = charts.getPunchHitLocation(roll, ToHitData.SIDE_RIGHT, quad);
+        int front = charts.getPunchHitLocation(roll, ToHitData.SIDE_FRONT, quad);
+        int rear = charts.getPunchHitLocation(roll, ToHitData.SIDE_REAR, quad);
+        String frontRear = locationAbbr(entity, front);
+        if (front != rear) {
+            frontRear += "/" + locationAbbr(entity, rear);
+        }
+        return List.of(Integer.toString(roll), locationAbbr(entity, left), frontRear, locationAbbr(entity, right));
     }
 
-    private void addQuadRows() {
-        addRow("1", "LT", "LFL/LRL", "RT");
-        addRow("2", "LT", "LT", "RT");
-        addRow("3", "CT", "CT", "CT");
-        addRow("4", "LFL", "RT", "RFL");
-        addRow("5", "LRL", "RFL/RRL", "RRL");
-        addRow("6", "HD", "HD", "HD");
+    private static String locationAbbr(Entity entity, int location) {
+        if (entity instanceof QuadMek) {
+            // Use the same leg abbreviations as the other record sheet reference tables.
+            return switch (location) {
+                case Mek.LOC_LEFT_ARM -> "LFL";
+                case Mek.LOC_RIGHT_ARM -> "RFL";
+                case Mek.LOC_LEFT_LEG -> "LRL";
+                case Mek.LOC_RIGHT_LEG -> "RRL";
+                default -> entity.getLocationAbbr(location);
+            };
+        }
+        return entity.getLocationAbbr(location);
     }
 }

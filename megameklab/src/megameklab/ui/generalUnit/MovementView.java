@@ -76,6 +76,7 @@ import megamek.common.verifier.TestMek;
 import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.util.TechComboBox;
+import megameklab.util.MekUtil;
 
 /**
  * Controls for setting a unit's speed
@@ -324,18 +325,23 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             maxJump = 0;
         }
         spnJump.removeChangeListener(this);
-        int jump0 = en.getOriginalJumpMP(true);
-        int jump = en.getJumpMP();
-        if (0 == jump0) {
-            jump0 = en.getAllUMUCount();
-            if (jump0 > 0) {
-                jump = jump0;
+        // A Mek's spinner sets how many jets it mounts; a FrankenMek's lighter jets give less Jump MP (CO p. 213)
+        int jumpSpinnerValue = (en instanceof Mek mek) ? mek.getJumpJetCount() : en.getOriginalJumpMP(true);
+        int finalJumpMP = en.getJumpMP();
+        if (0 == jumpSpinnerValue) {
+            jumpSpinnerValue = en.getAllUMUCount();
+            if (jumpSpinnerValue > 0) {
+                finalJumpMP = jumpSpinnerValue;
             }
         }
+        Integer maxSpinner = ((maxJump != null) && (en instanceof Mek jetMek) && (jetMek.getJumpJetCount() > 0))
+              ? Integer.valueOf(MekUtil.maxJumpJets(jetMek, maxJump)) : maxJump;
+        // Over the limit, the spinner cuts the jets to what stays within it
+        boolean overLimit = (maxSpinner != null) && (jumpSpinnerValue > maxSpinner);
         spnJumpModel.setMinimum(minJump);
-        spnJumpModel.setMaximum(maxJump);
-        spnJump.setValue(Math.max(minJump, jump0));
-        txtJumpFinal.setText(String.valueOf(jump));
+        spnJumpModel.setMaximum(maxSpinner);
+        spnJump.setValue(Math.max(minJump, jumpSpinnerValue));
+        txtJumpFinal.setText(String.valueOf(finalJumpMP));
         spnJump.addChangeListener(this);
 
         setMovementModToolTips(en);
@@ -367,9 +373,9 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         }
         spnMekMechanicalJumpMP.addChangeListener(this);
 
-        if ((maxJump != null) && (jump0 > maxJump)) {
+        if (overLimit) {
             spnJump.setValue(spnJumpModel.getMaximum());
-        } else if (jump0 < minJump) {
+        } else if (jumpSpinnerValue < minJump) {
             spnJump.setValue(spnJumpModel.getMinimum());
         }
 

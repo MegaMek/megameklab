@@ -32,6 +32,7 @@
  */
 package megameklab.printing;
 
+import jakarta.annotation.Nullable;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
@@ -123,6 +124,15 @@ public interface InventoryEntry {
     String getLongField(int row);
 
     /**
+     * @param row The row index within the entry
+     *
+     * @return A label spanning the ground range columns, or an empty string to print the individual range fields
+     */
+    default String getRangeLabel(int row) {
+        return "";
+    }
+
+    /**
      * @param row The row index within the entry. Should be &lt; nRows()
      *
      * @return The ERV (aero units)
@@ -186,5 +196,32 @@ public interface InventoryEntry {
      */
     default int aeroAVMod(WeaponType weapon, EquipmentType linkedBy, boolean bay) {
         return AeroAVModCalculator.calculateBonus(weapon, linkedBy, bay);
+    }
+
+    /**
+     * The aerospace attack values a missile weapon deals with one munition. An MML's SRMs deal twice its value at short
+     * range (TW p. 303). An ATM's Extended Range missiles reach every range at half its value, and its High Explosive
+     * ones short range only at 1.5 times it, each rounded up (TW p. 304). An iATM's Improved Magnetic Pulse missiles
+     * have High Explosive's range at 1 point per missile, which is half (IO:AE p. 61). LRM and Standard keep the values.
+     *
+     * @param values   The weapon's attack values at short, medium, long and extreme range
+     * @param munition The munition fired, or null for none
+     *
+     * @return The attack values at each range
+     */
+    static double[] munitionAttackValues(double[] values, @Nullable String munition) {
+        if (munition == null) {
+            return values;
+        }
+        return switch (munition) {
+            case "SRM" -> new double[] { values[0] * 2, 0, 0, 0 };
+            case "Extended Range" -> {
+                double value = Math.ceil(values[1] / 2);
+                yield new double[] { value, value, value, value };
+            }
+            case "High Explosive" -> new double[] { Math.ceil(values[0] * 1.5), 0, 0, 0 };
+            case "Improved Magnetic Pulse" -> new double[] { Math.ceil(values[0] / 2), 0, 0, 0 };
+            default -> values;
+        };
     }
 }
