@@ -91,10 +91,10 @@ class PrintProtoMekTest {
           "US_LETTER, false, false, false"
     })
     void wrappedNameGetsItsOwnRow(PaperSize size, boolean quad, boolean glider, boolean bold) {
-        Document doc = render("Sprite Ultraheavy ProtoMech", "2", size, quad, glider, bold);
+        Document doc = render("Sprite Ultraheavy ProtoMek", "2", size, quad, glider, bold);
 
         assertEquals("Sprite Ultraheavy", doc.getElementById(TYPE).getTextContent());
-        assertEquals("ProtoMech 2", doc.getElementById(TYPE2).getTextContent());
+        assertEquals("ProtoMek 2", doc.getElementById(TYPE2).getTextContent());
         assertEquals(doc.getElementById(TYPE).getAttribute("x"), doc.getElementById(TYPE2).getAttribute("x"));
         String weight = bold ? "bold" : "normal";
         assertEquals(weight, PrintRecordSheet.parseStyle(doc.getElementById(TYPE), "font-weight"));
@@ -159,7 +159,7 @@ class PrintProtoMekTest {
           "ISO_A4, false, true"
     })
     void armorDiagramSeparatesArmorAndStructurePips(PaperSize size, boolean quad, boolean glider) {
-        ProtoMek proto = createProtoMek("Sprite Ultraheavy ProtoMech", "2", quad, glider);
+        ProtoMek proto = createProtoMek("Sprite Ultraheavy ProtoMek", "2", quad, glider);
         proto.setHasMainGun(true);
         proto.autoSetInternal();
         for (int loc = 0; loc < proto.locations(); loc++) {
@@ -284,7 +284,7 @@ class PrintProtoMekTest {
     })
     void inventoryColumnsLeaveRoomForHeadingsAndHitModifiers(PaperSize size, boolean quad, boolean glider,
           RecordSheetOptions.HitModStyle hitModStyle) throws LocationFullException {
-        ProtoMek proto = createProtoMek("Sprite Ultraheavy ProtoMech", "2", quad, glider);
+        ProtoMek proto = createProtoMek("Sprite Ultraheavy ProtoMek", "2", quad, glider);
         proto.addEquipment(EquipmentType.get("ISSmallPulseLaser"), ProtoMek.LOC_TORSO);
 
         RecordSheetOptions options = createOptions(size, true);
