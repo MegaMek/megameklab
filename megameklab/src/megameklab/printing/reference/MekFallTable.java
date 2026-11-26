@@ -33,6 +33,7 @@
 package megameklab.printing.reference;
 
 import megameklab.printing.PrintMek;
+import megameklab.util.CConfig;
 
 /**
  * Table showing the direction of a fall and side taking damage
@@ -43,6 +44,15 @@ public class MekFallTable extends ReferenceTable {
         super(sheet, 0.1, 0.45, 0.8);
         setHeaders(bundle.getString("dieRoll1d6"), bundle.getString("newFacing"),
               bundle.getString("hitLocation"));
+        if (CConfig.usesTotalWarfareRules()) {
+            addTotalWarfareRows();
+        } else {
+            addRow("1", bundle.getString("sameDirection"), bundle.getString("rear"));
+            addRow("2-6", bundle.getString("sameDirection"), bundle.getString("front"));
+        }
+    }
+
+    private void addTotalWarfareRows() {
         addRow("1", bundle.getString("sameDirection"), bundle.getString("front"));
         addRow("2", bundle.getString("1Right"), bundle.getString("rightSide"));
         addRow("3", bundle.getString("2Right"), bundle.getString("rightSide"));

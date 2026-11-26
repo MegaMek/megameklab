@@ -105,7 +105,7 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
 
             return new ArrayList<>(List.of(e("Frenzy", DASH, String.valueOf(dmg), "*")));
         } else if (entity.canCharge()) {
-            return new ArrayList<>(List.of(e("Charge", DASH, formatChargeDamage(entity, 1, 0), "*", true)));
+            return new ArrayList<>(List.of(e("Charge", DASH, formatChargeDamage(entity, 0), "*", true)));
         }
 
         return new ArrayList<>();
@@ -122,6 +122,8 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
         boolean hasRLowerActuator = mek.hasSystem(Mek.ACTUATOR_LOWER_ARM, Mek.LOC_RIGHT_ARM);
 
         // Punches
+        var physicalRules = Game.rulesManager.getRulesPhysical();
+        int basePunchMod = physicalRules.getPunchModifier();
         boolean hasLArmAES = mek.hasFunctionalArmAES(Mek.LOC_LEFT_ARM);
         boolean hasRArmAES = mek.hasFunctionalArmAES(Mek.LOC_RIGHT_ARM);
         if (!mek.isQuadMek()) {
@@ -144,8 +146,8 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
             boolean explicitZero;
 
             if (!mek.hasClaw(Mek.LOC_LEFT_ARM)) {
-                explicitZero = false;
-                mod = 0;
+                explicitZero = basePunchMod != 0 || hasLArmAES;
+                mod = basePunchMod;
                 if (!hasLHand) {
                     mod += 1;
                 }
@@ -154,14 +156,13 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
                 }
                 if (hasLArmAES) {
                     mod--;
-                    explicitZero = true;
                 }
                 entries.add(e("Punch", "LA", lDmg, mod != 0 ? "%+d".formatted(mod) : (explicitZero ? DASH : "")));
             }
 
             if (!mek.hasClaw(Mek.LOC_RIGHT_ARM)) {
-                explicitZero = false;
-                mod = 0;
+                explicitZero = basePunchMod != 0 || hasRArmAES;
+                mod = basePunchMod;
                 if (!hasRHand) {
                     mod += 1;
                 }
@@ -170,7 +171,6 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
                 }
                 if (hasRArmAES) {
                     mod--;
-                    explicitZero = true;
                 }
                 entries.add(e("Punch", "RA", rDmg, mod != 0 ? "%+d".formatted(mod) : (explicitZero ? DASH : "")));
             }
@@ -179,22 +179,16 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
         // Kicks
         {
             var baseDmg = Math.ceil(mek.getWeight() / 5);
-            if (mek.hasMisc(MiscTypeFlag.F_TALON)) {
+            boolean hasTalons = mek.hasMisc(MiscTypeFlag.F_TALON);
+            if (hasTalons) {
                 baseDmg = Math.ceil(baseDmg * 1.5);
-                var dmg = formatDamage(baseDmg, hasTsm);
-                if (mek instanceof LandAirMek) {
-                    var airMekDamage = baseDmg / 2;
-                    dmg = "%s/%s".formatted(dmg, formatDamage(airMekDamage, hasTsm));
-                }
-                entries.add(e("Kick [Talons]", DASH, dmg, mek.hasFunctionalLegAES() ? "-3" : "-2"));
-            } else {
-                var dmg = formatDamage(baseDmg, hasTsm);
-                if (mek instanceof LandAirMek) {
-                    var airMekDamage = baseDmg / 2;
-                    dmg = "%s/%s".formatted(dmg, formatDamage(airMekDamage, hasTsm));
-                }
-                entries.add(e("Kick", DASH, dmg, mek.hasFunctionalLegAES() ? "-3" : "-2"));
             }
+            var dmg = formatDamage(baseDmg, hasTsm);
+            if (mek instanceof LandAirMek) {
+                dmg = "%s/%s".formatted(dmg, formatDamage(baseDmg / 2, hasTsm));
+            }
+            int kickMod = physicalRules.getKickModifier() - (mek.hasFunctionalLegAES() ? 1 : 0);
+            entries.add(e(hasTalons ? "Kick [Talons]" : "Kick", DASH, dmg, "%+d".formatted(kickMod)));
         }
 
         // Club
@@ -226,9 +220,8 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
 
         // Charge
         {
-            double damageMultiplier = mek.hasMisc(MiscTypeFlag.F_RAM_PLATE) ? 1.5 : 1;
             var spikesDmg = mek.getMiscEquipment(MiscTypeFlag.F_SPIKES).size() * 2;
-            String dmg = formatChargeDamage(mek, damageMultiplier, spikesDmg);
+            String dmg = formatChargeDamage(mek, spikesDmg);
             entries.add(e("Charge", DASH, dmg, "Vs", true));
         }
         if (mek instanceof LandAirMek) {
@@ -249,7 +242,11 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
         return entries;
     }
 
-    private static String formatChargeDamage(Entity entity, double damageMultiplier, int spikesDamage) {
+    /**
+     * Formats charge damage for the selected rules. Pass zero for {@code spikesDamage} if shown separately.
+     */
+    public static String formatChargeDamage(Entity entity, int spikesDamage) {
+        double damageMultiplier = entity instanceof Mek mek && mek.hasMisc(MiscTypeFlag.F_RAM_PLATE) ? 1.5 : 1;
         if (CConfig.usesTotalWarfareRules()) {
             String damage = doubleFormat.format(entity.getWeight() / 10 * damageMultiplier) + "/hex";
             return spikesDamage > 0 ? damage + "+" + spikesDamage : damage;

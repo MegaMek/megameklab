@@ -34,6 +34,7 @@ package megameklab.printing.reference;
 
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.MiscType;
+import megamek.common.game.Game;
 import megamek.common.units.Entity;
 import megamek.common.units.Infantry;
 import megamek.common.units.Mek;
@@ -50,6 +51,7 @@ import org.apache.batik.util.SVGConstants;
  */
 public class GroundToHitMods extends ReferenceTable {
     private final Entity entity;
+    private final boolean showSkidding;
 
     /** The beginning of each range of hex counts for target movement mods */
     private static final int[] TARGET_MOVEMENT_RANGES = { 0, 3, 5, 7, 10, 18, 25 };
@@ -61,6 +63,8 @@ public class GroundToHitMods extends ReferenceTable {
     public GroundToHitMods(PrintRecordSheet sheet, Entity entity) {
         super(sheet, 0.02, 0.08, 0.8);
         this.entity = entity;
+        // Core only replaces the Mek movement rules; vehicle sheets still use Total Warfare for skidding.
+        showSkidding = !(entity instanceof Mek) || Game.rulesManager.getRulesMovement().skidEnabled();
         setColumnAnchor(0, SVGConstants.SVG_START_VALUE);
         setColumnAnchor(1, SVGConstants.SVG_START_VALUE);
         if (entity instanceof Mek) {
@@ -87,7 +91,9 @@ public class GroundToHitMods extends ReferenceTable {
         if (!(entity instanceof QuadMek)) {
             addRow("", bundle.getString("prone"), "+2");
         }
-        addRow("", bundle.getString("skidding"), "+1");
+        if (showSkidding) {
+            addRow("", bundle.getString("skidding"), "+1");
+        }
         if (((Mek) entity).getCockpitType() == Mek.COCKPIT_PRIMITIVE_INDUSTRIAL) {
             addRow("", bundle.getString("noFireCon"), "+2");
         } else if (!((Mek) entity).hasAdvancedFireControl()) {
@@ -136,7 +142,9 @@ public class GroundToHitMods extends ReferenceTable {
         }
         addRow("", bundle.getString("proneOther"), "+1");
         addRow("", bundle.getString("immobile"), "-4");
-        addRow("", bundle.getString("skidding"), "-2");
+        if (showSkidding) {
+            addRow("", bundle.getString("skidding"), "-2");
+        }
 
         final int scale = CConfig.getIntParam(CConfig.RS_SCALE_FACTOR);
         final String units = CConfig.scaleUnits().shortName();

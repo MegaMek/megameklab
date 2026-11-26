@@ -672,7 +672,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             if (row != 0) {
                 return "";
             }
-            var mod = mount.getType().getToHitModifier(mount);
+            var mod = baseHitModifier();
             return (mod != 0) ? "%+d".formatted(mod).replace("-", MINUS) : "0";
         }
         var hasTargComp = mount.getEntity().hasTargComp();
@@ -706,7 +706,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
 
         boolean explicitZero = false;
 
-        var mod = mount.getType().getToHitModifier(mount);
+        var mod = baseHitModifier();
 
         var linked = mount.getLinkedBy();
         if (linked != null) {
@@ -739,6 +739,13 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         }
 
         return (mod != 0) ? "%+d".formatted(mod).replace("-", MINUS) : (explicitZero ? DASH : "");
+    }
+
+    private int baseHitModifier() {
+        if (mount.getType().hasFlag(MiscTypeFlag.S_CLAW)) {
+            return Game.rulesManager.getRulesPhysical().getClawToHitModifier();
+        }
+        return mount.getType().getToHitModifier(mount);
     }
 
     @Override
