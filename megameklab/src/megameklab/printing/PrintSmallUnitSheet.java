@@ -54,6 +54,7 @@ import megameklab.printing.reference.ClusterHitsTable;
 import megameklab.printing.reference.GroundMovementRecord;
 import megameklab.printing.reference.GroundToHitMods;
 import megameklab.printing.reference.MovementCost;
+import megameklab.printing.reference.ProtoMekLocationAndClusterTable;
 import megameklab.printing.reference.ProtoMekSpecialHitLocation;
 import megameklab.printing.reference.ReferenceTable;
 import megameklab.printing.reference.ReferenceTableBase;
@@ -127,7 +128,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             addReferenceCharts(pageFormat);
         } else if (options.showCondensedReferenceCharts()
               && !fillsSheet(entities, options, clusterTableBlocksSize - 1)) {
-            addClusterChart(startsWithLargeBlock ? clusterTableBlocksSize / 2 : clusterTableBlocksSize, index);
+            addCondensedReferenceChart(startsWithLargeBlock ? clusterTableBlocksSize / 2 : clusterTableBlocksSize,
+                  index);
         }
     }
 
@@ -236,13 +238,15 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
               pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
 
-    private void addClusterChart(int blocksSize, int index) {
+    private void addCondensedReferenceChart(int blocksSize, int index) {
         Element g = getSVGDocument().getElementById("unit_" + index);
         if (g == null) {
             return;
         }
 
-        var table = new ClusterHitsTable(this, entities, true);
+        var table = entities.getFirst() instanceof ProtoMek
+              ? new ProtoMekLocationAndClusterTable(this, entities)
+              : new ClusterHitsTable(this, entities, true);
         if (!table.required()) {
             return;
         }

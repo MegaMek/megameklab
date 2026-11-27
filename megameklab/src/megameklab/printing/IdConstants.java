@@ -246,6 +246,11 @@ public interface IdConstants {
     String MAIN_GUN_ARMOR = "armor_MG";
     String MAIN_GUN_SHADOW = "shadow_MG";
     String MAIN_GUN_TEXT = "text_MG";
+    String MAIN_GUN_HIT_ROW = "mainGunHitRow";
+    String MAIN_GUN_HIT_ROLL = "mainGunHitRoll";
+    String PROTOMEK_HIT_ROWS = "protoHitRows";
+    String PROTOMEK_FIRST_HIT_ROLL = "protoFirstHitRoll";
+    String TORSO_HIT_ROLL = "torsoHitRoll";
     String TORSO_WEAPON = "torsoWeapon_";
     String MAG_CLAMP_NOTE = "magClampNote";
     String MP_GROUND = "mpGround";

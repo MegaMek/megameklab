@@ -32,6 +32,7 @@
  */
 package megameklab.printing;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,21 +41,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.awt.print.PageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import megamek.common.battleArmor.BattleArmor;
+import megamek.common.compute.Compute;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.exceptions.LocationFullException;
 import megamek.common.units.ConvInfantry;
 import megamek.common.units.Dropship;
 import megamek.common.units.Entity;
-import megamek.common.units.Infantry;
 import megamek.common.units.ProtoMek;
 import megamek.common.units.SupportTank;
 import megameklab.testing.util.InitializeTypes;
+import org.apache.batik.util.SVGConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.w3c.dom.Element;
 
 @ExtendWith(value = InitializeTypes.class)
 class PrintSmallUnitSheetTest {
+    private static final String COMBINED_TABLE_TITLE = "HIT LOCATION AND CLUSTER TABLE";
+
     private RecordSheetOptions noTables, yesTables;
 
     @BeforeEach
@@ -73,6 +81,92 @@ class PrintSmallUnitSheetTest {
         entities.add(new ProtoMek());
         assertTrue(PrintSmallUnitSheet.fillsSheet(entities, noTables));
         assertTrue(PrintSmallUnitSheet.fillsSheet(entities, yesTables));
+    }
+
+    @Test
+    void condensedProtoMekTableListsBothRollsForEachChassisAndRackSizes() throws LocationFullException {
+        ProtoMek biped = protoMek("Biped", true);
+        biped.addEquipment(EquipmentType.get("CLSRM2"), ProtoMek.LOC_TORSO);
+        ProtoMek glider = protoMek("Glider", true);
+        glider.setIsGlider(true);
+        ProtoMek quad = protoMek("Quad", false);
+        quad.setIsQuad(true);
+        quad.addEquipment(EquipmentType.get("CLLRM5"), ProtoMek.LOC_TORSO);
+        noTables.setCondensedReferenceCharts(true);
+        Element sheet = renderSmallUnitSheet(List.of(quad, glider, biped, protoMek("Biped", false)), noTables);
+        List<String> cells = referenceCells(sheet);
+
+        assertEquals(List.of(COMBINED_TABLE_TITLE, "2D6", "Biped", "Regular", "Biped", "Special",
+              "Glider", "Regular", "Glider", "Special", "Quad", "Regular", "Quad", "Special", "2", "5"),
+              cells.subList(0, 16));
+        var locations = List.of(
+              List.of("Main Gun*", "Main Gun*", "Main Gun", "Main Gun", "Torso", "Torso"),
+              List.of("Near Miss", "Legs", "Wings", "Legs", "Near Miss", "Legs"),
+              List.of("Right Arm", "Legs", "Right Arm", "Legs", "Legs", "Legs"),
+              List.of("Legs", "Right Arm", "Legs", "Right Arm", "Legs", "Legs"),
+              List.of("Torso", "Torso", "Torso", "Torso", "Torso", "Torso"),
+              List.of("Torso", "Torso", "Torso", "Torso", "Torso", "Torso"),
+              List.of("Torso", "Torso", "Torso", "Torso", "Torso", "Torso"),
+              List.of("Legs", "Left Arm", "Legs", "Left Arm", "Legs", "Legs"),
+              List.of("Left Arm", "Legs", "Left Arm", "Legs", "Legs", "Legs"),
+              List.of("Near Miss", "Legs", "Wings", "Legs", "Near Miss", "Legs"),
+              List.of("Head", "Head", "Head", "Head", "Head", "Head"));
+        for (int roll = 2; roll <= 12; roll++) {
+            int row = 16 + (roll - 2) * 9;
+            assertEquals(String.valueOf(roll), cells.get(row));
+            assertEquals(locations.get(roll - 2), cells.subList(row + 1, row + 7));
+            assertEquals(String.valueOf(Compute.calculateClusterHitTableAmount(roll, 2)), cells.get(row + 7));
+            assertEquals(String.valueOf(Compute.calculateClusterHitTableAmount(roll, 5)), cells.get(row + 8));
+        }
+        assertEquals("*Roll 2 hits the torso if the unit has no main gun.", cells.getLast());
+    }
+
+    @Test
+    void condensedProtoMekTableShowsLocationsWithoutClusterWeaponsOnlyWhenEnabledAndThereIsRoom() {
+        ProtoMek biped = protoMek("Biped", false);
+        noTables.setCondensedReferenceCharts(false);
+        assertTrue(referenceCells(renderSmallUnitSheet(List.of(biped), noTables)).isEmpty());
+
+        noTables.setCondensedReferenceCharts(true);
+        List<String> cells = referenceCells(renderSmallUnitSheet(List.of(biped), noTables));
+        assertEquals(6 + 11 * 3, cells.size());
+        assertEquals(List.of(COMBINED_TABLE_TITLE, "2D6", "Biped", "Regular", "Biped", "Special",
+              "2", "Torso", "Torso"), cells.subList(0, 9));
+
+        List<ProtoMek> fullSheet = IntStream.range(0, 5).mapToObj(index -> protoMek("Biped", false)).toList();
+        assertTrue(referenceCells(renderSmallUnitSheet(fullSheet, noTables)).isEmpty());
+    }
+
+    private static ProtoMek protoMek(String chassis, boolean hasMainGun) {
+        ProtoMek proto = new ProtoMek();
+        proto.setChassis(chassis);
+        proto.setModel("");
+        proto.setWeight(15);
+        proto.setHasMainGun(hasMainGun);
+        return proto;
+    }
+
+    private static Element renderSmallUnitSheet(List<? extends Entity> entities, RecordSheetOptions options) {
+        options.setPaperSize(PaperSize.US_LETTER);
+        options.setEraIcon(false);
+        PageFormat page = new PageFormat();
+        page.setPaper(PaperSize.US_LETTER.createPaper());
+        PrintSmallUnitSheet sheet = new PrintSmallUnitSheet(entities, 0, options);
+        assertTrue(sheet.createDocument(0, page, false));
+        return sheet.getSVGDocument().getDocumentElement();
+    }
+
+    private static List<String> referenceCells(Element sheet) {
+        var groups = sheet.getElementsByTagNameNS(PrintRecordSheet.svgNS, SVGConstants.SVG_G_TAG);
+        for (int i = 0; i < groups.getLength(); i++) {
+            Element group = (Element) groups.item(i);
+            if ("referenceTable".equals(group.getAttribute("class"))) {
+                var cells = group.getElementsByTagNameNS(PrintRecordSheet.svgNS, SVGConstants.SVG_TEXT_TAG);
+                return IntStream.range(0, cells.getLength()).mapToObj(index -> cells.item(index).getTextContent())
+                      .filter(cell -> !cell.isBlank()).toList();
+            }
+        }
+        return List.of();
     }
 
     @Test

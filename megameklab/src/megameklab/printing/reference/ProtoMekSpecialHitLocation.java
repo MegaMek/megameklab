@@ -46,16 +46,20 @@ public class ProtoMekSpecialHitLocation extends ReferenceTable {
 
     private void addRows() {
         setHeaders(bundle.getString("2d6Result"), bundle.getString("hitLocation"));
-        addRow("2", bundle.getString("mainGun"));
-        addRow("3", bundle.getString("legs"));
-        addRow("4", bundle.getString("legs"));
-        addRow("5", bundle.getString("rightArm"));
-        addRow("6", bundle.getString("torso"));
-        addRow("7", bundle.getString("torso"));
-        addRow("8", bundle.getString("torso"));
-        addRow("9", bundle.getString("leftArm"));
-        addRow("10", bundle.getString("legs"));
-        addRow("11", bundle.getString("legs"));
-        addRow("12", bundle.getString("head"));
+        for (int roll = 2; roll <= 12; roll++) {
+            addRow(String.valueOf(roll), bundle.getString(locationKey(roll)));
+        }
+    }
+
+    static String locationKey(int roll) {
+        return switch (roll) {
+            case 2 -> "mainGun";
+            case 3, 4, 10, 11 -> "legs";
+            case 5 -> "rightArm";
+            case 6, 7, 8 -> "torso";
+            case 9 -> "leftArm";
+            case 12 -> "head";
+            default -> throw new IllegalArgumentException("Invalid 2D6 roll: " + roll);
+        };
     }
 }
