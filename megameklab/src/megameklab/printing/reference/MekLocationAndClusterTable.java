@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import megamek.common.compute.Compute;
 import megamek.common.units.Entity;
 import megamek.common.units.QuadMek;
 import megamek.common.units.TripodMek;
@@ -85,9 +84,7 @@ public class MekLocationAndClusterTable extends ClusterHitsTable {
         }
         for (int roll = 2; roll <= 12; roll++) {
             List<String> row = new ArrayList<>(Arrays.asList(locations[roll - 2]));
-            for (int size : clusterSizes) {
-                row.add(String.valueOf(Compute.calculateClusterHitTableAmount(roll, size)));
-            }
+            addClusterResults(row, roll);
             addRow(row);
         }
     }

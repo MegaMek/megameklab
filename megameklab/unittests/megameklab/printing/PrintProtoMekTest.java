@@ -23,19 +23,25 @@ import static megameklab.printing.IdConstants.INVENTORY;
 import static megameklab.printing.IdConstants.LBL_JUMP;
 import static megameklab.printing.IdConstants.LBL_ROLE;
 import static megameklab.printing.IdConstants.MAIN_GUN_ARMOR;
+import static megameklab.printing.IdConstants.MAIN_GUN_HIT_ROLL;
+import static megameklab.printing.IdConstants.MAIN_GUN_HIT_ROW;
 import static megameklab.printing.IdConstants.MAIN_GUN_SHADOW;
 import static megameklab.printing.IdConstants.MAIN_GUN_TEXT;
 import static megameklab.printing.IdConstants.MP_GROUND;
 import static megameklab.printing.IdConstants.MP_JUMP;
 import static megameklab.printing.IdConstants.MP_RUN;
 import static megameklab.printing.IdConstants.MP_WALK;
+import static megameklab.printing.IdConstants.PROTOMEK_FIRST_HIT_ROLL;
+import static megameklab.printing.IdConstants.PROTOMEK_HIT_ROWS;
 import static megameklab.printing.IdConstants.ROLE;
 import static megameklab.printing.IdConstants.STRUCTURE_PIPS;
 import static megameklab.printing.IdConstants.TONNAGE;
+import static megameklab.printing.IdConstants.TORSO_HIT_ROLL;
 import static megameklab.printing.IdConstants.TYPE;
 import static megameklab.printing.IdConstants.TYPE2;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.BasicStroke;
@@ -270,6 +276,58 @@ class PrintProtoMekTest {
                       assertMirroredPips(armor);
                   }
               }));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+          "US_LETTER, false, false",
+          "US_LETTER, true, false",
+          "US_LETTER, false, true",
+          "ISO_A4, false, false",
+          "ISO_A4, true, false",
+          "ISO_A4, false, true"
+    })
+    void hitTableReflectsWhetherMainGunIsInstalled(PaperSize size, boolean quad, boolean glider) {
+        ProtoMek proto = createProtoMek("Sprite", "2", quad, glider);
+        RecordSheetOptions options = createOptions(size, true);
+
+        proto.setHasMainGun(true);
+        Document armed = render(proto, options);
+        assertFalse(SVGConstants.CSS_HIDDEN_VALUE.equals(
+              armed.getElementById(MAIN_GUN_HIT_ROW).getAttribute(SVGConstants.CSS_VISIBILITY_PROPERTY)));
+        assertEquals("2", armed.getElementById(MAIN_GUN_HIT_ROLL).getTextContent());
+        assertEquals("6,7,8", armed.getElementById(TORSO_HIT_ROLL).getTextContent());
+
+        proto.setHasMainGun(false);
+        Document unarmed = render(proto, options);
+        assertEquals(SVGConstants.CSS_HIDDEN_VALUE,
+              unarmed.getElementById(MAIN_GUN_HIT_ROW).getAttribute(SVGConstants.CSS_VISIBILITY_PROPERTY));
+        assertEquals("2,6,7,8", unarmed.getElementById(TORSO_HIT_ROLL).getTextContent());
+        assertEquals(sheetBaseline(armed, MAIN_GUN_HIT_ROLL),
+              sheetBaseline(unarmed, PROTOMEK_FIRST_HIT_ROLL), TOLERANCE);
+
+        for (Document doc : List.of(armed, unarmed)) {
+            Element rows = doc.getElementById(PROTOMEK_HIT_ROWS);
+            assertHorizontalGap((SVGTextElement) doc.getElementById(TORSO_HIT_ROLL), findText(rows, "Torso"));
+            if (glider) {
+                assertEquals("Wings", doc.getElementById("wings_hit_label").getTextContent());
+                assertEquals("3,11", doc.getElementById(PROTOMEK_FIRST_HIT_ROLL).getTextContent());
+            } else {
+                assertEquals("3,11", doc.getElementById("nearMissRoll").getTextContent());
+                var nearMiss = findText(rows, "Near Miss");
+                assertTrue(sheetBounds(nearMiss).getMinY() > sheetBounds(findText(rows, "Head")).getMaxY());
+                assertTrue(sheetBounds(nearMiss).getMinY()
+                      > sheetBounds(findText(rows, "No Long Range Shots")).getMaxY());
+                double nearMissBaseline = baseline(doc, "nearMissLocation");
+                assertEquals(2, descendantsByTag(rows, SVGConstants.SVG_TEXT_TAG)
+                      .map(SVGTextElement.class::cast)
+                      .filter(cell -> Math.abs(cell.getY().getBaseVal().getItem(0).getValue() - nearMissBaseline)
+                            < TOLERANCE).count());
+            }
+            if (quad) {
+                assertEquals("4,5,9,10", doc.getElementById(PROTOMEK_FIRST_HIT_ROLL).getTextContent());
+            }
+        }
     }
 
     @ParameterizedTest
@@ -578,6 +636,11 @@ class PrintProtoMekTest {
 
     private static float baseline(Document doc, String id) {
         return ((SVGTextElement) doc.getElementById(id)).getY().getBaseVal().getItem(0).getValue();
+    }
+
+    private static double sheetBaseline(Document doc, String id) {
+        var transform = ((SVGTextElement) doc.getElementById(id)).getCTM();
+        return baseline(doc, id) * transform.getD() + transform.getF();
     }
 
     private static void assertCondensedMovementSpacing(Document doc) {

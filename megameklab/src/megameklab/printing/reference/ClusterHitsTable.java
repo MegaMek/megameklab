@@ -68,12 +68,16 @@ public class ClusterHitsTable extends ReferenceTable {
         addTable(entity);
     }
 
-    public ClusterHitsTable(PrintRecordSheet sheet, List<Entity> entities, boolean condensed) {
+    public ClusterHitsTable(PrintRecordSheet sheet, List<? extends Entity> entities, boolean condensed) {
         super(sheet);
         this.condensed = condensed;
         for (Entity en : entities) {
             calculateClusterSizes(en);
         }
+        addTable(entities);
+    }
+
+    protected void addTable(List<? extends Entity> entities) {
         addTable(entities.getFirst());
     }
 
@@ -186,22 +190,30 @@ public class ClusterHitsTable extends ReferenceTable {
         for (int roll = 2; roll <= 12; roll++) {
             List<String> row = new ArrayList<>();
             row.add(String.valueOf(roll));
-            for (int size : clusterSizes) {
-                row.add(String.valueOf(Compute.calculateClusterHitTableAmount(roll, size)));
-            }
+            addClusterResults(row, roll);
             addRow(row);
         }
     }
 
+    protected void addClusterResults(List<String> row, int roll) {
+        for (int size : clusterSizes) {
+            row.add(String.valueOf(Compute.calculateClusterHitTableAmount(roll, size)));
+        }
+    }
+
     protected void addNotes(Entity entity) {
-        if (hasATM || entity.hasWorkingMisc(MiscType.F_ARTEMIS)) {
+        addNotes(List.of(entity));
+    }
+
+    protected void addNotes(List<? extends Entity> entities) {
+        if (hasATM || entities.stream().anyMatch(entity -> entity.hasWorkingMisc(MiscType.F_ARTEMIS))) {
             addNote(bundle.getString("artemisIV.note"));
-        } else if (entity.hasWorkingMisc(MiscType.F_ARTEMIS_V)) {
+        } else if (entities.stream().anyMatch(entity -> entity.hasWorkingMisc(MiscType.F_ARTEMIS_V))) {
             addNote(bundle.getString("artemisV.note"));
-        } else if (entity.hasWorkingMisc(MiscType.F_ARTEMIS_PROTO)) {
+        } else if (entities.stream().anyMatch(entity -> entity.hasWorkingMisc(MiscType.F_ARTEMIS_PROTO))) {
             addNote(bundle.getString("artemisProto.note"));
         }
-        if (entity.hasWorkingMisc(MiscType.F_APOLLO)) {
+        if (entities.stream().anyMatch(entity -> entity.hasWorkingMisc(MiscType.F_APOLLO))) {
             addNote(bundle.getString("apollo.note"));
         }
         if (hasHAG) {
@@ -210,7 +222,7 @@ public class ClusterHitsTable extends ReferenceTable {
     }
 
     /**
-     * @return Whether the unit has any weapons that use the cluster hits table
+     * @return Whether the table contains relevant information for the sheet
      */
     public boolean required() {
         return !clusterSizes.isEmpty();

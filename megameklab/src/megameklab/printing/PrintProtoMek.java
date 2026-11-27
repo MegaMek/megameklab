@@ -107,7 +107,22 @@ public class PrintProtoMek extends PrintEntity {
             hideElement(MAIN_GUN_ARMOR);
             hideElement(MAIN_GUN_SHADOW);
             hideElement(MAIN_GUN_TEXT);
+            hideMainGunHitRow();
         }
+    }
+
+    private void hideMainGunHitRow() {
+        hideElement(MAIN_GUN_HIT_ROW);
+        Element rows = getElementById(PROTOMEK_HIT_ROWS);
+        if (rows != null
+              && getElementById(MAIN_GUN_HIT_ROLL) instanceof SVGTextElement gun
+              && getElementById(PROTOMEK_FIRST_HIT_ROLL) instanceof SVGTextElement first) {
+            float offset = gun.getY().getBaseVal().getItem(0).getValue()
+                  - first.getY().getBaseVal().getItem(0).getValue();
+            rows.setAttribute(SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                  SVGConstants.SVG_TRANSLATE_VALUE + "(0," + offset + ")");
+        }
+        setTextField(TORSO_HIT_ROLL, "2,6,7,8");
     }
 
     private void layoutNameAndStats() {
