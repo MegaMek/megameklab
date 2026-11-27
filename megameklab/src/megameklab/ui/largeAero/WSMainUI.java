@@ -253,6 +253,7 @@ public class WSMainUI extends MegaMekLabMainUI {
         structureTab.refresh();
         equipmentTab.refresh();
         buildTab.refresh();
+        transportTab.refresh();
         quirksTab.refresh();
         availabilityTab.refresh();
         previewTab.refresh();
