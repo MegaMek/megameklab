@@ -19,22 +19,33 @@
 package megameklab.printing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.List;
 
+import megamek.common.TechConstants;
+import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.Mounted;
+import megamek.common.exceptions.LocationFullException;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.units.Aero;
 import megamek.common.units.AeroSpaceFighter;
 import megamek.common.units.BipedMek;
+import megamek.common.units.Entity;
 import megamek.common.units.Mek;
+import megamek.common.units.ProtoMek;
 import megameklab.testing.util.InitializeTypes;
+import org.apache.batik.anim.dom.SVGDOMImplementation;
+import org.apache.batik.util.SVGConstants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.w3c.dom.Document;
+import org.w3c.dom.svg.SVGRectElement;
 
 @ExtendWith(value = InitializeTypes.class)
 class InventoryWriterTest {
@@ -88,6 +99,88 @@ class InventoryWriterTest {
         // the second row fires in pulse mode, -2 to-hit (IO:AE p.87)
         assertEquals(InventoryEntry.DASH, entry.getModField(0, false));
         assertEquals(InventoryEntry.MINUS + "2", entry.getModField(1, false));
+    }
+
+    @Test
+    void protoMekInventoryOmitsBuiltInEnhancedImagingInterface() throws LocationFullException {
+        ProtoMek proto = new ProtoMek();
+        proto.setWeight(6);
+        Mounted<?> ei = proto.addEquipment(EquipmentType.get(EquipmentTypeLookup.EI_INTERFACE), ProtoMek.LOC_BODY);
+        Mounted<?> laser = proto.addEquipment(EquipmentType.get("CLSmallPulseLaser"), ProtoMek.LOC_TORSO);
+
+        Document inventory = renderInventory(proto);
+
+        assertNull(inventory.getElementById(new StandardInventoryEntry(ei).getUniqueId()));
+        assertNotNull(inventory.getElementById(new StandardInventoryEntry(laser).getUniqueId()));
+    }
+
+    @Test
+    void mekInventoryListsInstalledEnhancedImagingInterface() throws LocationFullException {
+        Mek mek = new BipedMek();
+        mek.setTechLevel(TechConstants.T_CLAN_TW);
+        Mounted<?> ei = mek.addEquipment(EquipmentType.get(EquipmentTypeLookup.EI_INTERFACE), Mek.LOC_HEAD);
+
+        Document inventory = renderInventory(mek);
+
+        assertNotNull(inventory.getElementById(new StandardInventoryEntry(ei).getUniqueId()));
+    }
+
+    @Test
+    void battleArmorInventoryListsInstalledEnhancedImagingInterface() throws LocationFullException {
+        BattleArmor battleArmor = new BattleArmor();
+        battleArmor.setTechLevel(TechConstants.T_CLAN_TW);
+        Mounted<?> ei = battleArmor.addEquipment(EquipmentType.get(EquipmentTypeLookup.EI_INTERFACE),
+              BattleArmor.LOC_SQUAD);
+
+        Document inventory = renderInventory(battleArmor);
+
+        assertNotNull(inventory.getElementById(new StandardInventoryEntry(ei).getUniqueId()));
+    }
+
+    private static Document renderInventory(Entity entity) {
+        RecordSheetOptions options = new RecordSheetOptions();
+        options.setIntrinsicPhysicalAttacks(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.NONE);
+        PrintEntity sheet = new PrintEntity(0, options) {
+            @Override
+            public Entity getEntity() {
+                return entity;
+            }
+
+            @Override
+            protected String getSVGFileName(int pageNumber) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            protected String getRecordSheetTitle() {
+                return "";
+            }
+
+            @Override
+            protected boolean supportsAlternateArmorGrouping() {
+                return false;
+            }
+
+            @Override
+            public double getTextLength(String text, float fontSize, String weight, String fontStyle) {
+                return text.length() * fontSize / 2;
+            }
+
+            @Override
+            public float getFontHeight(float fontSize) {
+                return fontSize * 1.2f;
+            }
+        };
+        Document document = SVGDOMImplementation.getDOMImplementation().createDocument(
+              PrintRecordSheet.svgNS, SVGConstants.SVG_SVG_TAG, null);
+        sheet.setSVGDocument(document);
+        SVGRectElement region = (SVGRectElement) document.createElementNS(
+              PrintRecordSheet.svgNS, SVGConstants.SVG_RECT_TAG);
+        region.setAttribute("width", "400");
+        region.setAttribute("height", "200");
+        document.getDocumentElement().appendChild(region);
+        new InventoryWriter(sheet, region).writeEquipment();
+        return document;
     }
 
     private static Mounted<?> secondRowMount(Mounted<?> weapon) {

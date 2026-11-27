@@ -41,6 +41,7 @@ public interface IdConstants {
     String MML_COLOR_ELEMENTS = "mml-color-elements";
     String MML_FIELD_WIDTH = "mml-field-width";
     String MML_GAP = "mml-gap";
+    String MML_MIRROR = "mml-mirror";
     String MML_MULTISECTION = "mml-multisection";
 
     String FOOTER = "footer";

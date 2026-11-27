@@ -38,16 +38,18 @@ import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.units.Entity;
 import megamek.common.units.ProtoMek;
-import megamek.logging.MMLogger;
-import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.svg.SVGTextElement;
 
 /**
  * Lays out a record sheet block for a single ProtoMek
  */
 public class PrintProtoMek extends PrintEntity {
-    private static final MMLogger logger = MMLogger.create(PrintProtoMek.class);
+    // Keep movement labels clear of the Pilot Data border on Letter sheets.
+    private static final float STATS_SPACING_SCALE = 0.95f;
+    private static final double HEAD_PIP_SCALE = 0.85;
 
     private final ProtoMek proto;
     private final int unitIndex;
@@ -92,7 +94,7 @@ public class PrintProtoMek extends PrintEntity {
     protected void writeTextFields() {
         super.writeTextFields();
         setTextField(PROTOMEK_INDEX, "PROTOMEK " + (unitIndex + 1));
-        splitName();
+        layoutNameAndStats();
         if (proto.isGlider()) {
             setTextField(MP_GROUND, formatMovement(1));
         }
@@ -108,42 +110,53 @@ public class PrintProtoMek extends PrintEntity {
         }
     }
 
-    /**
-     * Checks whether the unit name is too large to fit into the primary field without kerning. If so, looks for a break
-     * point and puts the remainder on a second line.
-     */
-    private void splitName() {
-        Element element = getSVGDocument().getElementById(TYPE);
-        if (null != element) {
-            String fieldWidth = parseStyle(element, MML_FIELD_WIDTH);
-            if (null != fieldWidth) {
-                try {
-                    double width = Double.parseDouble(fieldWidth);
-                    // Clear any kerning that has already been applied so we can measure the full
-                    // text length
-                    element.removeAttribute(SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE);
-                    element.removeAttribute(SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
-                    build();
-                    double textWidth = SVGLocatableSupport.getBBox(element).getWidth();
-                    if (textWidth > width) {
-                        String name = element.getTextContent();
-                        // The goal is a 2:1 split, but we start back a little to avoid just missing a
-                        // break point
-                        int pos = name.indexOf(" ", (int) (name.length() * 0.6));
-                        if (pos < 0) {
-                            // If we don't find a break point, give up and assign the text again to reset
-                            // the kerning
-                            setTextField(TYPE, name);
-                        } else {
-                            setTextField(TYPE, name.substring(0, pos));
-                            setTextField(TYPE2, name.substring(pos + 1));
-                        }
-                    }
-                } catch (NumberFormatException ex) {
-                    logger.warn("Could not parse fieldWidth: {}", fieldWidth);
-                }
+    private void layoutNameAndStats() {
+        if (!(getElementById(TYPE) instanceof SVGTextElement firstLine)
+              || !(getElementById(TYPE2) instanceof SVGTextElement secondLine)) {
+            return;
+        }
+
+        boolean wrapped = splitName(firstLine, secondLine);
+        float secondLineY = secondLine.getY().getBaseVal().getItem(0).getValue();
+        float statsY = wrapped ? secondLineY + (secondLineY - firstLine.getY().getBaseVal().getItem(0).getValue())
+              : secondLineY;
+        // The text siblings after the second name line are the stat labels and values.
+        for (Node row = secondLine.getNextSibling(); row != null; row = row.getNextSibling()) {
+            if (row instanceof SVGTextElement text) {
+                var baseline = text.getY().getBaseVal().getItem(0);
+                baseline.setValue(statsY + (baseline.getValue() - secondLineY) * STATS_SPACING_SCALE);
             }
         }
+    }
+
+    /**
+     * Wraps the unit name if it needed compression to fit on one line and has a word break.
+     *
+     * @return whether the name occupies two lines
+     */
+    private boolean splitName(SVGTextElement firstLine, SVGTextElement secondLine) {
+        if (!firstLine.hasAttribute(SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE)) {
+            return false;
+        }
+
+        String name = firstLine.getTextContent().strip();
+        int preferredBreak = (int) (name.length() * 0.6);
+        int split = name.indexOf(' ', preferredBreak);
+        if (split < 0) {
+            split = name.lastIndexOf(' ', preferredBreak);
+        }
+        if (split < 0) {
+            return false;
+        }
+
+        firstLine.removeAttribute(SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE);
+        firstLine.removeAttribute(SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE);
+        secondLine.setAttribute(SVGConstants.SVG_X_ATTRIBUTE, firstLine.getAttribute(SVGConstants.SVG_X_ATTRIBUTE));
+        secondLine.setAttribute(SVGConstants.SVG_STYLE_ATTRIBUTE,
+              firstLine.getAttribute(SVGConstants.SVG_STYLE_ATTRIBUTE));
+        setTextField(TYPE, name.substring(0, split).stripTrailing());
+        setTextField(TYPE2, name.substring(split + 1).stripLeading());
+        return true;
     }
 
     private void printTorsoCritChart() {
@@ -204,8 +217,16 @@ public class PrintProtoMek extends PrintEntity {
     }
 
     @Override
-    String structurePipFill() {
-        return FILL_SHADOW;
+    protected Element createPip(double x, double y, double radius, double strokeWidth, PipType type, String fill,
+          String className, String loc, boolean rear) {
+        if (proto.getLocationAbbr(ProtoMek.LOC_HEAD).equals(loc)) {
+            // Shrink the pip without changing its center or the layout's row spacing.
+            double scaledRadius = radius * HEAD_PIP_SCALE;
+            x += radius - scaledRadius;
+            y += radius - scaledRadius;
+            radius = scaledRadius;
+        }
+        return super.createPip(x, y, radius, strokeWidth, type, fill, className, loc, rear);
     }
 
     static final String GUN_HIT = "gun_hit_";

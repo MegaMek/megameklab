@@ -705,7 +705,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                       getEntity().getOInternal(loc),
                       PipType.CIRCLE,
                       DEFAULT_PIP_STROKE,
-                      structurePipFill(),
+                      FILL_WHITE,
                       getStructureDamage(loc),
                       useAlternateArmorGrouping(),
                       "structure",
@@ -749,13 +749,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
             totalHits += getEntity().getHitCriticalSlots(CriticalSlot.TYPE_SYSTEM, index, loc);
         }
         return totalHits;
-    }
-
-    /**
-     * @return The color to use in the inside of structure pips
-     */
-    String structurePipFill() {
-        return FILL_WHITE;
     }
 
     /**

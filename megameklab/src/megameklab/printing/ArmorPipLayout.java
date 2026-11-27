@@ -77,7 +77,8 @@ import org.w3c.dom.svg.SVGRectElement;
  * in the rect element's style attribute in the format {@code mml-gap:x1,x2}, where x1 and x2 are the beginning and
  * ending x coordinate of the gap, respectively. Non-contiguous vertical sections (such as the side armor on VTOLs) are
  * indicated by grouping each section into its own g element and adding {@code mml-multisection:true} to the parent g
- * element's style attribute.
+ * element's style attribute. For regions that straddle x=0, {@code mml-mirror:true} mirrors rows across that axis
+ * when the total pip count is even.
  * </p>
  */
 class ArmorPipLayout {
@@ -462,6 +463,8 @@ class ArmorPipLayout {
      * @param pipCount The number of pips to place in the region
      */
     private void process(int pipCount, int damage, String className, String loc, boolean rear) {
+        boolean mirrorRows = (pipCount % 2 == 0)
+              && Boolean.parseBoolean(PrintRecordSheet.parseStyle(group, IdConstants.MML_MIRROR));
         /* Estimate the number of rows required by finding the height of a rectangle
          * with an area of pipCount that has the same aspect ratio as the bounding box.
          */
@@ -521,6 +524,15 @@ class ArmorPipLayout {
                   yPosition, Math.min(upper.right, lower.right), yPosition + spacing);
             Bounds gap = mergeGaps(row, negativeRegions.get(upperEntry.getKey()),
                   lowerEntry == null ? null : negativeRegions.get(lowerEntry.getKey()));
+            if (mirrorRows) {
+                // Fit both halves to the tighter contour, including any space reserved by the center gap.
+                double edge = Math.min(-row.left, row.right);
+                row = new Bounds(-edge, row.top, edge, row.bottom);
+                if (gap.width() > 0) {
+                    double centerClearance = Math.min(edge, Math.max(-gap.left, gap.right));
+                    gap = new Bounds(-centerClearance, row.top, centerClearance, row.bottom);
+                }
+            }
             if (gap.width() > 0 && gap.left <= row.left + PRECISION
                   && gap.right >= row.right - PRECISION) {
                 yPosition += spacing;
@@ -535,8 +547,7 @@ class ArmorPipLayout {
             // within
             // the margin of the presumed spacing, use an even number so it can be split
             // evenly between them.
-            boolean mirror = gap.width() > 0
-                  && Math.abs((gap.left - row.left) - (row.right - gap.right)) < spacing;
+            boolean mirror = mirrorRows || isBalancedSplit(row, gap, spacing);
             if ((mirror && count % 2 == 1) || (!mirror && count % 2 != parity)) {
                 if (shift <= 0 || count == 0) {
                     count++;
@@ -555,13 +566,14 @@ class ArmorPipLayout {
                 parity = 1 - parity;
             }
         }
-        double xSpacing = adjustCount(pipCount, rows, gaps, rowCount, staggered, spacing);
+        double xSpacing = adjustCount(pipCount, rows, gaps, rowCount, staggered, spacing, mirrorRows);
         drawPips(rows,
               gaps,
               rowCount,
               staggered,
               Math.min(radius, xSpacing * 0.4),
               xSpacing,
+              mirrorRows,
               damage,
               className,
               loc,
@@ -600,18 +612,19 @@ class ArmorPipLayout {
      * Takes the rough layout and adds or removes pips to match the required number. Pips are added starting with the
      * rows with the most extra space and removed starting with rows with the least extra space.
      *
-     * @param pipCount  The total number of pips
-     * @param rows      A list of the bounding boxes of the generated rows
-     * @param gaps      A list of the bounding boxes of any gaps to be left in the rows. Each entry corresponds to the
-     *                  same index in {@code rows}.
-     * @param rowCount  The number of pips in each of the rows. This list needs to be the same size as {@code rows}.
-     * @param staggered If true, attempt to maintain the parity of each row (which should be alternating).
-     * @param spacing   The spacing between rows, used as the starting spacing between pips in the row
+     * @param pipCount   The total number of pips
+     * @param rows       A list of the bounding boxes of the generated rows
+     * @param gaps       A list of the bounding boxes of any gaps to be left in the rows. Each entry corresponds to the
+     *                   same index in {@code rows}.
+     * @param rowCount   The number of pips in each of the rows. This list needs to be the same size as {@code rows}.
+     * @param staggered  If true, attempt to maintain the parity of each row (which should be alternating).
+     * @param spacing    The spacing between rows, used as the starting spacing between pips in the row
+     * @param mirrorRows Whether all rows must keep even counts
      *
      * @return The ratio of the horizontal to vertical spacing
      */
     private double adjustCount(int pipCount, List<Bounds> rows, List<Bounds> gaps, List<Integer> rowCount,
-          boolean staggered, double spacing) {
+          boolean staggered, double spacing, boolean mirrorRows) {
         int current = rowCount.stream().mapToInt(Integer::intValue).sum();
         if (current == pipCount) {
             return spacing;
@@ -625,9 +638,7 @@ class ArmorPipLayout {
         // will have to defy the symmetry.
         List<Boolean> mirrored = new ArrayList<>();
         for (int index = 0; index < rows.size(); index++) {
-            mirrored.add(gaps.get(index).width() > 0
-                  && Math.abs((gaps.get(index).left - rows.get(index).left)
-                  - (rows.get(index).right - gaps.get(index).right)) < spacing);
+            mirrored.add(mirrorRows || isBalancedSplit(rows.get(index), gaps.get(index), spacing));
         }
         boolean allMirrored = mirrored.stream().allMatch(Boolean::booleanValue);
         // The number to change per row. Try to keep staggered layouts alternating in
@@ -698,6 +709,10 @@ class ArmorPipLayout {
         return spacing;
     }
 
+    private static boolean isBalancedSplit(Bounds row, Bounds gap, double spacing) {
+        return gap.width() > 0 && Math.abs((gap.left - row.left) - (row.right - gap.right)) < spacing;
+    }
+
     /**
      * Calculates the actual position of each pip and adds it to the document.
      *
@@ -708,7 +723,8 @@ class ArmorPipLayout {
      * @param radius    The radius of each pip.
      */
     private void drawPips(List<Bounds> rows, List<Bounds> gaps, List<Integer> rowCount,
-          boolean staggered, double radius, double xSpacing, int damage, String className, String loc, boolean rear) {
+          boolean staggered, double radius, double xSpacing, boolean mirrorRows, int damage, String className,
+          String loc, boolean rear) {
         double dx = staggered ? xSpacing * 2 : xSpacing;
         /*
          * Find the row that takes up the largest percentage of its row. If it's over
@@ -742,6 +758,22 @@ class ArmorPipLayout {
         AtomicInteger remainingDamageCounter = new AtomicInteger(damage);
         for (int r = 0; r < rows.size(); r++) {
             final Bounds row = rows.get(r);
+            if (mirrorRows) {
+                int count = rowCount.get(r);
+                Bounds gap = gaps.get(r);
+                if (gap.width() > 0) {
+                    int half = count / 2;
+                    double center = (gap.right + row.right) / 2;
+                    drawRowPips(calcRowStartX(-center, half, dx) + xPadding,
+                          row.top, half, radius, dx, remainingDamageCounter, className, loc, rear);
+                    drawRowPips(calcRowStartX(center, half, dx) + xPadding,
+                          row.top, half, radius, dx, remainingDamageCounter, className, loc, rear);
+                } else {
+                    double start = calcRowStartX(0, count, dx) + xPadding;
+                    drawRowPips(start, row.top, count, radius, dx, remainingDamageCounter, className, loc, rear);
+                }
+                continue;
+            }
             if (gaps.get(r).width() > 0) {
                 Bounds left = new Bounds(row.left, row.top, gaps.get(r).left, row.bottom);
                 Bounds right = new Bounds(gaps.get(r).right, row.top, row.right, row.bottom);
@@ -786,6 +818,12 @@ class ArmorPipLayout {
             centerX = row.centerX();
             xPosition = calcRowStartX(centerX, count, dx) + xPadding;
         }
+        drawRowPips(xPosition, row.top, count, radius, dx, damageCounter, className, loc, rear);
+        return centerX;
+    }
+
+    private void drawRowPips(double xPosition, double yPosition, int count, double radius, double dx,
+          AtomicInteger damageCounter, String className, String loc, boolean rear) {
         for (int i = 0; i < count; i++) {
             boolean isDamaged = false;
             if (damageCounter.get() > 0) {
@@ -795,7 +833,7 @@ class ArmorPipLayout {
             }
             final String fillColor = (isDamaged) ? sheet.getDamageFillColor() : fill;
             Element pip = sheet.createPip(xPosition,
-                  row.top,
+                  yPosition,
                   radius,
                   strokeWidth,
                   pipType,
@@ -806,7 +844,6 @@ class ArmorPipLayout {
             group.appendChild(pip);
             xPosition += dx;
         }
-        return centerX;
     }
 
     /**

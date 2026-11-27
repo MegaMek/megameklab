@@ -32,11 +32,11 @@
  */
 package megameklab.printing;
 
-import megamek.common.equipment.ArmorType;
+import static megamek.common.equipment.EquipmentType.*;
 
 import java.util.List;
 
-import static megamek.common.equipment.EquipmentType.*;
+import megamek.common.equipment.ArmorType;
 
 public enum PipType {
     CIRCLE, DIAMOND, CIRCLE_DASHED, PENTAGON;
