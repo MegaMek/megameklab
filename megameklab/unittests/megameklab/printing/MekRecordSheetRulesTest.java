@@ -19,6 +19,8 @@ package megameklab.printing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.print.PageFormat;
@@ -42,6 +44,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -50,12 +53,14 @@ import org.w3c.dom.Element;
 class MekRecordSheetRulesTest {
     private String originalRulesSystem;
     private String originalScaleUnits;
+    private String originalTacOpsHeat;
     private RulesManager originalRulesManager;
 
     @BeforeEach
     void rememberSettings() {
         originalRulesSystem = CConfig.getParam(CConfig.MISC_RULES_SYSTEM);
         originalScaleUnits = CConfig.getParam(CConfig.RS_SCALE_UNITS);
+        originalTacOpsHeat = CConfig.getParam(CConfig.RS_TAC_OPS_HEAT);
         originalRulesManager = Game.rulesManager;
         CConfig.setParam(CConfig.RS_SCALE_UNITS, RSScale.HEXES.toString());
     }
@@ -64,6 +69,7 @@ class MekRecordSheetRulesTest {
     void restoreSettings() {
         CConfig.setParam(CConfig.MISC_RULES_SYSTEM, originalRulesSystem);
         CConfig.setParam(CConfig.RS_SCALE_UNITS, originalScaleUnits);
+        CConfig.setParam(CConfig.RS_TAC_OPS_HEAT, originalTacOpsHeat);
         Game.rulesManager = originalRulesManager;
     }
 
@@ -109,6 +115,55 @@ class MekRecordSheetRulesTest {
         List<String> punch = tableCells(renderSheet("Harpagos.mtf"), "PUNCH LOCATION TABLE");
         assertRow(punch, "1", "LT", core ? "RFL/RRL" : "LFL/LRL", "RT");
         assertRow(punch, "5", "LRL", core ? "LFL/LRL" : "RFL/RRL", "RRL");
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+          "US_LETTER, Black Hawk-KU BHKU-OE.mtf, false, ALL, ASTERISK",
+          "US_LETTER, Black Hawk-KU BHKU-OE.mtf, true, LOGO_ONLY, ARROW",
+          "ISO_A4, Harpagos.mtf, false, NONE, ARROW",
+          "ISO_A4, Harpagos.mtf, true, ALL, ASTERISK"
+    })
+    void rendersSelectedHeatLayout(PaperSize size, String fileName, boolean tacOps, RecordSheetOptions.ColorMode color,
+          RecordSheetOptions.HeatScaleMarker marker) throws Exception {
+        Mek mek = (Mek) new MekFileParser(new File("testresources", fileName)).getEntity();
+        CConfig.setParam(CConfig.RS_TAC_OPS_HEAT, Boolean.toString(tacOps));
+        RecordSheetOptions options = new RecordSheetOptions();
+        options.setPaperSize(size);
+        options.setColor(color);
+        options.setHeatScaleMarker(marker);
+        options.setReferenceCharts(false);
+        PageFormat page = new PageFormat();
+        page.setPaper(size.createPaper());
+        PrintMek sheet = new PrintMek(mek, 0, options);
+        assertTrue(sheet.createDocument(0, page, false));
+        Document document = sheet.getSVGDocument();
+
+        Element heatScale = document.getElementById("heatScale");
+        assertNotNull(heatScale);
+        assertFalse("none".equals(heatScale.getAttribute("display")));
+        assertNull(document.getElementById("tacOps_heatScale"));
+        assertNull(document.getElementById("tacOps_heatDataPanel"));
+        String visibleVariant = color == RecordSheetOptions.ColorMode.ALL ? "heatScaleColor" : "heatScaleBW";
+        String unusedVariant = color == RecordSheetOptions.ColorMode.ALL ? "heatScaleBW" : "heatScaleColor";
+        Element scale = document.getElementById(visibleVariant);
+        assertNotNull(scale);
+        assertNull(document.getElementById(unusedVariant));
+        assertEquals("visible", scale.getAttribute("visibility"));
+        int maxHeat = tacOps ? 50 : 30;
+        var cells = scale.getElementsByTagNameNS(PrintRecordSheet.svgNS, "rect");
+        assertEquals(maxHeat + 1, cells.getLength());
+        assertEquals(Integer.toString(maxHeat), ((Element) cells.item(0)).getAttribute("heat"));
+        String scaleText = scale.getTextContent();
+        assertEquals(marker == RecordSheetOptions.HeatScaleMarker.ASTERISK,
+              scaleText.contains("*") || scaleText.contains("\u2217"));
+
+        Element panel = document.getElementById("heatDataPanel");
+        assertNotNull(panel);
+        assertFalse("none".equals(panel.getAttribute("display")));
+        assertEquals(tacOps, document.getElementById("minus9MP") != null);
+        assertEquals("-1 Movement Points", document.getElementById("minus1MP").getTextContent());
+        assertTrue(sheet.build().getBounds().getWidth() > 0);
     }
 
     @ParameterizedTest

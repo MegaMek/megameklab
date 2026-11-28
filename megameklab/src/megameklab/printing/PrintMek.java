@@ -88,6 +88,7 @@ public class PrintMek extends PrintEntity {
     private static final MMLogger logger = MMLogger.create(PrintMek.class);
     private static final String IS_PIP_HD_PREFIX = "is_pip_hd_";
     private static final String IS_PIP_HD_SH_PREFIX = "is_pip_hd_sh_";
+    private static final String TAC_OPS_HEAT_PREFIX = "tacOps_";
     private static final int EXTEND_DAMAGE_LINE_THROUGH_LENGTH = 2;
     private static final float DEFAULT_CRITICAL_SLOT_ENTRY_FONT_SIZE = 7f;
 
@@ -122,11 +123,48 @@ public class PrintMek extends PrintEntity {
         } else {
             base = "mek_biped";
         }
-        if (options.useTacOpsHeat()) {
-            return base + "_toheat.svg";
-        } else {
-            return base + "_default.svg";
+        return base + "_default.svg";
+    }
+
+    @Override
+    protected @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat,
+          boolean useUnitTestTemplateDirectory) {
+        Document document = super.loadTemplate(pageIndex, pageFormat, useUnitTestTemplateDirectory);
+        if (document != null
+              && (!selectHeatLayout(document, "heatDataPanel") || !selectHeatLayout(document, "heatScale"))) {
+            logger.error("Missing heat layout in record sheet template {}", document.getDocumentURI());
+            return null;
         }
+        return document;
+    }
+
+    private boolean selectHeatLayout(Document document, String id) {
+        Element expanded = document.getElementById(TAC_OPS_HEAT_PREFIX + id);
+        if (!options.useTacOpsHeat()) {
+            if (expanded != null) {
+                expanded.getParentNode().removeChild(expanded);
+            }
+            return true;
+        }
+
+        Element standard = document.getElementById(id);
+        if (standard == null || expanded == null) {
+            return false;
+        }
+        standard.getParentNode().replaceChild(expanded, standard);
+        expanded.removeAttribute("display");
+        expanded.setAttribute("id", id);
+
+        // Keep the canonical IDs for color selection, dynamic fields, and exported SVGs.
+        NodeList descendants = expanded.getElementsByTagName("*");
+        for (int i = 0; i < descendants.getLength(); i++) {
+            Element element = (Element) descendants.item(i);
+            String elementId = element.getAttribute("id");
+            if (elementId.startsWith(TAC_OPS_HEAT_PREFIX)) {
+                element.setAttribute("id", elementId.substring(TAC_OPS_HEAT_PREFIX.length()));
+            }
+        }
+        return true;
     }
 
     @Override
